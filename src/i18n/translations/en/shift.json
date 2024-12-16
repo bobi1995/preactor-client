@@ -1,0 +1,17 @@
+{
+  "break_name": "Break Name",
+  "break_start": "Start",
+  "break_end": "End",
+  "break_duration": "Duration",
+  "assign_break": "Assign Break",
+  "breaks": "Breaks",
+  "resource_name": "Resource Name",
+  "description": "Description",
+  "create_break": "Create Break",
+  "assing_break_info": "Assign a break for the shift. This break will be visible in the schedule and orders will be adjusted accordingly.",
+  "select_break": "Select Break",
+  "choose_break": "Choose Break",
+  "save": "Save",
+  "cancel": "Cancel",
+  "no_breaks": "No breaks added yet"
+}
