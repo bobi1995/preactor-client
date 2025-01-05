@@ -24,6 +24,12 @@ export const getShift = gql`
         startHour
         endHour
       }
+      resources {
+        id
+        name
+        picture
+        description
+      }
     }
   }
 `;
@@ -51,6 +57,17 @@ export const assignBreakMutation = gql`
   mutation AssignBreakToShift($shiftId: ID!, $breakId: ID!) {
     assignBreakToShift(shiftId: $shiftId, breakId: $breakId) {
       id
+    }
+  }
+`;
+
+export const createBreakMutation = gql`
+  mutation Mutation($input: BreakInput!) {
+    createBreak(input: $input) {
+      id
+      name
+      startHour
+      endHour
     }
   }
 `;

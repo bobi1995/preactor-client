@@ -27,5 +27,12 @@
   "no_orders": "No orders",
   "no_can_replace": "No one to replace",
   "no_be_replaced": "No one to be replaced",
-  "upload": "Upload"
+  "upload": "Upload",
+  "regular_shift": "Work shift",
+  "no_shift": "No shift selected",
+  "assing_shift_info": "Assign a work shift to the resource",
+  "choose_shift": "Choose shift",
+  "resource": "Resource",
+  "start": "Start",
+  "end": "End"
 }

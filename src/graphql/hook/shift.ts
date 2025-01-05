@@ -1,5 +1,6 @@
 import {
   assignBreakMutation,
+  createBreakMutation,
   createShiftMutation,
   getBreaks,
   getShift,
@@ -71,6 +72,41 @@ export const useAssignBreak = () => {
   };
   return {
     assignBreak,
+    loading,
+  };
+};
+
+export const useCreateBreak = () => {
+  const [mutate, { loading }] = useMutation(createBreakMutation);
+  const createBreak = async (
+    name: string,
+    startHour: string,
+    endHour: string
+  ) => {
+    const {
+      data: { createBreak },
+    } = await mutate({
+      variables: { input: { name, startHour, endHour } },
+      update: (cache, { data }) => {
+        console.log(data);
+        if (data?.createBreak) {
+          console.log("here");
+          const newBreak = data.createBreak;
+          cache.modify({
+            fields: {
+              breaks(existingBreaks = []) {
+                console.log(existingBreaks);
+                return [...existingBreaks, newBreak];
+              },
+            },
+          });
+        }
+      },
+    });
+    return createBreak;
+  };
+  return {
+    createBreak,
     loading,
   };
 };

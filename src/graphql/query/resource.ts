@@ -5,8 +5,19 @@ export const getResourcesQuery = gql`
     resource: getResources {
       id
       description
-      color
+      picture
       name
+      regularShift {
+        id
+        name
+        startHour
+        endHour
+        breaks {
+          id
+          startHour
+          endHour
+        }
+      }
     }
   }
 `;
@@ -24,15 +35,17 @@ export const getResourceByIdQuery = gql`
       }
       regularShift {
         id
+        name
+        startHour
+        endHour
       }
       alternateShifts {
         id
-      }
-      canReplace {
-        id
-      }
-      replacedBy {
-        id
+        startDate
+        endDate
+        shift {
+          name
+        }
       }
       restrictions {
         id
@@ -48,6 +61,32 @@ export const createResourceMutation = gql`
       name
       description
       color
+    }
+  }
+`;
+
+export const assignShiftToResourceMutation = gql`
+  mutation Mutation($resourceId: ID!, $shiftId: ID!) {
+    assignShiftToResource(resourceId: $resourceId, shiftId: $shiftId) {
+      id
+    }
+  }
+`;
+
+export const assignAlternativeShiftMutation = gql`
+  mutation Mutation(
+    $resourceId: ID!
+    $shiftId: ID!
+    $startDate: String
+    $endDate: String
+  ) {
+    assignAlternativeShiftToResource(
+      resourceId: $resourceId
+      shiftId: $shiftId
+      startDate: $startDate
+      endDate: $endDate
+    ) {
+      id
     }
   }
 `;

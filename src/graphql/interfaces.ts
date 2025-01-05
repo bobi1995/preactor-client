@@ -5,7 +5,7 @@ export interface IResource {
   picture?: string;
   color?: string;
   orders: IOrder[];
-  regularShiftId: string;
+  regularShift: IShift;
   restrictions: IRestriction[];
   alternateShifts: IAlternativeShift[];
 }
@@ -22,6 +22,7 @@ export interface IShift {
   name: string;
   startHour: string;
   endHour: string;
+  breaks: IBreaks[];
 }
 
 export interface IBreaks {
@@ -45,5 +46,6 @@ export interface IAlternativeShift {
   shift: IShift;
   resourceId: string;
   resource: IResource;
-  day: string;
+  startDate: string;
+  endDate: string;
 }

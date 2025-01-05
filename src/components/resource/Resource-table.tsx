@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import SearchBar from "../general/SearchBar";
 import CreateDialogBtn from "./CreateDialogBtn";
 import { Link } from "react-router";
+import { endpoint } from "../../../dbconfig";
 
 interface ResourceTableProps {
   resources: IResource[];
@@ -28,7 +29,7 @@ const ResourceTable: React.FC<ResourceTableProps> = ({ resources }) => {
       >
         <thead className={`${thead} bg-gray-100`}>
           <tr className={classRowHeader}>
-            <th className="px-6 py-4 text-left">{t("color")}</th>
+            <th className="px-6 py-4 text-left"></th>
             <th className="px-6 py-4 text-left">{t("name")}</th>
             <th className="px-6 py-4 text-left">{t("description")}</th>
             <th className="px-6 py-4 text-left">{t("shift")}</th>
@@ -41,14 +42,10 @@ const ResourceTable: React.FC<ResourceTableProps> = ({ resources }) => {
               className={`hover:bg-gray-50 ${classRowTable} transition-all duration-150`}
             >
               <td className="px-6 py-5 text-left">
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "12px",
-                    height: "12px",
-                    borderRadius: "50%",
-                    backgroundColor: `${resource.color}`,
-                  }}
+                <img
+                  src={`${endpoint}/static/${resource.picture}`}
+                  alt={resource.name}
+                  className="w-12 h-12  rounded-full border border-gray-300 shadow-md"
                 />
               </td>
               <td className="px-6 py-5 text-gray-700 font-medium text-sm">

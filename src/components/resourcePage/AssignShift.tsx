@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useAssignBreak, useBreaks } from "../../graphql/hook/shift";
+import { useShifts } from "../../graphql/hook/shift";
 import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
-import { IBreaks } from "../../graphql/interfaces";
-import CreateNewBreakBtn from "./CreateNewBreakBtn";
+import { IShift } from "../../graphql/interfaces";
+import { useAssignShiftToResource } from "../../graphql/hook/resource";
 
 interface AssignBreakDialogBtnProps {
   t: (key: string, options?: any) => string;
-  shiftId: string;
+  resourceId: string;
 }
 
-const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
+const AssignShift: React.FC<AssignBreakDialogBtnProps> = ({
   t,
-  shiftId,
+  resourceId,
 }) => {
-  const { breaks, loading, error, reload } = useBreaks();
-  const { assignBreak, loading: assignLoading } = useAssignBreak();
-  const [selectedBreakId, setSelectedBreakId] = useState<string>("");
+  const { shifts, loading, error, reload } = useShifts();
+  const { assignShift, loading: assignLoading } = useAssignShiftToResource();
+  const [selectedShiftId, setSelectedShiftId] = useState<string>("");
 
   if (loading) {
     return <InfinityLoader />;
@@ -34,51 +34,48 @@ const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
   }
 
   const handleSubmit = async () => {
-    if (!selectedBreakId) return;
-    await assignBreak(shiftId, selectedBreakId);
+    if (!selectedShiftId) return;
+    await assignShift(resourceId, selectedShiftId);
     window.location.reload();
   };
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="w-36 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-200">
-          {t("assign_break")}
+          {t("assign_shift")}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" />
         <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-lg max-w-2xl w-full p-6">
           <Dialog.Title className="text-lg font-semibold mb-4">
-            {t("assign_break")}
+            {t("assign_shift")}
           </Dialog.Title>
           <Dialog.Description className="mb-4 text-gray-600">
-            {t("assing_break_info")}
+            {t("assing_shift_info")}
           </Dialog.Description>
           <div>
             <label
               htmlFor="break-select"
               className="block font-medium text-gray-700 mb-2"
             >
-              {t("choose_break")}
+              {t("choose_shift")}
             </label>
             <select
               id="break-select"
-              value={selectedBreakId}
-              onChange={(e) => setSelectedBreakId(e.target.value)}
+              value={selectedShiftId}
+              onChange={(e) => setSelectedShiftId(e.target.value)}
               className="w-full border-gray-300 rounded-md shadow focus:ring-2 focus:ring-blue-500"
             >
               <option value="" disabled>
-                -- {t("choose_break")} --
+                -- {t("choose_shift")} --
               </option>
-              {breaks.map((br: IBreaks) => (
-                <option key={br.id} value={br.id}>
-                  {br.name} ({br.startHour} - {br.endHour})
+              {shifts.map((shift: IShift) => (
+                <option key={shift.id} value={shift.id}>
+                  {shift.name} ({shift.startHour} - {shift.endHour})
                 </option>
               ))}
             </select>
-            <div className="">
-              <CreateNewBreakBtn t={t} />
-            </div>
           </div>
 
           <div className="mt-4 flex justify-end gap-3">
@@ -112,4 +109,4 @@ const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
   );
 };
 
-export default AssignBreakDialogBtn;
+export default AssignShift;

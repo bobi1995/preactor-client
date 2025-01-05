@@ -30,8 +30,10 @@ const ShiftPage = () => {
     );
   }
   const { startHour, endHour, breaks } = shift;
+
   const [startHourValue, startMinuteValue] = startHour.split(":").map(Number);
   const [endHourValue, endMinuteValue] = endHour.split(":").map(Number);
+
   const startDecimal = startHourValue + startMinuteValue / 60;
   const endDecimal = endHourValue + endMinuteValue / 60;
 
@@ -40,7 +42,7 @@ const ShiftPage = () => {
   return (
     <div>
       <div className="px-3">
-        <TimelineComponent viewType="hours" day={new Date()} margin={0} />
+        <TimelineComponent viewType="hours" day={new Date()} />
         <div className="relative h-20 border border-black-300 grid ">
           <div className="bg-gray-300">
             <div
@@ -83,7 +85,7 @@ const ShiftPage = () => {
       <div className="flex justify-between m-3 gap-10">
         <ShiftInfo {...shift} t={t} />
         <BreaksTable breaks={shift.breaks} t={t} />
-        <ResourcesTable resources={[]} />
+        <ResourcesTable resources={shift.resources} t={t} />
       </div>
     </div>
   );

@@ -1,12 +1,26 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-const Home = () => {
-  const [count, setCount] = useState(0);
-  const { t, i18n } = useTranslation("home");
+import InfinityLoader from "../components/general/Loader";
+import { useResources } from "../graphql/hook/resource";
+import ErrorComponent from "../components/general/Error";
+import GantComponent from "../components/home/gantt";
 
+const Home = () => {
+  const { t } = useTranslation("home");
+  const { resources, loading, error, reload } = useResources();
+  if (loading) {
+    return <InfinityLoader />;
+  }
+  if (error) {
+    return (
+      <ErrorComponent
+        message="Unable to fetch resources. Please check your connection."
+        onRetry={() => reload()}
+      />
+    );
+  }
   return (
     <>
-      <h1>{t("home")}</h1>
+      <GantComponent resources={resources} />
     </>
   );
 };

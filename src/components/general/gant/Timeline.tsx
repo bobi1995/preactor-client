@@ -3,14 +3,9 @@ import React from "react";
 interface TimelineProps {
   viewType: "hours" | "days" | "weeks";
   day: Date;
-  margin: number;
 }
 
-const TimelineComponent: React.FC<TimelineProps> = ({
-  viewType,
-  day,
-  margin,
-}) => {
+const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
   // Get today's date
 
   // Helper function to format dates as DD/MM/YYYY
@@ -42,7 +37,7 @@ const TimelineComponent: React.FC<TimelineProps> = ({
   };
 
   return (
-    <div className={`flex sticky top-[70px] bg-gray-200 z-10 ml-${margin}`}>
+    <div className={`flex sticky top-[70px] bg-gray-200`}>
       {generateTimeline().map((time, index) => (
         <div key={index} className="flex-1 text-center border border-gray-300">
           {time}

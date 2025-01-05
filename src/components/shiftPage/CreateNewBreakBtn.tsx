@@ -1,57 +1,57 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useNavigate } from "react-router";
+
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 // @ts-ignore
 import "@wojtekmaj/react-timerange-picker/dist/TimeRangePicker.css";
 // @ts-ignore
 import "react-clock/dist/Clock.css";
-import { useCreateShift } from "../../graphql/hook/shift";
+import { useBreaks, useCreateBreak } from "../../graphql/hook/shift";
 
-interface CreateShiftDialogBtnProps {
+interface AssignBreakDialogBtnProps {
   t: (key: string, options?: any) => string;
 }
 
 type ValuePiece = Date | string | null;
-
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const CreateShiftDialogBtn: React.FC<CreateShiftDialogBtnProps> = ({ t }) => {
-  const navigate = useNavigate();
-  const { createShift, loading } = useCreateShift();
+const CreateNewBreakBtn: React.FC<AssignBreakDialogBtnProps> = ({ t }) => {
+  const { createBreak, loading } = useCreateBreak();
+  const { reload } = useBreaks();
   const [name, setName] = useState("");
-
   const [value, onChange] = useState<Value>(["10:00", "11:00"]);
-
+  const [open, setOpen] = useState(false);
   const handleSubmit = async () => {
     if (Array.isArray(value) && value.length === 2) {
       const [startTime, endTime] = value;
       if (typeof startTime === "string" && typeof endTime === "string") {
-        const shift = await createShift(name, startTime, endTime);
-        navigate(`/shift/${shift.id}`);
+        await createBreak(name, startTime, endTime);
+        reload();
+        setOpen(false);
       } else {
         throw new Error("Start time or end time is not a string");
       }
     }
   };
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="bg-green-600 text-white rounded-md px-5 w-36 flex justify-center items-center gap-2">
-          <PlusCircleIcon className="h-6 w-6" />
-          {t("create")}
-        </button>
+        <a
+          onClick={() => {}}
+          className="text-blue-500 hover:underline cursor-pointer"
+        >
+          {t("create_new_break")}
+        </a>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" />
         <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-lg max-w-2xl w-full p-6">
           <Dialog.Title className="text-lg font-semibold mb-4">
-            {t("create_shift")}
+            {t("create_break")}
           </Dialog.Title>
           <Dialog.Description className="mb-4 text-gray-600">
-            {t("create_shift_info")}
+            {t("create_break_info")}
           </Dialog.Description>
           <div
             style={{
@@ -77,7 +77,7 @@ const CreateShiftDialogBtn: React.FC<CreateShiftDialogBtnProps> = ({ t }) => {
             </div>
             <div className="mb-4">
               <label className="block font-medium mb-2">
-                {t("shift_time_range")}
+                {t("break_range_time")}
               </label>
               <TimeRangePicker onChange={onChange} value={value} />
             </div>
@@ -114,4 +114,4 @@ const CreateShiftDialogBtn: React.FC<CreateShiftDialogBtnProps> = ({ t }) => {
   );
 };
 
-export default CreateShiftDialogBtn;
+export default CreateNewBreakBtn;

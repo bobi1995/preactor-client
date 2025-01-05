@@ -2,6 +2,8 @@ import {
   getResourcesQuery,
   createResourceMutation,
   getResourceByIdQuery,
+  assignShiftToResourceMutation,
+  assignAlternativeShiftMutation,
 } from "../query/resource";
 import { useQuery, useMutation, gql } from "@apollo/client";
 
@@ -63,6 +65,41 @@ export const useCreateResource = () => {
   };
   return {
     createResource,
+    loading,
+  };
+};
+
+export const useAssignShiftToResource = () => {
+  const [mutate, { loading }] = useMutation(assignShiftToResourceMutation);
+
+  const assignShift = async (resourceId: string, shiftId: string) => {
+    await mutate({
+      variables: { resourceId, shiftId },
+    });
+  };
+
+  return {
+    assignShift,
+    loading,
+  };
+};
+
+export const useAssignAlternativeShiftToResource = () => {
+  const [mutate, { loading }] = useMutation(assignAlternativeShiftMutation);
+
+  const assignAlternativeShift = async (
+    resourceId: string,
+    shiftId: string,
+    startDate: string,
+    endDate: string
+  ) => {
+    await mutate({
+      variables: { resourceId, shiftId, startDate, endDate },
+    });
+  };
+
+  return {
+    assignAlternativeShift,
     loading,
   };
 };
