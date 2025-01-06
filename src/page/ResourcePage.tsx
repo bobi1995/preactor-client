@@ -18,7 +18,6 @@ const ResourcePage = () => {
   }
 
   const { resource, loading, error, reload } = useResource(id);
-  console.log(error);
 
   if (loading) {
     return <InfinityLoader />;

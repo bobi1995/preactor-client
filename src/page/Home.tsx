@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import InfinityLoader from "../components/general/Loader";
 import { useResources } from "../graphql/hook/resource";
 import ErrorComponent from "../components/general/Error";
-import GantComponent from "../components/home/gantt";
+import GantComponent from "../components/home/Gantt";
 
 const Home = () => {
   const { t } = useTranslation("home");

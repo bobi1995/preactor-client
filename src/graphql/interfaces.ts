@@ -48,4 +48,5 @@ export interface IAlternativeShift {
   resource: IResource;
   startDate: string;
   endDate: string;
+  breaks: IBreaks[];
 }

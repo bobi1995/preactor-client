@@ -18,6 +18,22 @@ export const getResourcesQuery = gql`
           endHour
         }
       }
+      alternateShifts {
+        id
+        startDate
+        endDate
+        shift {
+          id
+          name
+          startHour
+          endHour
+          breaks {
+            id
+            startHour
+            endHour
+          }
+        }
+      }
     }
   }
 `;
