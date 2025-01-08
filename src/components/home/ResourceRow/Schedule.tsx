@@ -16,6 +16,15 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
   const getShiftForDay = (dayIndex: number) => {
     const dayDate = new Date(today);
     dayDate.setDate(today.getDate() + dayIndex);
+    // Skip if Saturday (6) or Sunday (0)
+    const isWeekend = dayDate.getDay() === 6 || dayDate.getDay() === 0;
+    if (isWeekend) {
+      return {
+        startHour: "00:00",
+        endHour: "00:00",
+        breaks: [],
+      }; // Return empty shift for weekends
+    }
     const dayTimestamp = Math.floor(dayDate.getTime() / 1000);
 
     const altShift = resource.alternateShifts.find(
@@ -40,7 +49,7 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
   const calculateWidth = (start: number, end: number) => {
     if (viewType === "hours") return ((end - start) / 24) * 100;
     if (viewType === "days") return ((end - start) / 24) * 100;
-    if (viewType === "weeks") return ((end - start) / 24) * (100 / 4);
+    if (viewType === "weeks") return ((end - start) / 24) * 100;
     return 0;
   };
 
@@ -48,9 +57,10 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
     <div className="relative h-20 border border-black-300 grid w-full">
       <div className="bg-gray-300 h-20 flex">
         {Array.from({
-          length: viewType === "hours" ? 1 : viewType === "days" ? 7 : 4,
+          length: viewType === "hours" ? 1 : viewType === "days" ? 7 : 28,
         }).map((_, index) => {
-          const shift = getShiftForDay(index);
+          const shift = getShiftForDay(index % 7);
+
           const { startHour, endHour, breaks } = shift || {};
 
           if (!startHour || !endHour) return null;
@@ -68,16 +78,14 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
               key={index}
               className="flex-1 border-r border-gray-400 relative"
             >
-              {index >= 0 && index <= 4 && (
-                <div
-                  className="absolute bg-green-300 h-20"
-                  style={{
-                    left: `${calculatePosition(startDecimal)}%`,
-                    width: `${calculateWidth(startDecimal, endDecimal)}%`,
-                  }}
-                ></div>
-              )}
-              {breaks?.map((breakItem: IBreaks) => {
+              <div
+                className="absolute bg-green-300 h-20"
+                style={{
+                  left: `${calculatePosition(startDecimal)}%`,
+                  width: `${calculateWidth(startDecimal, endDecimal)}%`,
+                }}
+              ></div>
+              {breaks?.map((breakItem: IBreaks, index) => {
                 const [breakStartHour, breakStartMinute] = breakItem.startHour
                   .split(":")
                   .map(Number);
@@ -91,7 +99,7 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
 
                 return (
                   <div
-                    key={breakItem.id}
+                    key={breakItem.id + index}
                     className="absolute bg-gray-300 h-20"
                     style={{
                       left: `${calculatePosition(breakStartDecimal)}%`,
