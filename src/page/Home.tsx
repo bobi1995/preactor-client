@@ -18,9 +18,10 @@ const Home = () => {
       />
     );
   }
+
   return (
     <>
-      <GantComponent resources={resources} />
+      <GantComponent resources={resources} t={t} />
     </>
   );
 };

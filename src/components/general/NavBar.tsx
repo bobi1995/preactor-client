@@ -44,6 +44,14 @@ const NavBar = () => {
           >
             {t("shift")}
           </a>
+          <a
+            href="/schedule"
+            className={`hover:underline ${
+              isActiveLink("/schedule") ? "text-green-500 font-bold" : ""
+            }`}
+          >
+            {t("schedule")}
+          </a>
         </nav>
         <div className="flex space-x-2">
           <button

@@ -1,18 +1,28 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface TimelineProps {
   viewType: "hours" | "days" | "weeks";
   day: Date;
+  setTime?: (time: string) => void;
+  setViewType?: (viewType: "hours" | "days" | "weeks") => void;
 }
 
-const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
-  // Helper function to format dates as DD/MM/YYYY
-  const formatDate = (date: Date) =>
-    date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+// Helper function to format dates as DD/MM/YYYY
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+const TimelineComponent: React.FC<TimelineProps> = ({
+  viewType,
+  day,
+  setTime,
+  setViewType,
+}) => {
+  const { t } = useTranslation("resource");
 
   // Helper function to get the week number
   const getWeekNumber = (date: Date) => {
@@ -21,6 +31,11 @@ const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
     return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
   };
 
+  const getDayOfWeek = (date: Date) =>
+    t(
+      date.toLocaleDateString("en-GB", { weekday: "long" }).toLocaleLowerCase()
+    );
+
   // Generate the timeline based on the selected viewType
   const generateTimeline = () => {
     if (viewType === "hours") {
@@ -28,8 +43,8 @@ const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
     } else if (viewType === "days") {
       return Array.from({ length: 7 }, (_, i) => {
         const date = new Date(day);
-        date.setDate(day.getDate() + i); // Add i days to today's date
-        return formatDate(date);
+        date.setDate(day.getDate() + i);
+        return `${formatDate(date)} (${getDayOfWeek(date)})`;
       });
     } else {
       // For "weeks", calculate the week number
@@ -57,7 +72,6 @@ const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
 
   const calculateWidth = (index: number) => {
     const currentDayIndex = day.getDay() - 2;
-    console.log(currentDayIndex);
     const daysToEndOfWeek = 6 - currentDayIndex;
     const daysFromStartOfWeek = currentDayIndex + 1;
 
@@ -67,12 +81,26 @@ const TimelineComponent: React.FC<TimelineProps> = ({ viewType, day }) => {
     return (7 / 28) * 100;
   };
 
+  const handleClick = (time: string) => {
+    if (!setTime || !setViewType) return;
+
+    if (viewType === "days" || viewType === "weeks") {
+      setTime(time);
+      if (viewType === "days") {
+        setViewType("hours");
+      } else {
+        setViewType("days");
+      }
+    }
+  };
+
   return (
     <div className={`flex sticky top-[70px] bg-gray-200`}>
       {generateTimeline().map((time, index) => (
         <div
+          onClick={() => handleClick(time)}
           key={index}
-          className={`text-center border border-gray-300 ${
+          className={`h-7 text-center border border-gray-300 ${
             viewType === "weeks" ? "" : "flex-1"
           }`}
           style={

@@ -3,19 +3,34 @@ import { IResource } from "../../graphql/interfaces";
 import { endpoint } from "../../../dbconfig";
 import Schedule from "./ResourceRow/Schedule";
 import TimelineComponent from "../general/gant/Timeline";
+import { Link } from "react-router";
 
 interface ResourceRowProps {
   resources: IResource[];
   viewType: "hours" | "days" | "weeks";
+  setViewType: (viewType: "hours" | "days" | "weeks") => void;
+  setTime: (time: string) => void;
+  time: string;
 }
 
-const ResourceRow: React.FC<ResourceRowProps> = ({ resources, viewType }) => {
+const ResourceRow: React.FC<ResourceRowProps> = ({
+  resources,
+  viewType,
+  setTime,
+  time,
+  setViewType,
+}) => {
   return (
     <div className="w-full bg-gray-300 ">
       <div className="flex">
         <div className="w-40 bg-gray-300"></div>
         <div className="w-full ">
-          <TimelineComponent viewType={viewType} day={new Date()} />
+          <TimelineComponent
+            viewType={viewType}
+            day={new Date()}
+            setTime={setTime}
+            setViewType={setViewType}
+          />
         </div>
       </div>
       {resources.map((res) => (
@@ -27,13 +42,16 @@ const ResourceRow: React.FC<ResourceRowProps> = ({ resources, viewType }) => {
                 alt={res.name}
                 className="w-12 h-12 rounded-full border border-gray-300 shadow-md"
               />
-              <p className="ml-3 text-gray-800 font-semibold text-sm md:text-base tracking-wide">
+              <Link
+                className="ml-3 text-gray-800 font-semibold text-sm md:text-base tracking-wide"
+                to={`/resource/${res.id}`}
+              >
                 {res.name}
-              </p>
+              </Link>
             </div>
           </div>
           <div className="w-full">
-            <Schedule resource={res} viewType={viewType} />
+            <Schedule resource={res} viewType={viewType} time={time} />
           </div>
         </div>
       ))}

@@ -1,27 +1,12 @@
-import React from "react";
-import { useShifts } from "../graphql/hook/shift";
-import InfinityLoader from "../components/general/Loader";
-import ErrorComponent from "../components/general/Error";
+import { useTranslation } from "react-i18next";
 import ShiftTable from "../components/shift/Shift-table";
 
 const Shift = () => {
-  const { shifts, error, loading, reload } = useShifts();
-
-  if (loading) {
-    return <InfinityLoader />;
-  }
-  if (error) {
-    return (
-      <ErrorComponent
-        message="Unable to fetch resources. Please check your connection."
-        onRetry={() => reload()}
-      />
-    );
-  }
+  const { t } = useTranslation("resource");
 
   return (
     <div>
-      <ShiftTable shift={shifts} />
+      <ShiftTable t={t} />
     </div>
   );
 };

@@ -5,6 +5,8 @@ import Resource from "../page/Resource";
 import Shift from "../page/Shift";
 import ResourcePage from "../page/ResourcePage";
 import ShiftPage from "../page/ShiftPage";
+import SchedulePage from "../page/SchedulePage";
+import Schedule from "../page/Schedule";
 
 const AppLayout = () => {
   return (
@@ -42,6 +44,14 @@ const mainRouter = createBrowserRouter([
       {
         path: "/shift/:id",
         element: <ShiftPage />,
+      },
+      {
+        path: "/schedule",
+        element: <Schedule />,
+      },
+      {
+        path: "/schedule/:id",
+        element: <SchedulePage />,
       },
     ],
   },

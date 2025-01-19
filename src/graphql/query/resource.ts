@@ -1,5 +1,20 @@
 import { gql } from "@apollo/client";
 
+const DayFragment = gql`
+  fragment Day on Shift {
+    id
+    name
+    startHour
+    endHour
+    breaks {
+      id
+      startHour
+      endHour
+      name
+    }
+  }
+`;
+
 export const getResourcesQuery = gql`
   query GetResources {
     resource: getResources {
@@ -7,35 +22,42 @@ export const getResourcesQuery = gql`
       description
       picture
       name
-      regularShift {
-        id
-        name
-        startHour
-        endHour
-        breaks {
-          id
-          startHour
-          endHour
-        }
-      }
       alternateShifts {
         id
         startDate
         endDate
         shift {
-          id
-          name
-          startHour
-          endHour
-          breaks {
-            id
-            startHour
-            endHour
-          }
+          ...Day
+        }
+      }
+      schedule {
+        id
+        name
+        monday {
+          ...Day
+        }
+        tuesday {
+          ...Day
+        }
+        wednesday {
+          ...Day
+        }
+        thursday {
+          ...Day
+        }
+        friday {
+          ...Day
+        }
+        saturday {
+          ...Day
+        }
+        sunday {
+          ...Day
         }
       }
     }
   }
+  ${DayFragment}
 `;
 
 export const getResourceByIdQuery = gql`
@@ -49,11 +71,9 @@ export const getResourceByIdQuery = gql`
       orders {
         id
       }
-      regularShift {
+      schedule {
         id
         name
-        startHour
-        endHour
       }
       alternateShifts {
         id
@@ -81,9 +101,9 @@ export const createResourceMutation = gql`
   }
 `;
 
-export const assignShiftToResourceMutation = gql`
-  mutation Mutation($resourceId: ID!, $shiftId: ID!) {
-    assignShiftToResource(resourceId: $resourceId, shiftId: $shiftId) {
+export const assignSchedule = gql`
+  mutation Mutation($resourceId: ID!, $scheduleId: ID!) {
+    assignSchedule(resourceId: $resourceId, scheduleId: $scheduleId) {
       id
     }
   }
@@ -98,6 +118,24 @@ export const assignAlternativeShiftMutation = gql`
   ) {
     assignAlternativeShiftToResource(
       resourceId: $resourceId
+      shiftId: $shiftId
+      startDate: $startDate
+      endDate: $endDate
+    ) {
+      id
+    }
+  }
+`;
+
+export const assignMassiveAlternativeShiftMutation = gql`
+  mutation Mutation(
+    $resourceIds: [ID!]!
+    $shiftId: ID!
+    $startDate: String
+    $endDate: String
+  ) {
+    assignMassiveAlternative(
+      resourceIds: $resourceIds
       shiftId: $shiftId
       startDate: $startDate
       endDate: $endDate

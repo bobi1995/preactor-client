@@ -24,12 +24,6 @@ export const getShift = gql`
         startHour
         endHour
       }
-      resources {
-        id
-        name
-        picture
-        description
-      }
     }
   }
 `;

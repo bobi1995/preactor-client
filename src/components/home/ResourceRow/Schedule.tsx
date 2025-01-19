@@ -1,42 +1,41 @@
 import React from "react";
-import {
-  IBreaks,
-  IResource,
-  IAlternativeShift,
-} from "../../../graphql/interfaces";
+import { IResource, IShift } from "../../../graphql/interfaces";
 
 interface ScheduleProps {
   resource: IResource;
   viewType: "hours" | "days" | "weeks";
+  time: string;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
+const Schedule: React.FC<ScheduleProps> = ({ resource, viewType, time }) => {
+  console.log(time);
   const today = new Date();
+  const startOfWeek = new Date(today);
 
   const getShiftForDay = (dayIndex: number) => {
-    const dayDate = new Date(today);
-    dayDate.setDate(today.getDate() + dayIndex);
-    // Skip if Saturday (6) or Sunday (0)
-    const isWeekend = dayDate.getDay() === 6 || dayDate.getDay() === 0;
-    if (isWeekend) {
-      return {
-        startHour: "00:00",
-        endHour: "00:00",
-        breaks: [],
-      }; // Return empty shift for weekends
+    const dayDate = new Date();
+    dayDate.setDate(startOfWeek.getDate() + dayIndex);
+    const dayName = dayDate
+      .toLocaleDateString("en-GB", { weekday: "long" })
+      .toLowerCase();
+
+    // Check for alternate shifts
+    const alternateShift = resource.alternateShifts?.find((altShift) => {
+      const startDate = new Date(parseInt(altShift.startDate) * 1000);
+      const endDate = new Date(parseInt(altShift.endDate) * 1000);
+      return dayDate >= startDate && dayDate <= endDate;
+    });
+
+    if (alternateShift) {
+      console.log(alternateShift);
+      return alternateShift.shift;
     }
-    const dayTimestamp = Math.floor(dayDate.getTime() / 1000);
 
-    const altShift = resource.alternateShifts.find(
-      (altShift: IAlternativeShift) => {
-        return (
-          dayTimestamp >= parseInt(altShift.startDate) &&
-          dayTimestamp <= parseInt(altShift.endDate)
-        );
-      }
-    );
+    const shift = resource.schedule?.[
+      dayName as keyof IResource["schedule"]
+    ] as IShift | undefined;
 
-    return altShift ? altShift.shift : resource.regularShift;
+    return shift || null;
   };
 
   const calculatePosition = (decimal: number) => {
@@ -59,11 +58,17 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
         {Array.from({
           length: viewType === "hours" ? 1 : viewType === "days" ? 7 : 28,
         }).map((_, index) => {
-          const shift = getShiftForDay(index % 7);
+          const shift = getShiftForDay(index);
+          if (!shift) {
+            return (
+              <div
+                key={index}
+                className="flex-1 border-r border-gray-400 relative"
+              ></div>
+            );
+          }
 
-          const { startHour, endHour, breaks } = shift || {};
-
-          if (!startHour || !endHour) return null;
+          const { startHour, endHour, breaks } = shift;
 
           const [startHourValue, startMinuteValue] = startHour
             .split(":")
@@ -85,7 +90,7 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
                   width: `${calculateWidth(startDecimal, endDecimal)}%`,
                 }}
               ></div>
-              {breaks?.map((breakItem: IBreaks, index) => {
+              {breaks?.map((breakItem, breakIndex) => {
                 const [breakStartHour, breakStartMinute] = breakItem.startHour
                   .split(":")
                   .map(Number);
@@ -99,7 +104,7 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType }) => {
 
                 return (
                   <div
-                    key={breakItem.id + index}
+                    key={breakIndex}
                     className="absolute bg-gray-300 h-20"
                     style={{
                       left: `${calculatePosition(breakStartDecimal)}%`,

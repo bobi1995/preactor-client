@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useShifts } from "../../graphql/hook/shift";
 import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
-import { IShift } from "../../graphql/interfaces";
-import { useAssignShiftToResource } from "../../graphql/hook/resource";
+import { ISchedule } from "../../graphql/interfaces";
+import { useAssignSchedule } from "../../graphql/hook/resource";
+import { useSchedules } from "../../graphql/hook/schedule";
 
 interface AssignBreakDialogBtnProps {
   t: (key: string, options?: any) => string;
@@ -16,8 +16,8 @@ const AssignShift: React.FC<AssignBreakDialogBtnProps> = ({
   t,
   resourceId,
 }) => {
-  const { shifts, loading, error, reload } = useShifts();
-  const { assignShift, loading: assignLoading } = useAssignShiftToResource();
+  const { schedules, loading, error, reload } = useSchedules();
+  const { assign, loading: assignLoading } = useAssignSchedule();
   const [selectedShiftId, setSelectedShiftId] = useState<string>("");
 
   if (loading) {
@@ -35,31 +35,31 @@ const AssignShift: React.FC<AssignBreakDialogBtnProps> = ({
 
   const handleSubmit = async () => {
     if (!selectedShiftId) return;
-    await assignShift(resourceId, selectedShiftId);
+    await assign(resourceId, selectedShiftId);
     window.location.reload();
   };
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="w-36 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-200">
-          {t("assign_shift")}
+          {t("select_schedule")}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" />
         <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-lg max-w-2xl w-full p-6">
           <Dialog.Title className="text-lg font-semibold mb-4">
-            {t("assign_shift")}
+            {t("select_schedule")}
           </Dialog.Title>
           <Dialog.Description className="mb-4 text-gray-600">
-            {t("assing_shift_info")}
+            {t("assign_schedule_info")}
           </Dialog.Description>
           <div>
             <label
               htmlFor="break-select"
               className="block font-medium text-gray-700 mb-2"
             >
-              {t("choose_shift")}
+              {t("choose_schedule")}
             </label>
             <select
               id="break-select"
@@ -68,11 +68,11 @@ const AssignShift: React.FC<AssignBreakDialogBtnProps> = ({
               className="w-full border-gray-300 rounded-md shadow focus:ring-2 focus:ring-blue-500"
             >
               <option value="" disabled>
-                -- {t("choose_shift")} --
+                -- {t("choose_schedule")} --
               </option>
-              {shifts.map((shift: IShift) => (
+              {schedules.map((shift: ISchedule) => (
                 <option key={shift.id} value={shift.id}>
-                  {shift.name} ({shift.startHour} - {shift.endHour})
+                  {shift.name}
                 </option>
               ))}
             </select>

@@ -85,7 +85,7 @@ const ShiftPage = () => {
       <div className="flex justify-between m-3 gap-10">
         <ShiftInfo {...shift} t={t} />
         <BreaksTable breaks={shift.breaks} t={t} />
-        <ResourcesTable resources={shift.resources} t={t} />
+        {/* <ResourcesTable resources={shift.resources} t={t} /> */}
       </div>
     </div>
   );

@@ -6,9 +6,6 @@ import InfinityLoader from "../../general/Loader";
 import ErrorComponent from "../../general/Error";
 import { IShift } from "../../../graphql/interfaces";
 import { useAssignAlternativeShiftToResource } from "../../../graphql/hook/resource";
-import Calendar from "react-calendar";
-// @ts-ignore
-import "react-calendar/dist/Calendar.css";
 
 interface AssignBreakDialogBtnProps {
   t: (key: string, options?: any) => string;
@@ -19,16 +16,17 @@ const AssignAlternativeBtn: React.FC<AssignBreakDialogBtnProps> = ({
   t,
   resourceId,
 }) => {
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [startDate, setStartDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
+  const [endDate, setEndDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
 
   const { shifts, loading, error, reload } = useShifts();
   const { assignAlternativeShift, loading: assignLoading } =
     useAssignAlternativeShiftToResource();
   const [selectedShiftId, setSelectedShiftId] = useState<string>("");
-
-  const handleDateChange = (dates: React.SetStateAction<Date[]>) => {
-    setDateRange(dates);
-  };
 
   if (loading) {
     return <InfinityLoader />;
@@ -45,22 +43,22 @@ const AssignAlternativeBtn: React.FC<AssignBreakDialogBtnProps> = ({
 
   const handleSubmit = async () => {
     if (!selectedShiftId) return;
-    const startDate = Math.floor(
-      new Date(dateRange[0]).getTime() / 1000
+    const startTimestamp = Math.floor(
+      new Date(startDate).getTime() / 1000
     ).toString();
-    const endDate = Math.floor(
-      new Date(dateRange[1]).getTime() / 1000
+    const endTimestamp = Math.floor(
+      new Date(endDate).getTime() / 1000
     ).toString();
 
     await assignAlternativeShift(
       resourceId,
       selectedShiftId,
-      startDate,
-      endDate
+      startTimestamp,
+      endTimestamp
     );
     window.location.reload();
   };
-  console.log(dateRange);
+  console.log(startDate, endDate);
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -73,15 +71,37 @@ const AssignAlternativeBtn: React.FC<AssignBreakDialogBtnProps> = ({
         <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto mt-8">
           <div className="flex flex-col items-center p-8">
             <h1 className="text-2xl font-semibold mb-4">Select Date Range</h1>
-            <Calendar
-              onChange={handleDateChange}
-              value={dateRange}
-              selectRange={true}
-              className="shadow-lg rounded-lg border"
-            />
-            <div className="mt-4">
-              <p>Start: {dateRange[0]?.toLocaleDateString()}</p>
-              <p>End: {dateRange[1]?.toLocaleDateString()}</p>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label
+                  htmlFor="start-date"
+                  className="block font-medium text-gray-700 mb-2"
+                >
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  id="start-date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full border-gray-300 rounded-md shadow focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="end-date"
+                  className="block font-medium text-gray-700 mb-2"
+                >
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  id="end-date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full border-gray-300 rounded-md shadow focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
           </div>
           <div>

@@ -6,17 +6,43 @@ import {
   classRowTable,
 } from "../../ui/table-styles";
 import { IShift } from "../../graphql/interfaces";
-import { useTranslation } from "react-i18next";
 import SearchBar from "../general/SearchBar";
 import CreateShiftDialogBtn from "./CreateShiftDialogBtn";
 import { Link } from "react-router";
+import { useShifts } from "../../graphql/hook/shift";
+import InfinityLoader from "../../components/general/Loader";
+import ErrorComponent from "../../components/general/Error";
+import { useLocation } from "react-router";
+import Pagination, { itemsPerPage } from "../general/Pagination";
 
 interface ShiftTableProps {
-  shift: IShift[];
+  t: (key: string, options?: any) => string;
 }
 
-const ShiftTable: React.FC<ShiftTableProps> = ({ shift }) => {
-  const { t } = useTranslation("resource");
+const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
+  const { shifts, error, loading, reload } = useShifts();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const query = searchParams.get("query")?.toLowerCase() || "";
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  if (loading) {
+    return <InfinityLoader />;
+  }
+  if (error) {
+    return (
+      <ErrorComponent
+        message="Unable to fetch shifts. Please check your connection."
+        onRetry={() => reload()}
+      />
+    );
+  }
+  const filteredShifts = shifts.filter((shift: IShift) =>
+    shift.name.toLowerCase().includes(query)
+  );
+  const { totalPages, data } = itemsPerPage(currentPage, filteredShifts);
+
   return (
     <div className="m-auto w-3/4  bg-white shadow-md rounded-lg p-2">
       <div className="flex gap-2">
@@ -34,7 +60,7 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ shift }) => {
           </tr>
         </thead>
         <tbody>
-          {shift.map((shift) => (
+          {data.map((shift: IShift) => (
             <tr
               key={shift.id}
               className={`hover:bg-gray-50 ${classRowTable} transition-all duration-150`}
@@ -57,6 +83,7 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ shift }) => {
           ))}
         </tbody>
       </table>
+      <Pagination totalPages={totalPages} />
     </div>
   );
 };

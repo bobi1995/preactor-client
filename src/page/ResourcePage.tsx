@@ -95,12 +95,9 @@ const ResourcePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Resource Info */}
           <div className="p-4 border rounded-md shadow-md">
-            <h2 className="text-lg font-semibold">{t("regular_shift")}</h2>
-            {resource.regularShift ? (
-              <p className="text-gray-600">
-                {resource.regularShift.name} ({resource.regularShift.startHour}{" "}
-                - {resource.regularShift.endHour})
-              </p>
+            <h2 className="text-lg font-semibold">{t("selected_schedule")}</h2>
+            {resource.schedule ? (
+              <p className="text-gray-600">{resource.schedule.name}</p>
             ) : (
               <p className="text-gray-500">{t("no_shift")}</p>
             )}
