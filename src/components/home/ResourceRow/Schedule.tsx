@@ -1,5 +1,9 @@
 import React from "react";
 import { IResource, IShift } from "../../../graphql/interfaces";
+import HoursSchedule from "./schedule/HoursSchedule";
+import DaysSchedule from "./schedule/DaysSchedule";
+import moment from "moment";
+import WeekSchedule from "./schedule/WeekSchedule";
 
 interface ScheduleProps {
   resource: IResource;
@@ -7,8 +11,62 @@ interface ScheduleProps {
   time: string;
 }
 
+export const getDayOfWeek = (dateStr: string) => {
+  if (dateStr.includes("Week")) {
+    return "monday";
+  }
+  const onlyDate = dateStr.split(" ")[0];
+  const [day, month, year] = onlyDate.split("/").map(Number);
+  const date = new Date(year, month - 1, day); // JavaScript months are 0-indexed
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  return days[date.getDay()].toLocaleLowerCase();
+};
+
 const Schedule: React.FC<ScheduleProps> = ({ resource, viewType, time }) => {
-  console.log(time);
+  const dayOfWeek = getDayOfWeek(time);
+
+  if (viewType === "hours") {
+    return (
+      <HoursSchedule
+        shift={
+          resource.schedule[
+            dayOfWeek as keyof typeof resource.schedule
+          ] as IShift
+        }
+        alternateShifts={resource.alternateShifts}
+        time={time}
+      />
+    );
+  } else if (viewType === "weeks") {
+    const formattedDate = moment().format("DD/MM/YYYY");
+    return (
+      <WeekSchedule
+        schedule={resource.schedule}
+        startDay={getDayOfWeek(formattedDate)}
+        alternateShifts={resource.alternateShifts}
+        time={time}
+      />
+    );
+  } else {
+    //const formattedDate = moment().format("DD/MM/YYYY");
+    return (
+      <DaysSchedule
+        schedule={resource.schedule}
+        startDay={getDayOfWeek(time)}
+        alternateShifts={resource.alternateShifts}
+        time={time}
+      />
+    );
+  }
   const today = new Date();
   const startOfWeek = new Date(today);
 
@@ -39,15 +97,11 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType, time }) => {
   };
 
   const calculatePosition = (decimal: number) => {
-    if (viewType === "hours") return (decimal / 24) * 100;
-    if (viewType === "days") return (decimal / 24) * 100;
     if (viewType === "weeks") return (decimal / 24) * (100 / 4);
     return 0;
   };
 
   const calculateWidth = (start: number, end: number) => {
-    if (viewType === "hours") return ((end - start) / 24) * 100;
-    if (viewType === "days") return ((end - start) / 24) * 100;
     if (viewType === "weeks") return ((end - start) / 24) * 100;
     return 0;
   };
@@ -56,7 +110,7 @@ const Schedule: React.FC<ScheduleProps> = ({ resource, viewType, time }) => {
     <div className="relative h-20 border border-black-300 grid w-full">
       <div className="bg-gray-300 h-20 flex">
         {Array.from({
-          length: viewType === "hours" ? 1 : viewType === "days" ? 7 : 28,
+          length: 28,
         }).map((_, index) => {
           const shift = getShiftForDay(index);
           if (!shift) {

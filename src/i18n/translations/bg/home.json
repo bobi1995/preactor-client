@@ -1,3 +1,12 @@
 {
-  "home": "Начало"
+  "home": "Начало",
+  "selected_time": "Ден",
+  "view_type": "Вид на изгледа",
+  "days": "Дни",
+  "hours": "Часове",
+  "weeks": "Седмици",
+  "start_date": "Начална дата",
+  "hour_view": "Часове",
+  "day_view": "Дни",
+  "week_view": "Седмици"
 }

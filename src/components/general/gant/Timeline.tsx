@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +17,16 @@ const formatDate = (date: Date) =>
     year: "numeric",
   });
 
+function getFirstDayOfWeek(week: number, year: number) {
+  // Set the year and week
+  return moment()
+    .year(year)
+    .week(week)
+    .startOf("week")
+    .add(1, "day") // Shift to Monday (ISO weeks start on Monday)
+    .format("DD/MM/YYYY");
+}
+
 const TimelineComponent: React.FC<TimelineProps> = ({
   viewType,
   day,
@@ -23,7 +34,6 @@ const TimelineComponent: React.FC<TimelineProps> = ({
   setViewType,
 }) => {
   const { t } = useTranslation("resource");
-
   // Helper function to get the week number
   const getWeekNumber = (date: Date) => {
     const startOfYear = new Date(date.getFullYear(), 0, 1);
@@ -85,6 +95,12 @@ const TimelineComponent: React.FC<TimelineProps> = ({
     if (!setTime || !setViewType) return;
 
     if (viewType === "days" || viewType === "weeks") {
+      if (time.includes("Week")) {
+        setTime(
+          getFirstDayOfWeek(parseInt(time.split(" ")[1]), day.getFullYear())
+        );
+        return setViewType("days");
+      }
       setTime(time);
       if (viewType === "days") {
         setViewType("hours");

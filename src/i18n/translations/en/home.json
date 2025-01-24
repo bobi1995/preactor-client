@@ -1,3 +1,12 @@
 {
-  "home": "Home"
+  "home": "Home",
+  "selected_time": "Day",
+  "view_type": "View type",
+  "days": "Days",
+  "hours": "Hours",
+  "weeks": "Weeks",
+  "start_date": "Start date",
+  "hour_view": "Hours",
+  "day_view": "Days",
+  "week_view": "Weeks"
 }

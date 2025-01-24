@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { IResource } from "../../graphql/interfaces";
 import ResourceRow from "./ResourceRow";
-import ViewPicker from "./ViePicker";
+import ViewPicker from "./ViewPicker";
+import { ForwardIcon, BackwardIcon } from "@heroicons/react/24/solid";
+import moment from "moment";
 
 interface GantComponentProps {
   resources: IResource[];
@@ -14,12 +16,67 @@ const GantComponent: React.FC<GantComponentProps> = ({ resources, t }) => {
     new Intl.DateTimeFormat("en-GB").format(new Date())
   );
 
+  const nextPeriod = () => {
+    if (viewType === "hours") {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .add(1, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    } else if (viewType === "days") {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .add(7, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    } else {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .add(28, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    }
+  };
+
+  const previousPeriod = () => {
+    if (viewType === "hours") {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .subtract(1, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    } else if (viewType === "days") {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .subtract(7, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    } else {
+      const newTime = moment(time, "DD/MM/YYYY")
+        .subtract(28, "days")
+        .format("DD/MM/YYYY");
+      setTime(newTime);
+    }
+  };
   return (
     <div>
-      <ViewPicker viewType={viewType} setViewType={setViewType} />
+      <ViewPicker
+        viewType={viewType}
+        setViewType={setViewType}
+        setTime={setTime}
+        t={t}
+      />
 
-      <div className="flex justify-center bg-gray-100">
-        {t("selected_time")}: {time}
+      <div className="flex justify-center bg-gray-100 gap-10 pb-4">
+        <p className="text-lg">
+          {viewType === "hours" ? t("selected_time") : t("start_date")}:{" "}
+          <strong>{time}</strong>
+        </p>
+        <div className="flex gap-4">
+          <BackwardIcon
+            className="h-6 w-6 cursor-pointer"
+            onClick={previousPeriod}
+          />
+          <ForwardIcon
+            className="h-6 w-6 cursor-pointer"
+            onClick={nextPeriod}
+          />
+        </div>
       </div>
       <ResourceRow
         resources={resources}

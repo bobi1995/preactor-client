@@ -4,6 +4,7 @@ import { endpoint } from "../../../dbconfig";
 import Schedule from "./ResourceRow/Schedule";
 import TimelineComponent from "../general/gant/Timeline";
 import { Link } from "react-router";
+import moment from "moment";
 
 interface ResourceRowProps {
   resources: IResource[];
@@ -20,6 +21,7 @@ const ResourceRow: React.FC<ResourceRowProps> = ({
   time,
   setViewType,
 }) => {
+  const formattedDate = moment(time, "DD/MM/YYYY").toDate();
   return (
     <div className="w-full bg-gray-300 ">
       <div className="flex">
@@ -27,7 +29,7 @@ const ResourceRow: React.FC<ResourceRowProps> = ({
         <div className="w-full ">
           <TimelineComponent
             viewType={viewType}
-            day={new Date()}
+            day={formattedDate}
             setTime={setTime}
             setViewType={setViewType}
           />
