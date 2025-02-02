@@ -3,5 +3,6 @@
   "resource": "Resource",
   "shift": "Shift",
   "contact": "Contact",
-  "schedule": "Schedule"
+  "schedule": "Schedule",
+  "group": "Group"
 }

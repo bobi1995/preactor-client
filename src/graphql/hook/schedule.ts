@@ -4,6 +4,7 @@ import {
   getSchedule,
   updateSchedule,
   createSchedule,
+  deleteSchedule,
 } from "../query/schedule";
 
 export const useSchedules = () => {
@@ -57,6 +58,19 @@ export const useUpdateSchedule = () => {
   };
   return {
     update,
+    loading,
+  };
+};
+
+export const useDeleteSchedule = () => {
+  const [mutate, { loading }] = useMutation(deleteSchedule);
+  const remove = async (id: string) => {
+    await mutate({
+      variables: { deleteScheduleId: id },
+    });
+  };
+  return {
+    remove,
     loading,
   };
 };

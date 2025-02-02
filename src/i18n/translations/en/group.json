@@ -1,0 +1,14 @@
+{
+  "count_res": "Resource Count",
+  "search": "Search by group name",
+  "name": "Name",
+  "description": "Description",
+  "save": "SAVE",
+  "cancel": "CANCEL",
+  "enter_name": "Enter name",
+  "enter_desc": "Enter description",
+  "create_shift": "Create group",
+  "create_group_info": "Set information for the group. Then you can add resources.",
+  "create": "Create",
+  "add": "Add"
+}

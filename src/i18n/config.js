@@ -14,6 +14,9 @@ import resourceEn from "./translations/en/resource.json";
 import shiftBg from "./translations/bg/shift.json";
 import shiftEn from "./translations/en/shift.json";
 
+import groupBg from "./translations/bg/group.json";
+import groupEn from "./translations/en/group.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -26,12 +29,14 @@ i18n
         menu: menuEn,
         resource: resourceEn,
         shift: shiftEn,
+        group: groupEn,
       },
       bg: {
         home: homeBg,
         menu: menuBg,
         resource: resourceBg,
         shift: shiftBg,
+        group: groupBg,
       },
     },
     interpolation: {

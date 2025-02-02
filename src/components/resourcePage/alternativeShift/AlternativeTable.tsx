@@ -25,7 +25,7 @@ const AlternativeTable: React.FC<AlternativeTableProps> = ({
       <tbody>
         {alternatives.map((alt) => (
           <tr key={alt.id} className="hover:bg-gray-50">
-            alt <td className="border px-4 py-2">{alt.startDate}</td>
+            <td className="border px-4 py-2">{alt.startDate}</td>
             <td className="border px-4 py-2">{alt.endDate}</td>
           </tr>
         ))}

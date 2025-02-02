@@ -7,6 +7,7 @@ import ResourcePage from "../page/ResourcePage";
 import ShiftPage from "../page/ShiftPage";
 import SchedulePage from "../page/SchedulePage";
 import Schedule from "../page/Schedule";
+import Group from "../page/Group";
 
 const AppLayout = () => {
   return (
@@ -52,6 +53,10 @@ const mainRouter = createBrowserRouter([
       {
         path: "/schedule/:id",
         element: <SchedulePage />,
+      },
+      {
+        path: "/group",
+        element: <Group />,
       },
     ],
   },

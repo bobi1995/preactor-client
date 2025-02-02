@@ -1,24 +1,26 @@
 import React from "react";
 import AssignAlternativeBtn from "./AssignAlternativeBtn";
 import { IResource } from "../../../graphql/interfaces";
+import { convertUnixToDate } from "../../../utils/time-converters";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { useDeleteAlternativeShift } from "../../../graphql/hook/resource";
 
 interface AlternativeComponentProps {
   t: (key: string, options?: any) => string;
   resource: IResource;
 }
-const parseUnixToDay = (unix: string) => {
-  const date = new Date(parseInt(unix) * 1000);
-  return date.toLocaleDateString("bg-BG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-};
 
 const AlternativeComponent: React.FC<AlternativeComponentProps> = ({
   resource,
   t,
 }) => {
+  const { deleteAlternativeShift, loading } = useDeleteAlternativeShift();
+
+  const handleDelete = async (id: string) => {
+    await deleteAlternativeShift(id);
+    window.location.reload();
+  };
+
   return (
     <div className="p-4 border rounded-md shadow-md">
       <div className="flex justify-between">
@@ -32,6 +34,7 @@ const AlternativeComponent: React.FC<AlternativeComponentProps> = ({
               <th className="border px-4 py-2">{t("name")}</th>
               <th className="border px-4 py-2">{t("start")}</th>
               <th className="border px-4 py-2">{t("end")}</th>
+              <th>{t("delete")}</th>
             </tr>
           </thead>
           <tbody>
@@ -39,10 +42,16 @@ const AlternativeComponent: React.FC<AlternativeComponentProps> = ({
               <tr key={shift.id}>
                 <td className="border px-4 py-2">{shift.shift.name}</td>
                 <td className="border px-4 py-2">
-                  {parseUnixToDay(shift.startDate)}
+                  {convertUnixToDate(parseInt(shift.startDate))}
                 </td>
                 <td className="border px-4 py-2">
-                  {parseUnixToDay(shift.endDate)}
+                  {convertUnixToDate(parseInt(shift.endDate))}
+                </td>
+                <td className="border px-4 py-2">
+                  <TrashIcon
+                    className="text-red-500 cursor-pointer h-8 w-8 m-auto"
+                    onClick={() => handleDelete(shift.id)}
+                  />
                 </td>
               </tr>
             ))}

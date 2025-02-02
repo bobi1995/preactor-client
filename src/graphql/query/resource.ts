@@ -144,3 +144,11 @@ export const assignMassiveAlternativeShiftMutation = gql`
     }
   }
 `;
+
+export const deleteAlternativeShiftMutation = gql`
+  mutation Mutation($id: ID!) {
+    deleteAlternativeShift(id: $id) {
+      id
+    }
+  }
+`;

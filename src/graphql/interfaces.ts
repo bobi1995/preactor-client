@@ -9,6 +9,12 @@ export interface IResource {
   alternateShifts: IAlternativeShift[];
   schedule: ISchedule;
 }
+export interface IGroup {
+  id: string;
+  name: string;
+  description?: string;
+  resources: IResource[];
+}
 
 export interface IOrder {
   id: string;

@@ -5,6 +5,7 @@ import {
   assignAlternativeShiftMutation,
   assignSchedule,
   assignMassiveAlternativeShiftMutation,
+  deleteAlternativeShiftMutation,
 } from "../query/resource";
 import { useQuery, useMutation, gql } from "@apollo/client";
 
@@ -123,6 +124,21 @@ export const useAssignMassiveAlternativeShiftToResource = () => {
 
   return {
     assignMassiveAlternativeShift,
+    loading,
+  };
+};
+
+export const useDeleteAlternativeShift = () => {
+  const [mutate, { loading }] = useMutation(deleteAlternativeShiftMutation);
+
+  const deleteAlternativeShift = async (id: string) => {
+    await mutate({
+      variables: { id },
+    });
+  };
+
+  return {
+    deleteAlternativeShift,
     loading,
   };
 };

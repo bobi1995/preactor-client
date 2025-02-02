@@ -86,3 +86,11 @@ export const updateSchedule = gql`
     }
   }
 `;
+
+export const deleteSchedule = gql`
+  mutation Mutation($deleteScheduleId: ID!) {
+    deleteSchedule(id: $deleteScheduleId) {
+      id
+    }
+  }
+`;

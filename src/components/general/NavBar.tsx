@@ -1,15 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router";
 
 const isActiveLink = (path: string) => location.pathname === path;
 
-const linkStyle = `hover:underline ${
-  isActiveLink("/") ? "text-green-500 font-bold" : ""
-}`;
-
 const NavBar = () => {
   const { t, i18n } = useTranslation("menu");
-  const location = useLocation();
 
   const switchLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -35,6 +29,14 @@ const NavBar = () => {
             }`}
           >
             {t("resource")}
+          </a>
+          <a
+            href="/group"
+            className={`hover:underline ${
+              isActiveLink("/group") ? "text-green-500 font-bold" : ""
+            }`}
+          >
+            {t("group")}
           </a>
           <a
             href="/shift"

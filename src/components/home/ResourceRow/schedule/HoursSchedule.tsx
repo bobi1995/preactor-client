@@ -13,14 +13,16 @@ const HoursSchedule: React.FC<HoursScheduleProps> = ({
   alternateShifts,
   time,
 }) => {
-  console.log(time);
   if (alternateShifts && alternateShifts.length > 0) {
     alternateShifts.map((alShift: IAlternativeShift) => {
       if (time) {
         const current_day = convertDateToUnix(time);
         const start_day = parseInt(alShift.startDate);
         const end_day = parseInt(alShift.endDate);
+        console.log(time, start_day, end_day, current_day);
+
         if (current_day >= start_day && current_day <= end_day) {
+          console.log(time, alShift.shift);
           shift = alShift.shift;
         }
       }

@@ -15,12 +15,15 @@ import CreateScheduleDialog from "./CreateScheduleDialog";
 import { useLocation } from "react-router";
 import Pagination, { itemsPerPage } from "../general/Pagination";
 import MassShiftDialog from "./MassShiftDialog";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { useDeleteSchedule } from "../../graphql/hook/schedule";
 
 interface SchedulesTableProps {
   t: (key: string, options?: any) => string;
 }
 const SchedulesTable: React.FC<SchedulesTableProps> = ({ t }) => {
   const { schedules, error, loading, reload } = useSchedules();
+  const { remove } = useDeleteSchedule();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("query")?.toLowerCase() || "";
@@ -42,6 +45,16 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({ t }) => {
   );
 
   const { totalPages, data } = itemsPerPage(currentPage, filteredSchedules);
+
+  const deleteSchedule = async (id: string) => {
+    try {
+      await remove(id);
+      reload();
+    } catch (error) {
+      console.error(error);
+    }
+    window.location.reload();
+  };
 
   return (
     <div className="m-auto w-3/4 bg-white shadow-md rounded-lg p-2 mt-10">
@@ -72,7 +85,11 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({ t }) => {
                 key={schedule.id}
                 className={`hover:bg-gray-50 ${classRowTable} transition-all duration-150`}
               >
-                <td className="px-6 py-5 text-gray-700 font-medium text-sm">
+                <td className="px-6 py-5 text-gray-700 font-medium text-sm flex gap-2">
+                  <TrashIcon
+                    className="h-5 w-5 text-red-500 hover: cursor-pointer"
+                    onClick={() => deleteSchedule(schedule.id)}
+                  />
                   <Link
                     to={`/schedule/${schedule.id}`}
                     className="text-blue-600 hover:text-blue-800 hover:underline"

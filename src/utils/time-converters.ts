@@ -1,10 +1,11 @@
-import moment from "moment";
+import moment from "moment-timezone";
+
 export const convertUnixToDate = (unixTimestamp: number) => {
   return moment.unix(unixTimestamp).format("DD/MM/YYYY");
 };
 
 export const convertDateToUnix = (dateString: string): number => {
-  return moment(dateString, "DD/MM/YYYY").unix();
+  return moment(dateString, "DD/MM/YYYY").add(2, "hours").unix();
 };
 
 //Adding days to date. Useful when looping through days of the week and you can add the index to the current date
