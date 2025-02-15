@@ -1,28 +1,37 @@
 import React from "react";
-import { IShift, IAlternativeShift } from "../../../../graphql/interfaces";
-import { convertDateToUnix } from "../../../../utils/time-converters";
+import {
+  IShift,
+  IAlternativeShift,
+  IOrder,
+} from "../../../../graphql/interfaces";
+import {
+  convertDateToUnix,
+  isSameDay,
+} from "../../../../utils/time-converters";
+import OrderComponent from "./OrderComponent";
 
 interface HoursScheduleProps {
   shift: IShift;
   alternateShifts: IAlternativeShift[];
   time?: string;
+  orders?: IOrder[];
 }
 
 const HoursSchedule: React.FC<HoursScheduleProps> = ({
   shift,
   alternateShifts,
   time,
+  orders,
 }) => {
+  let todayOrders: IOrder[] = [];
   if (alternateShifts && alternateShifts.length > 0) {
     alternateShifts.map((alShift: IAlternativeShift) => {
       if (time) {
         const current_day = convertDateToUnix(time);
         const start_day = parseInt(alShift.startDate);
         const end_day = parseInt(alShift.endDate);
-        console.log(time, start_day, end_day, current_day);
 
         if (current_day >= start_day && current_day <= end_day) {
-          console.log(time, alShift.shift);
           shift = alShift.shift;
         }
       }
@@ -42,12 +51,20 @@ const HoursSchedule: React.FC<HoursScheduleProps> = ({
   const calculateWidth = (start: number, end: number) =>
     ((end - start) / 24) * 100;
 
+  if (time && orders) {
+    todayOrders = orders?.filter((order) => {
+      const orderStart = parseInt(order.StartTime);
+      const currentDate = convertDateToUnix(time);
+      return isSameDay(currentDate, orderStart);
+    });
+  }
+
   return (
     <div className="relative h-20 border border-black-300 grid w-full">
-      <div className="bg-gray-300 h-20 flex">
-        <div className="flex-1 border-r border-gray-400 relative">
+      <div className="bg-gray-300 h-20 flex items-center">
+        <div className="flex-1 border-r border-gray-400 relative h-full">
           <div
-            className="absolute bg-green-300 h-20"
+            className="absolute bg-green-300 h-full"
             style={{
               left: `${calculatePosition(startDecimal)}%`,
               width: `${calculateWidth(startDecimal, endDecimal)}%`,
@@ -76,6 +93,26 @@ const HoursSchedule: React.FC<HoursScheduleProps> = ({
                   )}%`,
                 }}
               ></div>
+            );
+          })}
+          {todayOrders.map((order, orderIndex) => {
+            const orderStart = parseInt(order.StartTime);
+            const orderEnd = parseInt(order.EndTime);
+
+            const orderStartDecimal =
+              new Date(orderStart).getHours() +
+              new Date(orderStart).getMinutes() / 60;
+            const orderEndDecimal =
+              new Date(orderEnd).getHours() +
+              new Date(orderEnd).getMinutes() / 60;
+
+            return (
+              <OrderComponent
+                order={order}
+                orderEndDecimal={orderEndDecimal}
+                orderStartDecimal={orderStartDecimal}
+                key={orderIndex}
+              />
             );
           })}
         </div>

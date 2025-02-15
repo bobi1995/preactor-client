@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 interface TimelineProps {
-  viewType: "hours" | "days" | "weeks";
+  viewType: "hours" | "days" | "weeks" | "half-1" | "half-2";
   day: Date;
 }
 

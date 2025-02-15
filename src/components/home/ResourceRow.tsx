@@ -8,8 +8,10 @@ import moment from "moment";
 
 interface ResourceRowProps {
   resources: IResource[];
-  viewType: "hours" | "days" | "weeks";
-  setViewType: (viewType: "hours" | "days" | "weeks") => void;
+  viewType: "hours" | "days" | "weeks" | "half-1" | "half-2";
+  setViewType: (
+    viewType: "hours" | "days" | "weeks" | "half-1" | "half-2"
+  ) => void;
   setTime: (time: string) => void;
   time: string;
 }

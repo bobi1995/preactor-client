@@ -2,12 +2,12 @@ import ErrorComponent from "../components/general/Error";
 import InfinityLoader from "../components/general/Loader";
 import { useResource } from "../graphql/hook/resource";
 import { useParams } from "react-router";
-import { IOrder, IResource, IRestriction, IShift } from "../graphql/interfaces";
 import { uploadFile } from "../graphql/client";
 import { endpoint } from "../../dbconfig";
 import { useTranslation } from "react-i18next";
 import AssignShift from "../components/resourcePage/AssignShift";
 import AlternativeComponent from "../components/resourcePage/alternativeShift/AlternativeComponent";
+import OrderTable from "../components/resourcePage/OrderTable";
 
 const ResourcePage = () => {
   const { t } = useTranslation("resource");
@@ -108,18 +108,7 @@ const ResourcePage = () => {
         </div>
 
         {/* Orders */}
-        <div className="p-4 border rounded-md shadow-md">
-          <h2 className="text-lg font-semibold">{t("orders")}</h2>
-          {resource.orders.length > 0 ? (
-            <ul className="list-disc list-inside">
-              {resource.orders.map((order: IOrder) => (
-                <li key={order.id}>Order #{order.id}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">{t("no_orders")}</p>
-          )}
-        </div>
+        <OrderTable orders={resource.orders} t={t} />
       </div>
     </div>
   );

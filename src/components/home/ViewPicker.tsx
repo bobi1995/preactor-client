@@ -1,7 +1,9 @@
 import React from "react";
 interface ViewPickerProps {
-  viewType: "hours" | "days" | "weeks";
-  setViewType: React.Dispatch<React.SetStateAction<"hours" | "days" | "weeks">>;
+  viewType: "hours" | "days" | "weeks" | "half-1" | "half-2";
+  setViewType: React.Dispatch<
+    React.SetStateAction<"hours" | "days" | "weeks" | "half-1" | "half-2">
+  >;
   setTime: React.Dispatch<React.SetStateAction<string>>;
   t: (key: string, options?: any) => string;
 }
@@ -9,15 +11,25 @@ interface ViewPickerProps {
 const ViewPicker: React.FC<ViewPickerProps> = ({
   viewType,
   setViewType,
-  setTime,
   t,
 }) => {
   return (
     <div className="flex justify-center space-x-4 p-4 bg-gray-100 sticky top-0 z-20">
       <button
         onClick={() => {
+          setViewType("half-1");
+        }}
+        className={`px-4 py-2 border rounded w-24 ${
+          viewType === "half-1" || viewType === "half-2"
+            ? "bg-blue-500 text-white"
+            : "bg-white border-gray-300"
+        }`}
+      >
+        {t("half")}
+      </button>
+      <button
+        onClick={() => {
           setViewType("hours");
-          setTime(new Intl.DateTimeFormat("en-GB").format(new Date()));
         }}
         className={`px-4 py-2 border rounded w-24 ${
           viewType === "hours"
@@ -30,7 +42,6 @@ const ViewPicker: React.FC<ViewPickerProps> = ({
       <button
         onClick={() => {
           setViewType("days");
-          setTime(new Intl.DateTimeFormat("en-GB").format(new Date()));
         }}
         className={`px-4 py-2 border rounded w-24 ${
           viewType === "days"
@@ -43,7 +54,6 @@ const ViewPicker: React.FC<ViewPickerProps> = ({
       <button
         onClick={() => {
           setViewType("weeks");
-          setTime(new Intl.DateTimeFormat("en-GB").format(new Date()));
         }}
         className={`px-4 py-2 border rounded w-24 ${
           viewType === "weeks"

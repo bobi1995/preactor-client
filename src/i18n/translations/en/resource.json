@@ -54,5 +54,8 @@
   "create_mass_shift_info": "By setting information for a common shift, you can add a work shift for all resources included in it for a specific period.",
   "select_resources": "Select resources",
   "select_all": "Select all",
-  "delete": "Delete"
+  "delete": "Delete",
+  "opno": "Operation",
+  "orno": "Order",
+  "quantity": "Quantity"
 }

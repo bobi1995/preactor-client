@@ -7,6 +7,7 @@ import GantComponent from "../components/home/Gantt";
 const Home = () => {
   const { t } = useTranslation("home");
   const { resources, loading, error, reload } = useResources();
+
   if (loading) {
     return <InfinityLoader />;
   }

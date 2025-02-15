@@ -58,7 +58,6 @@ const AssignAlternativeBtn: React.FC<AssignBreakDialogBtnProps> = ({
     );
     window.location.reload();
   };
-  console.log(startDate, endDate);
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>

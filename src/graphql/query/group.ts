@@ -8,6 +8,8 @@ export const GET_GROUPS = gql`
       description
       resources {
         id
+        name
+        description
       }
     }
   }
@@ -18,5 +20,17 @@ export const CREATE_GROUP = gql`
     createGroup(name: $name, description: $description) {
       id
     }
+  }
+`;
+
+export const ADD_RESOURCES_TO_GROUP = gql`
+  mutation Mutation($groupId: ID!, $resourceIds: [ID!]) {
+    addResourcesToGroup(groupId: $groupId, resourceIds: $resourceIds)
+  }
+`;
+
+export const DELETE_RESOURCES_FROM_GROUP = gql`
+  mutation Mutation($groupId: ID!, $resourceId: ID!) {
+    deleteResourceFromGroup(groupId: $groupId, resourceId: $resourceId)
   }
 `;

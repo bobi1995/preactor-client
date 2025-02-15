@@ -7,17 +7,25 @@ interface ResourcesSelectProps {
   t: (key: string, options?: any) => string;
   selectedResources: string[];
   setSelectedResources: React.Dispatch<React.SetStateAction<string[]>>;
+  assignedResources?: IResource[];
 }
 
 const ResourcesSelect: React.FC<ResourcesSelectProps> = ({
   t,
   selectedResources,
   setSelectedResources,
+  assignedResources,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { resources, loading: res_loading, error: res_error } = useResources();
+  let { resources, loading: res_loading, error: res_error } = useResources();
+  if (assignedResources && !res_loading) {
+    resources = resources.filter(
+      (resource: IResource) =>
+        !assignedResources.map((r) => r.id).includes(resource.id)
+    );
+  }
   const handleResourceChange = (resourceId: string) => {
     if (resourceId === "ALL") {
       if (selectedResources.length === resources.length) {

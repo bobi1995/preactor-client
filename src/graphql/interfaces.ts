@@ -17,10 +17,13 @@ export interface IGroup {
 }
 
 export interface IOrder {
-  id: string;
-  orderNumber: string;
-  resourceId?: string;
+  id: number;
+  OrderNo?: string;
+  OpNo?: number;
   resource?: IResource;
+  StartTime: string;
+  EndTime: string;
+  OperationName?: string;
 }
 
 export interface IShift {

@@ -12,7 +12,9 @@ import CreateDialogBtn from "./CreateGroupBtn";
 import { Link } from "react-router";
 import { useLocation } from "react-router";
 import Pagination, { itemsPerPage } from "../general/Pagination";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import AddBtn from "./AddBtn";
+import { useDeleteResourceFromGroup } from "../../graphql/hook/group";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 interface GroupTableProps {
   groups: IGroup[];
@@ -20,6 +22,7 @@ interface GroupTableProps {
 
 const GroupTable: React.FC<GroupTableProps> = ({ groups }) => {
   const { t } = useTranslation("group");
+  const { deleteResourceFromGroup, loading } = useDeleteResourceFromGroup();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("query")?.toLowerCase() || "";
@@ -44,6 +47,11 @@ const GroupTable: React.FC<GroupTableProps> = ({ groups }) => {
   );
 
   const { totalPages, data } = itemsPerPage(currentPage, filteredResources);
+
+  const handleDelete = async (groupId: string, resourceId: string) => {
+    await deleteResourceFromGroup(groupId, resourceId);
+    window.location.reload();
+  };
 
   return (
     <div className="m-auto w-3/4  bg-white shadow-md rounded-lg p-2">
@@ -90,24 +98,34 @@ const GroupTable: React.FC<GroupTableProps> = ({ groups }) => {
                   {group.resources.length}
                 </td>
                 <td className="px-6 py-5 text-gray-700 text-sm">
-                  <PlusCircleIcon className="h-6 w-6" />
+                  <AddBtn
+                    t={t}
+                    groupId={group.id}
+                    assignedResources={group.resources}
+                  />
                 </td>
               </tr>
               {expandedRows.has(group.id) && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-5">
-                    <div className="bg-gray-100 p-4 rounded-lg">
-                      {group.resources.map((resource) => (
-                        <div key={resource.id} className="mb-2">
-                          <div className="font-medium">{resource.name}</div>
-                          <div className="text-sm text-gray-600">
-                            {resource.description}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
+                <>
+                  {group.resources.map((resource) => {
+                    return (
+                      <tr
+                        className="bg-gray-100 border-t border-gray-300 p-4 rounded-lg text-sm"
+                        key={resource.id}
+                      >
+                        <td className="px-6 py-4"></td>
+                        <td className="px-6 py-4">{resource.name}</td>
+                        <td className="px-6 py-4">{resource.description}</td>
+                        <td className="px-6 py-4">
+                          <TrashIcon
+                            className="h-5 w-5 hover:cursor-pointer"
+                            onClick={() => handleDelete(group.id, resource.id)}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </>
               )}
             </React.Fragment>
           ))}

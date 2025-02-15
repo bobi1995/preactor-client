@@ -13,6 +13,7 @@
     "@apollo/client": "^3.12.2",
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.8",
     "@wojtekmaj/react-datetimerange-picker": "^6.0.0",
     "@wojtekmaj/react-timerange-picker": "^6.0.0",
     "axios": "^1.7.9",

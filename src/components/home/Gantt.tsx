@@ -11,13 +11,27 @@ interface GantComponentProps {
 }
 
 const GantComponent: React.FC<GantComponentProps> = ({ resources, t }) => {
-  const [viewType, setViewType] = useState<"hours" | "days" | "weeks">("days");
+  const [viewType, setViewType] = useState<
+    "hours" | "days" | "weeks" | "half-1" | "half-2"
+  >("days");
   const [time, setTime] = useState(
     new Intl.DateTimeFormat("en-GB").format(new Date())
   );
 
   const nextPeriod = () => {
-    if (viewType === "hours") {
+    if (viewType === "half-1") {
+      const newTime = moment(time, "DD/MM/YYYY HH:mm")
+        .add(12, "hours")
+        .format("DD/MM/YYYY HH:mm");
+      setTime(newTime);
+      setViewType("half-2");
+    } else if (viewType === "half-2") {
+      const newTime = moment(time, "DD/MM/YYYY HH:mm")
+        .add(12, "hours")
+        .format("DD/MM/YYYY HH:mm");
+      setTime(newTime);
+      setViewType("half-1");
+    } else if (viewType === "hours") {
       const newTime = moment(time, "DD/MM/YYYY")
         .add(1, "days")
         .format("DD/MM/YYYY");
@@ -36,7 +50,19 @@ const GantComponent: React.FC<GantComponentProps> = ({ resources, t }) => {
   };
 
   const previousPeriod = () => {
-    if (viewType === "hours") {
+    if (viewType === "half-1") {
+      const newTime = moment(time, "DD/MM/YYYY HH:mm")
+        .subtract(12, "hours")
+        .format("DD/MM/YYYY HH:mm");
+      setTime(newTime);
+      setViewType("half-2");
+    } else if (viewType === "half-2") {
+      const newTime = moment(time, "DD/MM/YYYY HH:mm")
+        .subtract(12, "hours")
+        .format("DD/MM/YYYY HH:mm");
+      setTime(newTime);
+      setViewType("half-1");
+    } else if (viewType === "hours") {
       const newTime = moment(time, "DD/MM/YYYY")
         .subtract(1, "days")
         .format("DD/MM/YYYY");
@@ -53,6 +79,7 @@ const GantComponent: React.FC<GantComponentProps> = ({ resources, t }) => {
       setTime(newTime);
     }
   };
+
   return (
     <div>
       <ViewPicker

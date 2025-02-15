@@ -22,6 +22,13 @@ export const getResourcesQuery = gql`
       description
       picture
       name
+      orders {
+        id
+        OpNo
+        OrderNo
+        StartTime
+        EndTime
+      }
       alternateShifts {
         id
         startDate
@@ -70,6 +77,11 @@ export const getResourceByIdQuery = gql`
       picture
       orders {
         id
+        OpNo
+        OrderNo
+        StartTime
+        EndTime
+        OperationName
       }
       schedule {
         id

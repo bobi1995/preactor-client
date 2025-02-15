@@ -3,10 +3,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 interface TimelineProps {
-  viewType: "hours" | "days" | "weeks";
+  viewType: "hours" | "days" | "weeks" | "half-1" | "half-2";
   day: Date;
   setTime?: (time: string) => void;
-  setViewType?: (viewType: "hours" | "days" | "weeks") => void;
+  setViewType?: (
+    viewType: "hours" | "days" | "weeks" | "half-1" | "half-2"
+  ) => void;
 }
 
 // Helper function to format dates as DD/MM/YYYY
@@ -50,6 +52,10 @@ const TimelineComponent: React.FC<TimelineProps> = ({
   const generateTimeline = () => {
     if (viewType === "hours") {
       return Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    } else if (viewType === "half-1") {
+      return Array.from({ length: 12 }, (_, i) => `${i}:00`);
+    } else if (viewType === "half-2") {
+      return Array.from({ length: 12 }, (_, i) => `${i + 12}:00`);
     } else if (viewType === "days") {
       return Array.from({ length: 7 }, (_, i) => {
         const date = new Date(day);
@@ -91,9 +97,13 @@ const TimelineComponent: React.FC<TimelineProps> = ({
     return (7 / 28) * 100;
   };
 
-  const handleClick = (time: string) => {
+  const handleClick = (time: string, index?: number) => {
     if (!setTime || !setViewType) return;
-
+    if (viewType === "hours") {
+      if (index && index >= 12) {
+        return setViewType("half-2");
+      } else return setViewType("half-1");
+    }
     if (viewType === "days" || viewType === "weeks") {
       if (time.includes("Week")) {
         setTime(
@@ -114,7 +124,7 @@ const TimelineComponent: React.FC<TimelineProps> = ({
     <div className={`flex sticky top-[70px] bg-gray-200`}>
       {generateTimeline().map((time, index) => (
         <div
-          onClick={() => handleClick(time)}
+          onClick={() => handleClick(time, index)}
           key={index}
           className={`h-7 text-center border border-gray-300 ${
             viewType === "weeks" ? "" : "flex-1"

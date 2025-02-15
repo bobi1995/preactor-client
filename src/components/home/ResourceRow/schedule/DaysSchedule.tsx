@@ -1,6 +1,7 @@
 import React from "react";
 import {
   IAlternativeShift,
+  IOrder,
   ISchedule,
   IShift,
 } from "../../../../graphql/interfaces";
@@ -12,6 +13,7 @@ interface DaysScheduleProps {
   startDay: string;
   alternateShifts: IAlternativeShift[];
   time: string;
+  orders?: IOrder[];
 }
 
 const DaysSchedule: React.FC<DaysScheduleProps> = ({
@@ -19,6 +21,7 @@ const DaysSchedule: React.FC<DaysScheduleProps> = ({
   startDay,
   alternateShifts,
   time,
+  orders,
 }) => {
   const daysOfWeek = [
     "sunday",
@@ -52,6 +55,7 @@ const DaysSchedule: React.FC<DaysScheduleProps> = ({
                   shift={shift}
                   alternateShifts={alternateShifts}
                   time={addDaysToDate(time, index)}
+                  orders={orders}
                 />
               }
             </div>
