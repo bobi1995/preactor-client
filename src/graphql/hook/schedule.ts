@@ -17,7 +17,7 @@ export const useSchedules = () => {
   };
 };
 
-export const useSchedule = (id: string) => {
+export const useSchedule = (id: number) => {
   const { data, loading, error, refetch } = useQuery(getSchedule, {
     variables: { getScheduleId: id },
   });

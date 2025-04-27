@@ -13,7 +13,7 @@ const SchedulePage = () => {
   if (!id) {
     return <ErrorComponent message="Schedule not found" />;
   }
-  const { schedule, loading, error, reload } = useSchedule(id);
+  const { schedule, loading, error, reload } = useSchedule(parseInt(id));
   if (loading) {
     return <InfinityLoader />;
   }

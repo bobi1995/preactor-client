@@ -8,6 +8,7 @@ import ShiftPage from "../page/ShiftPage";
 import SchedulePage from "../page/SchedulePage";
 import Schedule from "../page/Schedule";
 import Group from "../page/Group";
+import LNOrders from "../page/LNOrders";
 
 const AppLayout = () => {
   return (
@@ -53,6 +54,10 @@ const mainRouter = createBrowserRouter([
       {
         path: "/schedule/:id",
         element: <SchedulePage />,
+      },
+      {
+        path: "/ln-orders",
+        element: <LNOrders />,
       },
       {
         path: "/group",

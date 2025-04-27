@@ -1,6 +1,5 @@
 import React from "react";
 import { IResource } from "../../graphql/interfaces";
-import { endpoint } from "../../../dbconfig";
 import Schedule from "./ResourceRow/Schedule";
 import TimelineComponent from "../general/gant/Timeline";
 import { Link } from "react-router";
@@ -40,17 +39,19 @@ const ResourceRow: React.FC<ResourceRowProps> = ({
       {resources.map((res) => (
         <div className="flex" key={res.id}>
           <div className=" bg-gray-100 sticky z-10 w-40 h-30">
-            <div className="h-20 flex items-center justify-center border border-gray-300 p-2">
-              <img
+            <div className="h-20 flex items-center justify-center border border-gray-300 p-2 ">
+              {/* <img
                 src={`${endpoint}/static/${res.picture}`}
                 alt={res.name}
                 className="w-12 h-12 rounded-full border border-gray-300 shadow-md"
-              />
+              /> */}
               <Link
-                className="ml-3 text-gray-800 font-semibold text-sm md:text-base tracking-wide"
+                className="ml-3 text-gray-800 font-semibold text-sm tracking-wide w-28 overflow-hidden text-ellipsis
+"
                 to={`/resource/${res.id}`}
               >
-                {res.name}
+                {res.name.slice(0, 30)}
+                {res.name.length > 30 ? "..." : ""}
               </Link>
             </div>
           </div>

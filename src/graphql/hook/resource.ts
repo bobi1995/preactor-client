@@ -1,3 +1,4 @@
+import { IResource } from "../interfaces";
 import {
   getResourcesQuery,
   createResourceMutation,
@@ -21,6 +22,21 @@ export const useResources = () => {
   };
 };
 
+export const useScheduleources = () => {
+  const { data, loading, error, refetch } = useQuery(getResourcesQuery, {
+    fetchPolicy: "cache-first",
+  });
+  console.log(data);
+  const scheduleRes = data?.resource.filter(
+    (resource: IResource) => resource.schedule
+  );
+  return {
+    resources: scheduleRes,
+    loading,
+    error,
+    reload: () => refetch(),
+  };
+};
 export const useResource = (id: string) => {
   const { data, loading, error, refetch } = useQuery(getResourceByIdQuery, {
     variables: { id },
