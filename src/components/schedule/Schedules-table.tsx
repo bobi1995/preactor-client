@@ -23,6 +23,7 @@ interface SchedulesTableProps {
 }
 const SchedulesTable: React.FC<SchedulesTableProps> = ({ t }) => {
   const { schedules, error, loading, reload } = useSchedules();
+  console.log(schedules);
   const { remove } = useDeleteSchedule();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);

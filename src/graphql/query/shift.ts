@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const getShifts = gql`
+export const GET_SHIFTS = gql`
   query getShifts {
     shifts: getShifts {
       id
@@ -11,7 +11,7 @@ export const getShifts = gql`
   }
 `;
 
-export const getShift = gql`
+export const GET_SHIFT = gql`
   query getShift($id: ID!) {
     shift: getShift(id: $id) {
       id

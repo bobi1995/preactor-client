@@ -3,13 +3,13 @@ import {
   createBreakMutation,
   createShiftMutation,
   getBreaks,
-  getShift,
-  getShifts,
+  GET_SHIFT,
+  GET_SHIFTS,
 } from "../query/shift";
 import { useQuery, useMutation } from "@apollo/client";
 
 export const useShifts = () => {
-  const { data, loading, error, refetch } = useQuery(getShifts);
+  const { data, loading, error, refetch } = useQuery(GET_SHIFTS);
   return {
     shifts: data?.shifts,
     loading,
@@ -18,8 +18,8 @@ export const useShifts = () => {
   };
 };
 
-export const useShift = (id: string) => {
-  const { data, loading, error, refetch } = useQuery(getShift, {
+export const useShift = (id: number) => {
+  const { data, loading, error, refetch } = useQuery(GET_SHIFT, {
     variables: { id },
   });
   return {
@@ -41,7 +41,13 @@ export const useBreaks = () => {
 };
 
 export const useCreateShift = () => {
-  const [mutate, { loading }] = useMutation(createShiftMutation);
+  const [mutate, { loading }] = useMutation(createShiftMutation, {
+    refetchQueries: [
+      {
+        query: GET_SHIFTS,
+      },
+    ],
+  });
   const createShift = async (
     name: string,
     startHour: string,

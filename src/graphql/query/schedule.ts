@@ -38,6 +38,9 @@ export const getSchedules = gql`
       saturday {
         ...DayFragment
       }
+      sunday {
+        ...DayFragment
+      }
     }
   }
   ${DayFragment}
@@ -64,6 +67,9 @@ export const getSchedule = gql`
         ...DayFragment
       }
       saturday {
+        ...DayFragment
+      }
+      sunday {
         ...DayFragment
       }
     }

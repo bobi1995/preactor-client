@@ -27,7 +27,7 @@ export interface IOrder {
 }
 
 export interface IShift {
-  id: string;
+  id: number;
   name: string;
   startHour: string;
   endHour: string;

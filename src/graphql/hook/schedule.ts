@@ -49,10 +49,20 @@ export const useCreateSchedule = () => {
 export const useUpdateSchedule = () => {
   const [mutate, { loading }] = useMutation(updateSchedule);
   const update = async (updateScheduleId: string, input: any) => {
+    const inputData = {
+      monday: parseInt(input.monday),
+      tuesday: parseInt(input.tuesday),
+      wednesday: parseInt(input.wednesday),
+      thursday: parseInt(input.thursday),
+      friday: parseInt(input.friday),
+      saturday: parseInt(input.saturday),
+      sunday: parseInt(input.sunday),
+      name: input.name,
+    };
     const {
       data: { updateSchedule },
     } = await mutate({
-      variables: { updateScheduleId, input },
+      variables: { updateScheduleId, input: inputData },
     });
     return updateSchedule;
   };

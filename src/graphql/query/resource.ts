@@ -19,52 +19,45 @@ export const getResourcesQuery = gql`
   query GetResources {
     resource: getResources {
       id
-      description
-      picture
       name
-      orders {
-        id
-        OpNo
-        OrderNo
-        StartTime
-        EndTime
-      }
-      alternateShifts {
-        id
-        startDate
-        endDate
-        shift {
-          ...Day
-        }
-      }
-      schedule {
+      regularShift {
         id
         name
-        monday {
-          ...Day
-        }
-        tuesday {
-          ...Day
-        }
-        wednesday {
-          ...Day
-        }
-        thursday {
-          ...Day
-        }
-        friday {
-          ...Day
-        }
-        saturday {
-          ...Day
-        }
-        sunday {
-          ...Day
-        }
       }
+      color
+      description
+      external_code
+      alternativeShifts {
+        id
+      }
+      picture
+      # weekSchedule {
+      #   id
+      #   name
+      #   monday {
+      #     ...Day
+      #   }
+      #   tuesday {
+      #     ...Day
+      #   }
+      #   wednesday {
+      #     ...Day
+      #   }
+      #   thursday {
+      #     ...Day
+      #   }
+      #   friday {
+      #     ...Day
+      #   }
+      #   saturday {
+      #     ...Day
+      #   }
+      #   sunday {
+      #     ...Day
+      #   }
+      # }
     }
   }
-  ${DayFragment}
 `;
 
 export const getResourceByIdQuery = gql`

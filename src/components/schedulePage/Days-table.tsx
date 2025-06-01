@@ -18,14 +18,16 @@ interface DaysTableProps {
 
 const SelectShift: React.FC<{
   shifts: IShift[];
-  selectedShiftId: string;
-  onChange: (shiftId: string) => void;
+  selectedShiftId: number | null; // Updated to allow null values
+  onChange: (shiftId: number | null) => void; // Updated to pass number or null
   t: (key: string, options?: any) => string;
 }> = ({ shifts, selectedShiftId, onChange, t }) => {
   return (
     <select
-      value={selectedShiftId}
-      onChange={(e) => onChange(e.target.value)}
+      value={selectedShiftId !== null ? selectedShiftId.toString() : ""} // Ensure value is a string or empty
+      onChange={(e) =>
+        onChange(e.target.value ? parseInt(e.target.value, 10) : null)
+      } // Convert to number or null
       className="border border-gray-300 rounded p-2"
     >
       <option value="">{t("no_shift")}</option>
@@ -43,13 +45,13 @@ const DaysTable: React.FC<DaysTableProps> = ({ t, schedule }) => {
   const { update, loading: updateLoading } = useUpdateSchedule();
 
   const [selectedShifts, setSelectedShifts] = useState({
-    monday: schedule.monday?.id || "",
-    tuesday: schedule.tuesday?.id || "",
-    wednesday: schedule.wednesday?.id || "",
-    thursday: schedule.thursday?.id || "",
-    friday: schedule.friday?.id || "",
-    saturday: schedule.saturday?.id || "",
-    sunday: schedule.sunday?.id || "",
+    monday: schedule.monday?.id || null,
+    tuesday: schedule.tuesday?.id || null,
+    wednesday: schedule.wednesday?.id || null,
+    thursday: schedule.thursday?.id || null,
+    friday: schedule.friday?.id || null,
+    saturday: schedule.saturday?.id || null,
+    sunday: schedule.sunday?.id || null,
   });
 
   if (loading || updateLoading) {
@@ -64,10 +66,10 @@ const DaysTable: React.FC<DaysTableProps> = ({ t, schedule }) => {
     );
   }
 
-  const handleShiftChange = (day: string, shiftId: string) => {
+  const handleShiftChange = (day: string, shiftId: number | null) => {
     setSelectedShifts((prevState) => ({
       ...prevState,
-      [day]: shiftId,
+      [day]: shiftId, // Store null or integer
     }));
     console.log(`Shift for ${day} changed to ${shiftId}`);
   };
@@ -75,13 +77,13 @@ const DaysTable: React.FC<DaysTableProps> = ({ t, schedule }) => {
   const handleSave = async () => {
     await update(schedule.id, {
       name: schedule.name,
-      mondayShiftId: selectedShifts.monday,
-      tuesdayShiftId: selectedShifts.tuesday,
-      wednesdayShiftId: selectedShifts.wednesday,
-      thursdayShiftId: selectedShifts.thursday,
-      fridayShiftId: selectedShifts.friday,
-      saturdayShiftId: selectedShifts.saturday,
-      sundayShiftId: selectedShifts.sunday,
+      monday: selectedShifts.monday,
+      tuesday: selectedShifts.tuesday,
+      wednesday: selectedShifts.wednesday,
+      thursday: selectedShifts.thursday,
+      friday: selectedShifts.friday,
+      saturday: selectedShifts.saturday,
+      sunday: selectedShifts.sunday,
     });
     window.location.reload();
   };

@@ -11,9 +11,8 @@ import {
 import { useQuery, useMutation, gql } from "@apollo/client";
 
 export const useResources = () => {
-  const { data, loading, error, refetch } = useQuery(getResourcesQuery, {
-    fetchPolicy: "cache-first",
-  });
+  const { data, loading, error, refetch } = useQuery(getResourcesQuery);
+  console.log(error);
   return {
     resources: data?.resource,
     loading,
@@ -26,7 +25,6 @@ export const useScheduleources = () => {
   const { data, loading, error, refetch } = useQuery(getResourcesQuery, {
     fetchPolicy: "cache-first",
   });
-  console.log(data);
   const scheduleRes = data?.resource.filter(
     (resource: IResource) => resource.schedule
   );

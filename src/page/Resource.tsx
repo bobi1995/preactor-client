@@ -9,6 +9,7 @@ const Resource = () => {
     return <InfinityLoader />;
   }
   if (error) {
+    console.error("Error fetching resources:", error);
     return (
       <ErrorComponent
         message="Unable to fetch resources. Please check your connection."
