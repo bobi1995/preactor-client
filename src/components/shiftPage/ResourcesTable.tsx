@@ -1,13 +1,14 @@
 import React from "react";
 import { IResource } from "../../graphql/interfaces";
 import { endpoint } from "../../../dbconfig";
+import { useTranslation } from "react-i18next";
 
 interface BreaksTableProps {
   resources: IResource[];
-  t: (key: string, options?: any) => string;
 }
 
-const ResourcesTable: React.FC<BreaksTableProps> = ({ resources, t }) => {
+const ResourcesTable: React.FC<BreaksTableProps> = ({ resources }) => {
+  const { t } = useTranslation();
   return (
     <div className="p-4 border rounded shadow-md w-full">
       {resources.length > 0 ? (

@@ -12,21 +12,18 @@ const AppLogo: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 const NavBar: React.FC = () => {
-  const { t, i18n } = useTranslation("menu");
-  // useLocation is not strictly needed here if NavLink handles all active states,
-  // but it's good to have if you need location for other purposes.
-  // const location = useLocation();
+  const { t, i18n } = useTranslation();
 
   const switchLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
   };
 
   const navItems = [
-    { path: "/", labelKey: "home", exact: true }, // `exact` might be needed depending on router version and matching
-    { path: "/resource", labelKey: "resource" },
-    { path: "/group", labelKey: "group" },
-    { path: "/shift", labelKey: "shift" },
-    { path: "/schedule", labelKey: "schedule" },
+    { path: "/", labelKey: "nav.home", exact: true },
+    { path: "/resource", labelKey: "nav.resource" },
+    { path: "/group", labelKey: "nav.group" },
+    { path: "/shift", labelKey: "nav.shift" },
+    { path: "/schedule", labelKey: "nav.schedule" },
   ];
 
   const languageOptions = [
@@ -74,12 +71,13 @@ const NavBar: React.FC = () => {
               key={lang.code}
               onClick={() => switchLanguage(lang.code)}
               title={
-                t("switchTo", "Switch to {{language}}", {
+                t("common.switchTo", "Switch to {{language}}", {
+                  // Assuming 'switchTo' is in 'common'
                   language: lang.label.toUpperCase(),
                 }) || ""
               }
               className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 ${
-                i18n.language.startsWith(lang.code) // Use startsWith for 'en-US' etc.
+                i18n.language.startsWith(lang.code)
                   ? "bg-indigo-600 text-white shadow-md"
                   : "text-slate-500 hover:bg-white hover:text-indigo-600 hover:shadow-sm"
               }`}

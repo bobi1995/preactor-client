@@ -1,46 +1,29 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+import translationEN from "./translations/en.json";
+import translationBG from "./translations/bg.json";
 
-import homeBg from "./translations/bg/home.json";
-import homeEn from "./translations/en/home.json";
-
-import menuBg from "./translations/bg/menu.json";
-import menuEn from "./translations/en/menu.json";
-
-import resourceBg from "./translations/bg/resource.json";
-import resourceEn from "./translations/en/resource.json";
-
-import shiftBg from "./translations/bg/shift.json";
-import shiftEn from "./translations/en/shift.json";
-
-import groupBg from "./translations/bg/group.json";
-import groupEn from "./translations/en/group.json";
+const resources = {
+  en: {
+    translation: translationEN,
+  },
+  bg: {
+    translation: translationBG,
+  },
+};
 
 i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
+  .use(initReactI18next) // Passes i18n down to react-i18next
   .init({
-    fallbackLng: "en",
-    //debug: true,
-    resources: {
-      en: {
-        home: homeEn,
-        menu: menuEn,
-        resource: resourceEn,
-        shift: shiftEn,
-        group: groupEn,
-      },
-      bg: {
-        home: homeBg,
-        menu: menuBg,
-        resource: resourceBg,
-        shift: shiftBg,
-        group: groupBg,
-      },
-    },
+    resources,
+    fallbackLng: "bg", // Use English if detected language is not available
+    debug: import.meta.env.DEV, // Enable debug output in development
     interpolation: {
-      escapeValue: false,
+      escapeValue: false, // React already safes from xss
+    },
+    detection: {
+      order: ["localStorage", "navigator", "htmlTag"],
+      caches: ["localStorage"], // Cache the selected language in localStorage
     },
   });
 

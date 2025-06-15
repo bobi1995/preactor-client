@@ -73,6 +73,13 @@ export const useAssignBreak = () => {
       data: { assignBreakToShift },
     } = await mutate({
       variables: { shiftId, breakId },
+      refetchQueries: [
+        {
+          query: GET_SHIFT,
+          variables: { id: shiftId },
+        },
+      ],
+      awaitRefetchQueries: true,
     });
     return assignBreakToShift;
   };

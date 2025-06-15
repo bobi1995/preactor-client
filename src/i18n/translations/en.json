@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "MyApp",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "actions": "Actions",
+    "name": "Name",
+    "description": "Description",
+    "schedule": "Schedule",
+    "week": "Week",
+    "break": "Break",
+    "shift": "Shift",
+    "unnamed": "Unnamed",
+    "notAvailable": "N/A",
+    "closeDialog": "Close",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "resource": "Resources",
+    "group": "Groups",
+    "shift": "Shifts",
+    "schedule": "Schedules",
+    "openMenu": "Open main menu"
+  },
+  "resourceTable": {
+    "searchByName": "Search by name...",
+    "noResultsFound": "No resources match your search.",
+    "noResourcesAvailable": "No resources available yet.",
+    "noDescriptionProvided": "No description provided",
+    "noScheduleAssigned": "No schedule assigned",
+    "createNewResourcePromptTable": "Create a new resource to get started!",
+    "editResource": "Edit Resource",
+    "deleteResource": "Delete Resource",
+    "viewDetails": "View Details"
+  },
+  "shiftTable": {
+    "searchShiftByName": "Search by shift name...",
+    "startHour": "Start Time",
+    "endHour": "End Time",
+    "noShiftsMatchSearch": "No shifts match your search criteria.",
+    "noShiftsAvailable": "No shifts are currently available.",
+    "editShift": "Edit Shift",
+    "deleteShift": "Delete Shift",
+    "viewDetails": "View Details"
+  },
+  "createShiftDialog": {
+    "title": "Create New Shift",
+    "description": "Fill in the details below to add a new shift.",
+    "shiftName": "Shift Name",
+    "namePlaceholder": "e.g., Morning Shift",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "endTimeAfterStartTimeError": "End time must be after start time."
+  },
+  "shiftPage": {
+    "title": "Shift Details",
+    "viewingDetailsFor": "Viewing details for shift starting at {{startHour}} and ending at {{endHour}}.",
+    "timelineTitle": "Shift Timeline Visualization",
+    "timelineNote": "Timeline represents a 24-hour period.",
+    "infoTitle": "Shift Information",
+    "breaksTitle": "Breaks",
+    "resourcesTitle": "Assigned Resources",
+    "shiftNotFound": "Shift not found",
+    "unableToFetchShift": "Unable to fetch shift. Please check your connection.",
+    "invalidShiftData": "Invalid shift data received."
+  },
+  "assignBreakDialog": {
+    "assignButton": "Assign Break",
+    "title": "Assign Break to Shift",
+    "description": "Select a break from the list to assign it to the current shift.",
+    "label": "Choose a break",
+    "placeholder": "-- Select a break --",
+    "unableToFetch": "Unable to fetch breaks. Please check your connection.",
+    "assignmentFailed": "Failed to assign break. Please check your connection and try again."
+  },
+  "createNewBreakDialog": {
+    "link": "Create a new break",
+    "title": "Create New Break",
+    "description": "If a suitable break doesn't exist, you can create a new one here.",
+    "namePlaceholder": "e.g., Lunch Break",
+    "timeRangeLabel": "Break Time Range"
+  },
+  "breaksTable": {
+    "name": "Break Name",
+    "start": "Start Time",
+    "end": "End Time",
+    "noBreaksAssigned": "No breaks have been assigned to this shift.",
+    "removeBreak": "Remove Break"
+  }
+}

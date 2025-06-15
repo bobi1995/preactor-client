@@ -1,17 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { IShift } from "../../graphql/interfaces";
 import SearchBar from "../general/SearchBar";
 import CreateShiftDialogBtn from "./CreateShiftDialogBtn";
-import { Link, useNavigate, useLocation } from "react-router"; // Assuming react-router-dom v6+ for useNavigate
-// If you are on an older react-router, you might use `useHistory` or pass router props.
-// For react-router < v6, Link is fine as is.
+import { useNavigate, useLocation } from "react-router"; // Corrected import
 import { useShifts } from "../../graphql/hook/shift";
 import InfinityLoader from "../../components/general/Loader";
 import ErrorComponent from "../../components/general/Error";
 import Pagination, { itemsPerPage } from "../general/Pagination";
 
 // --- Icons ---
-// You can replace these with your preferred icon library (e.g., Heroicons, FontAwesome)
 const ClockIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
@@ -29,9 +27,7 @@ const ClockIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const PencilSquareIcon: React.FC<{ className?: string }> = (
-  { className } // Edit
-) => (
+const PencilSquareIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -48,9 +44,7 @@ const PencilSquareIcon: React.FC<{ className?: string }> = (
   </svg>
 );
 
-const TrashIcon: React.FC<{ className?: string }> = (
-  { className } // Delete
-) => (
+const TrashIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -67,9 +61,9 @@ const TrashIcon: React.FC<{ className?: string }> = (
   </svg>
 );
 
-const ArrowRightCircleIcon: React.FC<{ className?: string }> = (
-  { className } // View Details / Open
-) => (
+const ArrowRightCircleIcon: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <svg
     className={className}
     xmlns="http://www.w3.org/2000/svg"
@@ -87,14 +81,12 @@ const ArrowRightCircleIcon: React.FC<{ className?: string }> = (
 );
 // --- End Icons ---
 
-interface ShiftTableProps {
-  t: (key: string, options?: any) => string;
-}
-
-const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
+const ShiftTable: React.FC = () => {
+  // Use the hook directly in the component
+  const { t } = useTranslation();
   const { shifts, error, loading, reload } = useShifts();
-  const location = useLocation(); // from react-router-dom
-  const navigate = useNavigate(); // from react-router-dom v6+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("query")?.toLowerCase() || "";
@@ -102,17 +94,15 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
 
   // --- Action Handlers (Dummy implementations) ---
   const handleViewDetails = (shiftId: number) => {
-    navigate(`/shift/${shiftId}`); // Navigate to detail page
+    navigate(`/shift/${shiftId}`);
   };
 
   const handleEdit = (shiftId: number) => {
     console.log("Edit shift:", shiftId);
-    // navigate(`/shift/${shiftId}/edit`); // Or open a modal
   };
 
   const handleDelete = (shiftId: number) => {
     console.log("Delete shift:", shiftId);
-    // Show confirmation dialog then call delete mutation
   };
   // --- End Action Handlers ---
 
@@ -128,7 +118,8 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
     return (
       <div className="m-auto w-11/12 md:w-3/4 lg:w-2/3 p-4 sm:p-6 text-center">
         <ErrorComponent
-          message={t("unableToFetchShifts", "Unable to fetch shifts.")}
+          // Updated translation key
+          message={t("shiftPage.unableToFetchShift", "Unable to fetch shifts.")}
           onRetry={() => reload()}
         />
       </div>
@@ -147,10 +138,15 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
         <div className="flex flex-col sm:flex-row gap-4 ">
           <div className="flex-grow w-full sm:w-auto">
             <SearchBar
-              placeholder={t("searchShiftByName", "Search by shift name...")}
+              // Updated translation key
+              placeholder={t(
+                "shiftTable.searchShiftByName",
+                "Search by shift name..."
+              )}
             />
           </div>
-          <CreateShiftDialogBtn t={t} />
+          {/* No longer passing `t` prop */}
+          <CreateShiftDialogBtn />
         </div>
       </div>
 
@@ -162,25 +158,25 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
                 scope="col"
                 className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider"
               >
-                {t("name", "Name")}
+                {t("common.name", "Name")}
               </th>
               <th
                 scope="col"
                 className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider"
               >
-                {t("startHour", "Start Time")}
+                {t("shiftTable.startHour", "Start Time")}
               </th>
               <th
                 scope="col"
                 className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider"
               >
-                {t("endHour", "End Time")}
+                {t("shiftTable.endHour", "End Time")}
               </th>
               <th
                 scope="col"
                 className="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider"
               >
-                {t("actions", "Actions")}
+                {t("common.actions", "Actions")}
               </th>
             </tr>
           </thead>
@@ -206,19 +202,23 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
                     <p className="mt-3 text-base font-medium text-gray-500">
                       {query
                         ? t(
-                            "noShiftsMatchSearch",
+                            "shiftTable.noShiftsMatchSearch",
                             "No shifts match your search."
                           )
-                        : t("noShiftsAvailable", "No shifts available yet.")}
+                        : t(
+                            "shiftTable.noShiftsAvailable",
+                            "No shifts available yet."
+                          )}
                     </p>
                     <p className="text-sm text-gray-400">
+                      {/* Assuming these keys exist in shiftTable namespace */}
                       {query
                         ? t(
-                            "tryDifferentKeywordsTable",
+                            "shiftTable.tryDifferentKeywords",
                             "Try adjusting your search."
                           )
                         : t(
-                            "createNewShiftPromptTable",
+                            "shiftTable.createNewPrompt",
                             "Create a new shift to get started!"
                           )}
                     </p>
@@ -254,21 +254,21 @@ const ShiftTable: React.FC<ShiftTableProps> = ({ t }) => {
                     <div className="flex items-center justify-center space-x-3">
                       <button
                         onClick={() => handleViewDetails(shift.id)}
-                        title={t("viewDetails", "View Details")}
+                        title={t("shiftTable.viewDetails", "View Details")}
                         className="text-gray-500 hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
                       >
                         <ArrowRightCircleIcon className="w-6 h-6" />
                       </button>
                       <button
                         onClick={() => handleEdit(shift.id)}
-                        title={t("editShift", "Edit Shift")}
+                        title={t("shiftTable.editShift", "Edit Shift")}
                         className="text-gray-500 hover:text-green-600 transition-colors p-1 rounded-full hover:bg-green-100"
                       >
                         <PencilSquareIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(shift.id)}
-                        title={t("deleteShift", "Delete Shift")}
+                        title={t("shiftTable.deleteShift", "Delete Shift")}
                         className="text-gray-500 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-100"
                       >
                         <TrashIcon className="w-5 h-5" />

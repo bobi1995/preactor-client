@@ -1,0 +1,103 @@
+{
+  "common": {
+    "appName": "MyApp",
+    "save": "Запази",
+    "saving": "Запазване...",
+    "cancel": "Отказ",
+    "create": "Създай",
+    "edit": "Редактирай",
+    "delete": "Изтрий",
+    "actions": "Действия",
+    "name": "Име",
+    "description": "Описание",
+    "schedule": "График",
+    "week": "Седмица",
+    "break": "Почивка",
+    "shift": "Смяна",
+    "unnamed": "Без име",
+    "notAvailable": "Н/Д",
+    "closeDialog": "Затвори",
+    "days": {
+      "monday": "Понеделник",
+      "tuesday": "Вторник",
+      "wednesday": "Сряда",
+      "thursday": "Четвъртък",
+      "friday": "Петък",
+      "saturday": "Събота",
+      "sunday": "Неделя"
+    }
+  },
+  "nav": {
+    "home": "Начало",
+    "resource": "Ресурси",
+    "group": "Групи",
+    "shift": "Смени",
+    "schedule": "Графици",
+    "openMenu": "Отвори главното меню"
+  },
+  "resourceTable": {
+    "searchByName": "Търсене по име...",
+    "noResultsFound": "Няма намерени ресурси, отговарящи на търсенето.",
+    "noResourcesAvailable": "Все още няма налични ресурси.",
+    "noDescriptionProvided": "Няма предоставено описание",
+    "noScheduleAssigned": "Няма назначен график",
+    "createNewResourcePromptTable": "Започнете, като създадете нов ресурс!",
+    "editResource": "Редактиране на ресурс",
+    "deleteResource": "Изтриване на ресурс",
+    "viewDetails": "Преглед на детайли"
+  },
+  "shiftTable": {
+    "searchShiftByName": "Търсене по име на смяна...",
+    "startHour": "Начален час",
+    "endHour": "Краен час",
+    "noShiftsMatchSearch": "Няма смени, отговарящи на критериите за търсене.",
+    "noShiftsAvailable": "В момента няма налични смени.",
+    "editShift": "Редактиране на смяна",
+    "deleteShift": "Изтриване на смяна",
+    "viewDetails": "Преглед на детайли"
+  },
+  "createShiftDialog": {
+    "title": "Създай нова смяна",
+    "description": "Попълнете детайлите по-долу, за да добавите нова смяна.",
+    "shiftName": "Име на смяната",
+    "namePlaceholder": "напр. Сутрешна смяна",
+    "startTime": "Начален час",
+    "endTime": "Краен час",
+    "endTimeAfterStartTimeError": "Крайният час трябва да бъде след началния."
+  },
+  "shiftPage": {
+    "title": "Детайли за смяната",
+    "viewingDetailsFor": "Преглед на детайли за смяна, започваща в {{startHour}} и приключваща в {{endHour}}.",
+    "timelineTitle": "Визуализация на времевата линия на смяната",
+    "timelineNote": "Времевата линия представлява 24-часов период.",
+    "infoTitle": "Информация за смяната",
+    "breaksTitle": "Почивки",
+    "resourcesTitle": "Назначени ресурси",
+    "shiftNotFound": "Смяната не е намерена",
+    "unableToFetchShift": "Неуспешно зареждане на смяната. Моля, проверете връзката си.",
+    "invalidShiftData": "Получени са невалидни данни за смяната."
+  },
+  "assignBreakDialog": {
+    "assignButton": "Назначи почивка",
+    "title": "Назначи почивка към смяна",
+    "description": "Изберете почивка от списъка, за да я назначите към текущата смяна.",
+    "label": "Изберете почивка",
+    "placeholder": "-- Изберете почивка --",
+    "unableToFetch": "Неуспешно зареждане на почивките. Моля, провереte връзката си.",
+    "assignmentFailed": "Неуспешно назначаване на почивка. Моля, проверете връзката си и опитайте отново."
+  },
+  "createNewBreakDialog": {
+    "link": "Създай нова почивка",
+    "title": "Създай нова почивка",
+    "description": "Ако подходяща почивка не съществува, можете да създадете нова тук.",
+    "namePlaceholder": "напр. Обедна почивка",
+    "timeRangeLabel": "Времеви диапазон на почивката"
+  },
+  "breaksTable": {
+    "name": "Име на почивката",
+    "start": "Начален час",
+    "end": "Краен час",
+    "noBreaksAssigned": "Няма назначени почивки към тази смяна.",
+    "removeBreak": "Премахни почивка"
+  }
+}
