@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TrashIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useRemoveBreakFromShift } from "../../graphql/hook/break";
 import InfinityLoader from "../general/Loader"; // Assuming a small loader component
+import { unixToHoursWithTimezone } from "../../utils/time-converters";
 
 interface BreaksTableProps {
   breaks: IBreaks[];
@@ -78,13 +79,13 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {breakItem.startHour}
+                    {unixToHoursWithTimezone(breakItem.startTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {breakItem.endHour}
+                    {unixToHoursWithTimezone(breakItem.endTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-center">

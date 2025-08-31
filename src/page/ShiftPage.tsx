@@ -9,6 +9,8 @@ import BreaksTable from "../components/shiftPage/BreaksTable";
 import { useTranslation } from "react-i18next";
 import { IBreaks, IResource } from "../graphql/interfaces";
 import ResourcesTable from "../components/shiftPage/ResourcesTable";
+import moment from "moment";
+import { unixToHoursWithTimezone } from "../utils/time-converters";
 
 const ShiftPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -93,7 +95,10 @@ const ShiftPage = () => {
           <span className="text-indigo-600">{shiftName}</span>
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          {t("shiftPage.viewingDetailsFor", { startHour, endHour })}
+          {t("shiftPage.viewingDetailsFor", {
+            startHour: unixToHoursWithTimezone(startHour),
+            endHour: unixToHoursWithTimezone(endHour),
+          })}
         </p>
       </div>
 
@@ -120,14 +125,14 @@ const ShiftPage = () => {
             breaks.map((breakItem: IBreaks | null) => {
               if (
                 !breakItem ||
-                typeof breakItem.startHour !== "string" ||
-                typeof breakItem.endHour !== "string"
+                typeof breakItem.startTime !== "string" ||
+                typeof breakItem.startTime !== "string"
               ) {
                 return null;
               }
 
-              const breakStartDecimal = timeToDecimal(breakItem.startHour);
-              let breakEndDecimal = timeToDecimal(breakItem.endHour);
+              const breakStartDecimal = timeToDecimal(breakItem.startTime);
+              let breakEndDecimal = timeToDecimal(breakItem.endTime);
 
               if (breakEndDecimal < breakStartDecimal) {
                 breakEndDecimal += 24;
@@ -149,8 +154,8 @@ const ShiftPage = () => {
                       width: `${breakWidthPercentage}%`,
                       zIndex: 20,
                     }}
-                    title={`${t("common.break")}: ${breakItem.startHour} - ${
-                      breakItem.endHour
+                    title={`${t("common.break")}: ${breakItem.startTime} - ${
+                      breakItem.endTime
                     }`}
                   ></div>
                 );

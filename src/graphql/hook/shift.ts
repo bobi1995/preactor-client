@@ -19,9 +19,11 @@ export const useShifts = () => {
 };
 
 export const useShift = (id: number) => {
+  console.log(id);
   const { data, loading, error, refetch } = useQuery(GET_SHIFT, {
-    variables: { id },
+    variables: { getShiftId: id },
   });
+  console.log(error);
   return {
     shift: data?.shift,
     loading,

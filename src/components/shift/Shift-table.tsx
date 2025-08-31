@@ -8,6 +8,7 @@ import { useShifts } from "../../graphql/hook/shift";
 import InfinityLoader from "../../components/general/Loader";
 import ErrorComponent from "../../components/general/Error";
 import Pagination, { itemsPerPage } from "../general/Pagination";
+import { unixToHoursWithTimezone } from "../../utils/time-converters";
 
 // --- Icons ---
 const ClockIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -82,7 +83,6 @@ const ArrowRightCircleIcon: React.FC<{ className?: string }> = ({
 // --- End Icons ---
 
 const ShiftTable: React.FC = () => {
-  // Use the hook directly in the component
   const { t } = useTranslation();
   const { shifts, error, loading, reload } = useShifts();
   const location = useLocation();
@@ -92,7 +92,6 @@ const ShiftTable: React.FC = () => {
   const query = searchParams.get("query")?.toLowerCase() || "";
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  // --- Action Handlers (Dummy implementations) ---
   const handleViewDetails = (shiftId: number) => {
     navigate(`/shift/${shiftId}`);
   };
@@ -241,13 +240,16 @@ const ShiftTable: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                     <div className="flex items-center text-sm">
                       <ClockIcon className="w-5 h-5 mr-2 text-indigo-400" />
-                      {shift.startHour}
+                      {unixToHoursWithTimezone(shift.startHour)}{" "}
+                      {/* Assuming startHour is a Unix timestamp */}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                     <div className="flex items-center text-sm">
                       <ClockIcon className="w-5 h-5 mr-2 text-purple-400" />
-                      {shift.endHour}
+                      {
+                        unixToHoursWithTimezone(shift.endHour) // Assuming endHour is a Unix timestamp
+                      }
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

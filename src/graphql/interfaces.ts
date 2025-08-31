@@ -48,8 +48,8 @@ export interface ISchedule {
 export interface IBreaks {
   id: string;
   name: string;
-  startHour: string;
-  endHour: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface IRestriction {

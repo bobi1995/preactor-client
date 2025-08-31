@@ -12,17 +12,17 @@ export const GET_SHIFTS = gql`
 `;
 
 export const GET_SHIFT = gql`
-  query getShift($id: ID!) {
-    shift: getShift(id: $id) {
+  query Query($getShiftId: ID!) {
+    shift: getShift(id: $getShiftId) {
       id
-      startHour
       name
+      startHour
       endHour
       breaks {
+        startTime
+        endTime
         id
         name
-        startHour
-        endHour
       }
     }
   }

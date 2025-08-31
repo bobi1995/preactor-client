@@ -11,6 +11,9 @@ export const convertUnixToDateWithHours = (unixTimestamp: number) => {
 export const convertDateToUnix = (dateString: string): number => {
   return moment(dateString, "DD/MM/YYYY").add(2, "hours").unix();
 };
+export const unixToHoursWithTimezone = (date: string) => {
+  return moment(parseInt(date)).utc().format("HH:mm");
+};
 
 //Adding days to date. Useful when looping through days of the week and you can add the index to the current date
 export const addDaysToDate = (dateString: string, index: number): string => {
