@@ -8,79 +8,13 @@ import { useShifts } from "../../graphql/hook/shift";
 import InfinityLoader from "../../components/general/Loader";
 import ErrorComponent from "../../components/general/Error";
 import Pagination, { itemsPerPage } from "../general/Pagination";
-import { unixToHoursWithTimezone } from "../../utils/time-converters";
-
-// --- Icons ---
-const ClockIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-);
-
-const PencilSquareIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-    />
-  </svg>
-);
-
-const TrashIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.56 0c1.153 0 2.24.032 3.287.094M5.116 5.79l-.037-.014M10.5 11.25v5.25m3-5.25v5.25m5.25-10.125c.38-.047.76-.082 1.148-.11M5.116 5.79c.326-.022.658-.029 1.008-.029m11.07 0c.36.004.707.018 1.044.041"
-    />
-  </svg>
-);
-
-const ArrowRightCircleIcon: React.FC<{ className?: string }> = ({
-  className,
-}) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-);
-// --- End Icons ---
+import { timesToRepresentativeString } from "../../utils/time-converters";
+import {
+  Clock,
+  SquarePenIcon,
+  TrashIcon,
+  CircleArrowRight,
+} from "lucide-react";
 
 const ShiftTable: React.FC = () => {
   const { t } = useTranslation();
@@ -239,17 +173,14 @@ const ShiftTable: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                     <div className="flex items-center text-sm">
-                      <ClockIcon className="w-5 h-5 mr-2 text-indigo-400" />
-                      {unixToHoursWithTimezone(shift.startHour)}{" "}
-                      {/* Assuming startHour is a Unix timestamp */}
+                      <Clock className="w-5 h-5 mr-2 text-indigo-400" />
+                      {timesToRepresentativeString(shift.startHour)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-700">
                     <div className="flex items-center text-sm">
-                      <ClockIcon className="w-5 h-5 mr-2 text-purple-400" />
-                      {
-                        unixToHoursWithTimezone(shift.endHour) // Assuming endHour is a Unix timestamp
-                      }
+                      <Clock className="w-5 h-5 mr-2 text-purple-400" />
+                      {timesToRepresentativeString(shift.endHour)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -259,14 +190,14 @@ const ShiftTable: React.FC = () => {
                         title={t("shiftTable.viewDetails", "View Details")}
                         className="text-gray-500 hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
                       >
-                        <ArrowRightCircleIcon className="w-6 h-6" />
+                        <CircleArrowRight className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleEdit(shift.id)}
                         title={t("shiftTable.editShift", "Edit Shift")}
                         className="text-gray-500 hover:text-green-600 transition-colors p-1 rounded-full hover:bg-green-100"
                       >
-                        <PencilSquareIcon className="w-5 h-5" />
+                        <SquarePenIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(shift.id)}

@@ -71,10 +71,10 @@ const HoursSchedule: React.FC<HoursScheduleProps> = ({
             }}
           ></div>
           {breaks?.map((breakItem, breakIndex) => {
-            const [breakStartHour, breakStartMinute] = breakItem.startHour
+            const [breakStartHour, breakStartMinute] = breakItem.startTime
               .split(":")
               .map(Number);
-            const [breakEndHour, breakEndMinute] = breakItem.endHour
+            const [breakEndHour, breakEndMinute] = breakItem.endTime
               .split(":")
               .map(Number);
 
