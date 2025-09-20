@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+// src/components/shift/EditShiftDialog.tsx
+
+import React, { useState, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircleIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { useCreateShift } from "../../graphql/hook/shift";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
+import { IShift } from "../../graphql/interfaces";
+import { SquarePenIcon } from "lucide-react";
+import { useUpdateShift } from "../../graphql/hook/shift";
 
 // Helper to generate time options
 const generateTimeOptions = (
@@ -16,101 +20,98 @@ const generateTimeOptions = (
   }
   return options;
 };
-const hourOptions = generateTimeOptions(24); // 00-23
-const minuteOptions = generateTimeOptions(60, 15); // 00, 15, 30, 45
+const hourOptions = generateTimeOptions(24);
+const minuteOptions = generateTimeOptions(60, 15);
 
-const CreateShiftDialogBtn: React.FC = () => {
-  const { t } = useTranslation();
-  const { createShift, loading } = useCreateShift();
+interface EditShiftDialogProps {
+  shift: IShift; // The shift to edit is now required
+}
+
+const EditShiftDialog: React.FC<EditShiftDialogProps> = ({ shift }) => {
+  const { t } = useTranslation("translation");
+  // The dialog now controls its own open/closed state
+  const [isOpen, setIsOpen] = useState(false);
+
+  // State for form fields
   const [name, setName] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [startHour, setStartHour] = useState("10");
+  const [startHour, setStartHour] = useState("00");
   const [startMinute, setStartMinute] = useState("00");
-  const [endHour, setEndHour] = useState("11");
+  const [endHour, setEndHour] = useState("00");
   const [endMinute, setEndMinute] = useState("00");
+  const { updateShift } = useUpdateShift();
 
-  const resetForm = () => {
-    setName("");
-    setStartHour("08");
-    setStartMinute("00");
-    setEndHour("17");
-    setEndMinute("00");
-  };
+  // This effect runs when the dialog is opened.
+  // It populates the form with the data of the shift being edited.
+  useEffect(() => {
+    if (isOpen && shift) {
+      setName(shift.name);
+      const [sHour, sMin] = shift.startHour.split(":");
+      const [eHour, eMin] = shift.endHour.split(":");
+      setStartHour(sHour);
+      setStartMinute(sMin);
+      setEndHour(eHour);
+      setEndMinute(eMin);
+    }
+  }, [isOpen, shift]); // Reruns when the dialog is opened
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     if (name.trim() !== "") {
       const startTime = `${startHour}:${startMinute}`;
       const endTime = `${endHour}:${endMinute}`;
 
-      try {
-        const startDate = new Date(`1970-01-01T${startTime}:00`);
-        const endDate = new Date(`1970-01-01T${endTime}:00`);
+      const updatedShiftDetails = {
+        name: name,
+        startHour: startTime,
+        endHour: endTime,
+      };
 
-        if (endDate <= startDate) {
-          alert(t("createShiftDialog.endTimeAfterStartTimeError"));
-          return;
-        }
+      await updateShift(shift.id.toString(), updatedShiftDetails);
 
-        await createShift(name, startTime, endTime);
-        setIsDialogOpen(false);
-      } catch (e) {
-        console.error("Error creating shift (catch):", e);
-      }
+      setIsOpen(false); // Close the dialog
     } else {
       console.error("Validation Error: Name is required.");
     }
-  };
-
-  // Remove useEffect that depends on createData and createError, as they do not exist.
-
-  const handleOpenChange = (open: boolean) => {
-    if (open) {
-      resetForm();
-    }
-    setIsDialogOpen(open);
   };
 
   const selectClassName =
     "w-full appearance-none bg-white px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm";
 
   return (
-    <Dialog.Root open={isDialogOpen} onOpenChange={handleOpenChange}>
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-4 py-2.5 text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          <PlusCircleIcon className="h-5 w-5" />
-          {t("common.create")}
-        </button>
+        <SquarePenIcon className="h-5 w-5 text-gray-500 cursor-pointer hover:text-black" />
       </Dialog.Trigger>
+
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl max-w-md w-[90vw] p-6 data-[state=open]:animate-contentShow focus:outline-none">
+        <Dialog.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-sm data-[state=open]:animate-overlayShow z-40" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl max-w-md w-[90vw] p-6 data-[state=open]:animate-contentShow focus:outline-none z-50">
           <Dialog.Title className="text-xl font-semibold mb-1 text-slate-800">
-            {t("createShiftDialog.title")}
+            {t("editShiftDialog.title")}
           </Dialog.Title>
           <Dialog.Description className="mb-5 text-sm text-slate-500">
-            {t("createShiftDialog.description")}
+            {t("editShiftDialog.description")}
           </Dialog.Description>
 
+          {/* Form Content */}
           <div className="space-y-4">
             <div>
               <label
-                htmlFor="shift-name"
+                htmlFor="shift-name-edit"
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
                 {t("createShiftDialog.shiftName")}
               </label>
               <input
-                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm"
                 type="text"
-                id="shift-name"
-                placeholder={t("createShiftDialog.namePlaceholder")}
+                id="shift-name-edit"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
-
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -119,7 +120,7 @@ const CreateShiftDialogBtn: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <div className="flex-1 relative">
                     <select
-                      id="start-hour"
+                      id="start-hour-edit"
                       value={startHour}
                       onChange={(e) => setStartHour(e.target.value)}
                       className={selectClassName}
@@ -148,7 +149,7 @@ const CreateShiftDialogBtn: React.FC = () => {
                   <span className="text-slate-600 font-medium">:</span>
                   <div className="flex-1 relative">
                     <select
-                      id="start-minute"
+                      id="start-minute-edit"
                       value={startMinute}
                       onChange={(e) => setStartMinute(e.target.value)}
                       className={selectClassName}
@@ -176,7 +177,6 @@ const CreateShiftDialogBtn: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   {t("createShiftDialog.endTime")}
@@ -184,7 +184,7 @@ const CreateShiftDialogBtn: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <div className="flex-1 relative">
                     <select
-                      id="end-hour"
+                      id="end-hour-edit"
                       value={endHour}
                       onChange={(e) => setEndHour(e.target.value)}
                       className={selectClassName}
@@ -213,7 +213,7 @@ const CreateShiftDialogBtn: React.FC = () => {
                   <span className="text-slate-600 font-medium">:</span>
                   <div className="flex-1 relative">
                     <select
-                      id="end-minute"
+                      id="end-minute-edit"
                       value={endMinute}
                       onChange={(e) => setEndMinute(e.target.value)}
                       className={selectClassName}
@@ -248,19 +248,18 @@ const CreateShiftDialogBtn: React.FC = () => {
             <Dialog.Close asChild>
               <button
                 type="button"
-                disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
               >
                 {t("common.cancel")}
               </button>
             </Dialog.Close>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 shadow-sm"
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm"
               onClick={handleSubmit}
-              disabled={loading || !name.trim()}
+              disabled={!name.trim()}
             >
-              {loading ? t("common.saving") : t("common.save")}
+              {t("common.save")}
             </button>
           </div>
 
@@ -278,4 +277,4 @@ const CreateShiftDialogBtn: React.FC = () => {
   );
 };
 
-export default CreateShiftDialogBtn;
+export default EditShiftDialog;

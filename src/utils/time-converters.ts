@@ -1,5 +1,9 @@
 import moment from "moment-timezone";
 
+export const timesToRepresentativeString = (time: string) => {
+  const convertTime = moment(time, "HH:mm:ss.SSS");
+  return convertTime.format("HH:mm");
+};
 export const convertUnixToDate = (unixTimestamp: number) => {
   return moment.unix(unixTimestamp).format("DD/MM/YYYY");
 };
