@@ -99,5 +99,26 @@
     "end": "End Time",
     "noBreaksAssigned": "No breaks have been assigned to this shift.",
     "removeBreak": "Remove Break"
+  },
+  "editShiftDialog": {
+    "title": "Edit Shift",
+    "description": "Update the details of the shift below.",
+    "shiftName": "Shift Name",
+    "namePlaceholder": "e.g., Morning Shift",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "endTimeAfterStartTimeError": "End time must be after start time."
+  },
+  "deleteShiftDialog": {
+    "title": "Delete Shift",
+    "description": "Are you sure you want to permanently delete the shift \"{{shiftName}}\"? This action cannot be undone."
+  },
+  "deleteShiftErrors": {
+    "inUseByResource": "Cannot delete shift. It is assigned as a regular shift to one or more resources.",
+    "inUseBySchedule": "Cannot delete shift. It is used in one or more weekly schedules.",
+    "inUseByAlternative": "Cannot delete shift. It is assigned as an alternative shift to one or more resources.",
+    "notFound": "Shift not found. It may have already been deleted.",
+    "internal": "An unexpected server error occurred. Please try again later.",
+    "unknown": "An unknown error occurred while trying to delete the shift."
   }
 }

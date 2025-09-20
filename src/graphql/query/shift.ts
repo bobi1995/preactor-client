@@ -39,14 +39,6 @@ export const getBreaks = gql`
   }
 `;
 
-export const createShiftMutation = gql`
-  mutation Mutation($input: ShiftInput!) {
-    shift: createShift(input: $input) {
-      id
-    }
-  }
-`;
-
 export const assignBreakMutation = gql`
   mutation AssignBreakToShift($shiftId: ID!, $breakId: ID!) {
     assignBreakToShift(shiftId: $shiftId, breakId: $breakId) {

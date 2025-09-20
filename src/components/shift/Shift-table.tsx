@@ -15,6 +15,8 @@ import {
   TrashIcon,
   CircleArrowRight,
 } from "lucide-react";
+import EditShiftDialog from "./EditShiftDialog";
+import DeleteShiftDialog from "./DeleteShiftDialog";
 
 const ShiftTable: React.FC = () => {
   const { t } = useTranslation();
@@ -28,10 +30,6 @@ const ShiftTable: React.FC = () => {
 
   const handleViewDetails = (shiftId: number) => {
     navigate(`/shift/${shiftId}`);
-  };
-
-  const handleEdit = (shiftId: number) => {
-    console.log("Edit shift:", shiftId);
   };
 
   const handleDelete = (shiftId: number) => {
@@ -192,20 +190,12 @@ const ShiftTable: React.FC = () => {
                       >
                         <CircleArrowRight className="w-5 h-5" />
                       </button>
-                      <button
-                        onClick={() => handleEdit(shift.id)}
-                        title={t("shiftTable.editShift", "Edit Shift")}
-                        className="text-gray-500 hover:text-green-600 transition-colors p-1 rounded-full hover:bg-green-100"
-                      >
-                        <SquarePenIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(shift.id)}
-                        title={t("shiftTable.deleteShift", "Delete Shift")}
-                        className="text-gray-500 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-100"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
+
+                      <EditShiftDialog shift={shift} />
+                      <DeleteShiftDialog
+                        shiftId={shift.id}
+                        shiftName={shift.name}
+                      />
                     </div>
                   </td>
                 </tr>
