@@ -9,12 +9,7 @@ import InfinityLoader from "../../components/general/Loader";
 import ErrorComponent from "../../components/general/Error";
 import Pagination, { itemsPerPage } from "../general/Pagination";
 import { timesToRepresentativeString } from "../../utils/time-converters";
-import {
-  Clock,
-  SquarePenIcon,
-  TrashIcon,
-  CircleArrowRight,
-} from "lucide-react";
+import { Clock, CircleArrowRight } from "lucide-react";
 import EditShiftDialog from "./EditShiftDialog";
 import DeleteShiftDialog from "./DeleteShiftDialog";
 
@@ -65,9 +60,9 @@ const ShiftTable: React.FC = () => {
 
   return (
     <div className="m-auto w-11/12 md:w-5/6 xl:w-3/4 py-6 px-1">
-      <div className="mb-6 px-3">
+      <div className="mb-6 ">
         <div className="flex flex-col sm:flex-row gap-4 ">
-          <div className="flex-grow w-full sm:w-auto">
+          <div className="flex-grow ">
             <SearchBar
               // Updated translation key
               placeholder={t(

@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 import { TrashIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useRemoveBreakFromShift } from "../../graphql/hook/break";
 import InfinityLoader from "../general/Loader"; // Assuming a small loader component
-import { unixToHoursWithTimezone } from "../../utils/time-converters";
+import { timesToRepresentativeString } from "../../utils/time-converters";
 
 interface BreaksTableProps {
   breaks: IBreaks[];
-  shiftId: number;
+  shiftId?: number;
 }
 
 const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
@@ -18,6 +18,7 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const handleRemove = async (breakId: number) => {
+    if (!shiftId) return;
     // 1. Ask for confirmation
     if (window.confirm(t("breaksTable.confirmRemove"))) {
       setDeletingId(breakId); // 2. Set loading state for this specific row
@@ -79,13 +80,13 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {unixToHoursWithTimezone(breakItem.startTime)}
+                    {timesToRepresentativeString(breakItem.startTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {unixToHoursWithTimezone(breakItem.endTime)}
+                    {timesToRepresentativeString(breakItem.endTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-center">

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { useAssignBreak, useBreaks } from "../../graphql/hook/shift";
+import { useAssignBreak } from "../../graphql/hook/shift";
 import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
 import { IBreaks } from "../../graphql/interfaces";
 import CreateNewBreakBtn from "./CreateNewBreakBtn";
 import { useTranslation } from "react-i18next";
+import { useBreaks } from "../../graphql/hook/break";
 
 interface AssignBreakDialogBtnProps {
   shiftId: string;
@@ -107,7 +108,7 @@ const DialogContent: React.FC<{
                 </option>
                 {breaks.map((br: IBreaks) => (
                   <option key={br.id} value={br.id}>
-                    {br.name} ({br.startHour} - {br.endHour})
+                    {br.name} ({br.startTime} - {br.endTime})
                   </option>
                 ))}
               </select>

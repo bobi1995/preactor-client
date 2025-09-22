@@ -9,6 +9,7 @@ import SchedulePage from "../page/SchedulePage";
 import Schedule from "../page/Schedule";
 import Group from "../page/Group";
 import LNOrders from "../page/LNOrders";
+import BreaksPage from "../page/BreaksPage";
 
 const AppLayout = () => {
   return (
@@ -62,6 +63,10 @@ const mainRouter = createBrowserRouter([
       {
         path: "/group",
         element: <Group />,
+      },
+      {
+        path: "/breaks",
+        element: <BreaksPage />,
       },
     ],
   },

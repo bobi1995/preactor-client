@@ -62,8 +62,6 @@ const CreateShiftDialogBtn: React.FC = () => {
     }
   };
 
-  // Remove useEffect that depends on createData and createError, as they do not exist.
-
   const handleOpenChange = (open: boolean) => {
     if (open) {
       resetForm();

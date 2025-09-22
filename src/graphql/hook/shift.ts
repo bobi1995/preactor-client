@@ -1,11 +1,5 @@
 import { DELETE_SHIFT_MUTATION, UPDATE_SHIFT } from "../mutation/shift";
-import {
-  assignBreakMutation,
-  createBreakMutation,
-  getBreaks,
-  GET_SHIFT,
-  GET_SHIFTS,
-} from "../query/shift";
+import { assignBreakMutation, GET_SHIFT, GET_SHIFTS } from "../query/shift";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { CREATE_SHIFT } from "../mutation/shift";
 
@@ -33,16 +27,6 @@ export const useShift = (id: number) => {
   console.log(error);
   return {
     shift: data?.shift,
-    loading,
-    error,
-    reload: () => refetch(),
-  };
-};
-
-export const useBreaks = () => {
-  const { data, loading, error, refetch } = useQuery(getBreaks);
-  return {
-    breaks: data?.breaks,
     loading,
     error,
     reload: () => refetch(),
@@ -94,41 +78,6 @@ export const useAssignBreak = () => {
   };
   return {
     assignBreak,
-    loading,
-  };
-};
-
-export const useCreateBreak = () => {
-  const [mutate, { loading }] = useMutation(createBreakMutation);
-  const createBreak = async (
-    name: string,
-    startHour: string,
-    endHour: string
-  ) => {
-    const {
-      data: { createBreak },
-    } = await mutate({
-      variables: { input: { name, startHour, endHour } },
-      update: (cache, { data }) => {
-        console.log(data);
-        if (data?.createBreak) {
-          console.log("here");
-          const newBreak = data.createBreak;
-          cache.modify({
-            fields: {
-              breaks(existingBreaks = []) {
-                console.log(existingBreaks);
-                return [...existingBreaks, newBreak];
-              },
-            },
-          });
-        }
-      },
-    });
-    return createBreak;
-  };
-  return {
-    createBreak,
     loading,
   };
 };
