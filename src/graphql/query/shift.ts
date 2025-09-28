@@ -27,11 +27,3 @@ export const GET_SHIFT = gql`
     }
   }
 `;
-
-export const assignBreakMutation = gql`
-  mutation AssignBreakToShift($shiftId: ID!, $breakId: ID!) {
-    assignBreakToShift(shiftId: $shiftId, breakId: $breakId) {
-      id
-    }
-  }
-`;

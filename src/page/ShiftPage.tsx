@@ -9,7 +9,6 @@ import BreaksTable from "../components/shiftPage/BreaksTable";
 import { useTranslation } from "react-i18next";
 import { IBreaks, IResource } from "../graphql/interfaces";
 import ResourcesTable from "../components/shiftPage/ResourcesTable";
-import moment from "moment";
 import { unixToHoursWithTimezone } from "../utils/time-converters";
 
 const ShiftPage = () => {

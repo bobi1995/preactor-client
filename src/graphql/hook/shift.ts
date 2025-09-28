@@ -1,5 +1,5 @@
 import { DELETE_SHIFT_MUTATION, UPDATE_SHIFT } from "../mutation/shift";
-import { assignBreakMutation, GET_SHIFT, GET_SHIFTS } from "../query/shift";
+import { GET_SHIFT, GET_SHIFTS } from "../query/shift";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { CREATE_SHIFT } from "../mutation/shift";
 
@@ -20,11 +20,9 @@ export const useShifts = () => {
 };
 
 export const useShift = (id: number) => {
-  console.log(id);
   const { data, loading, error, refetch } = useQuery(GET_SHIFT, {
     variables: { getShiftId: id },
   });
-  console.log(error);
   return {
     shift: data?.shift,
     loading,
@@ -55,29 +53,6 @@ export const useCreateShift = () => {
   };
   return {
     createShift,
-    loading,
-  };
-};
-
-export const useAssignBreak = () => {
-  const [mutate, { loading }] = useMutation(assignBreakMutation);
-  const assignBreak = async (shiftId: string, breakId: string) => {
-    const {
-      data: { assignBreakToShift },
-    } = await mutate({
-      variables: { shiftId, breakId },
-      refetchQueries: [
-        {
-          query: GET_SHIFT,
-          variables: { id: shiftId },
-        },
-      ],
-      awaitRefetchQueries: true,
-    });
-    return assignBreakToShift;
-  };
-  return {
-    assignBreak,
     loading,
   };
 };

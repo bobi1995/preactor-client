@@ -6,7 +6,30 @@ import {
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_SHIFT } from "../query/shift";
 import { GET_BREAKS, CREATE_BREAK } from "../query/break";
+import { ASSIGN_BREAK_MUTATION } from "../mutation/break";
 
+export const useAssignBreak = () => {
+  const [mutate, { loading }] = useMutation(ASSIGN_BREAK_MUTATION);
+  const assignBreak = async (shiftId: string, breakId: string) => {
+    const {
+      data: { assignBreakToShift },
+    } = await mutate({
+      variables: { shiftId, breakId },
+      refetchQueries: [
+        {
+          query: GET_SHIFT,
+          variables: { getShiftId: shiftId },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+    return assignBreakToShift;
+  };
+  return {
+    assignBreak,
+    loading,
+  };
+};
 export const useRemoveBreakFromShift = () => {
   const [mutate, { loading }] = useMutation(REMOVE_BREAK_FROM_SHIFT);
 

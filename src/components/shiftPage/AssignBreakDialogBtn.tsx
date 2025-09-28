@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { useAssignBreak } from "../../graphql/hook/shift";
 import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
 import { IBreaks } from "../../graphql/interfaces";
 import CreateNewBreakBtn from "./CreateNewBreakBtn";
 import { useTranslation } from "react-i18next";
 import { useBreaks } from "../../graphql/hook/break";
+import { useAssignBreak } from "../../graphql/hook/break";
 
 interface AssignBreakDialogBtnProps {
   shiftId: string;

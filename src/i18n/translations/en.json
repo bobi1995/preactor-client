@@ -29,9 +29,12 @@
   },
   "nav": {
     "home": "Home",
+    "factory": "Factory",
+    "planning": "Planning",
     "resource": "Resources",
     "group": "Groups",
     "shift": "Shifts",
+    "break": "Breaks",
     "schedule": "Schedules",
     "openMenu": "Open main menu"
   },
