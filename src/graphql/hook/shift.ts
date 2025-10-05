@@ -58,7 +58,7 @@ export const useCreateShift = () => {
 };
 
 export const useUpdateShift = () => {
-  const [mutate, { loading }] = useMutation(UPDATE_SHIFT, {
+  const [mutate, { loading, error }] = useMutation(UPDATE_SHIFT, {
     refetchQueries: [
       {
         query: GET_SHIFTS,
@@ -79,6 +79,7 @@ export const useUpdateShift = () => {
   return {
     updateShift,
     loading,
+    error,
   };
 };
 

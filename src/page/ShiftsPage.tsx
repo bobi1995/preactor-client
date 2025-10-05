@@ -1,4 +1,4 @@
-import ShiftTable from "../components/shift/Shift-table";
+import ShiftTable from "../components/ShiftsPage/ShiftTable";
 
 const Shift = () => {
   return (

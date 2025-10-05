@@ -1,5 +1,6 @@
 {
   "common": {
+    "loading": "Loading...",
     "appName": "MyApp",
     "save": "Save",
     "saving": "Saving...",
@@ -17,6 +18,7 @@
     "unnamed": "Unnamed",
     "notAvailable": "N/A",
     "closeDialog": "Close",
+    "or": "or",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -57,7 +59,9 @@
     "noShiftsAvailable": "No shifts are currently available.",
     "editShift": "Edit Shift",
     "deleteShift": "Delete Shift",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "createNewPrompt": "Create a new shift to get started!",
+    "tryDifferentKeywords": "Try adjusting your search."
   },
   "createShiftDialog": {
     "title": "Create New Shift",
@@ -66,7 +70,8 @@
     "namePlaceholder": "e.g., Morning Shift",
     "startTime": "Start Time",
     "endTime": "End Time",
-    "endTimeAfterStartTimeError": "End time must be after start time."
+    "endTimeAfterStartTimeError": "End time must be after the start time.",
+    "nameExistsError": "A shift with this name already exists. Please choose a unique name."
   },
   "shiftPage": {
     "title": "Shift Details",
@@ -74,11 +79,18 @@
     "timelineTitle": "Shift Timeline Visualization",
     "timelineNote": "Timeline represents a 24-hour period.",
     "infoTitle": "Shift Information",
-    "breaksTitle": "Breaks",
+    "breaksTitle": "Assigned Breaks",
     "resourcesTitle": "Assigned Resources",
     "shiftNotFound": "Shift not found",
     "unableToFetchShift": "Unable to fetch shift. Please check your connection.",
-    "invalidShiftData": "Invalid shift data received."
+    "invalidShiftData": "Invalid shift data received.",
+    "assignBreaks": "Assign Breaks",
+    "noBreaksAvailable": "No breaks available to assign.",
+    "updateSuccess": "Breaks updated successfully.",
+    "tabs": {
+      "breaks": "Assigned Breaks",
+      "resources": "Assigned Resources"
+    }
   },
   "assignBreakDialog": {
     "assignButton": "Assign Break",
@@ -87,7 +99,8 @@
     "label": "Choose a break",
     "placeholder": "-- Select a break --",
     "unableToFetch": "Unable to fetch breaks. Please check your connection.",
-    "assignmentFailed": "Failed to assign break. Please check your connection and try again."
+    "assignmentFailed": "Failed to assign break. Please check your connection and try again.",
+    "noAvailableBreaks": "There are no more breaks available to assign."
   },
   "createNewBreakDialog": {
     "link": "Create a new break",
@@ -101,7 +114,9 @@
     "start": "Start Time",
     "end": "End Time",
     "noBreaksAssigned": "No breaks have been assigned to this shift.",
-    "removeBreak": "Remove Break"
+    "removeBreak": "Remove Break",
+    "confirmRemove": "Are you sure you want to remove the break <bold>\"{{breakName}}\"</bold> from the shift?",
+    "removeFailed": "Failed to remove break. Please try again."
   },
   "editShiftDialog": {
     "title": "Edit Shift",
@@ -133,14 +148,19 @@
       "end": "End Time",
       "noBreaks": "No breaks found.",
       "noBreaksAssigned": "No breaks have been assigned to this shift.",
-      "confirmRemove": "Are you sure you want to remove this break from the shift?"
+      "confirmRemove": "Are you sure you want to remove this break from the shift?",
+      "noBreaksAvailable": "No breaks available yet.",
+      "createNewPrompt": "Create a new break to get started!",
+      "noBreaksMatchSearch": "No breaks match your search.",
+      "tryDifferentKeywords": "Try adjusting your search."
     },
     "createDialog": {
       "title": "Create New Break",
       "description": "Fill in the details below to add a new break.",
       "nameLabel": "Break Name",
       "namePlaceholder": "e.g., Lunch Break",
-      "timeLabel": "Time Range"
+      "timeLabel": "Time Range",
+      "nameExistsError": "A break with this name already exists. Please enter a unique name."
     },
     "editDialog": {
       "title": "Edit Break",
@@ -156,5 +176,9 @@
       "description": "The break \"{{breakName}}\" is currently assigned to the following shifts:",
       "noAssignments": "This break is not currently assigned to any shifts."
     }
+  },
+  "confirmationDialog": {
+    "areYouSure": "Are you sure?",
+    "actionCannotBeUndone": "This action cannot be undone."
   }
 }

@@ -1,8 +1,25 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircle, X, LoaderCircle } from "lucide-react";
+import { PlusCircle, X, LoaderCircle, AlertTriangleIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCreateBreak } from "../../graphql/hook/break";
+import { IBreaks } from "../../graphql/interfaces";
+
+interface CreateBreakDialogProps {
+  allBreaks: IBreaks[]; // Prop to receive all existing breaks
+}
+
+const animationStyle = `
+  @keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+  }
+  .animate-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  }
+`;
 
 const generateTimeOptions = (
   max: number,
@@ -19,7 +36,7 @@ const generateTimeOptions = (
 const hourOptions = generateTimeOptions(24); // 00-23
 const minuteOptions = generateTimeOptions(60, 5); // 00, 05, 10... 55
 
-const CreateBreakDialog: React.FC = () => {
+const CreateBreakDialog: React.FC<CreateBreakDialogProps> = ({ allBreaks }) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,6 +45,13 @@ const CreateBreakDialog: React.FC = () => {
   const [endHour, setEndHour] = useState("12");
   const [endMinute, setEndMinute] = useState("15");
   const { createBreak, loading, error } = useCreateBreak();
+  const [validationError, setValidationError] = useState<{
+    message: string;
+    key: number;
+  } | null>(null);
+  const triggerError = (messageKey: string) => {
+    setValidationError({ message: t(messageKey), key: Math.random() });
+  };
 
   const resetForm = () => {
     setName("");
@@ -35,31 +59,40 @@ const CreateBreakDialog: React.FC = () => {
     setStartMinute("00");
     setEndHour("12");
     setEndMinute("15");
+    setValidationError(null);
   };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (name.trim() !== "") {
-      const startTime = `${startHour}:${startMinute}`;
-      const endTime = `${endHour}:${endMinute}`;
+    setValidationError(null);
 
-      const startDate = new Date(`1970-01-01T${startTime}:00`);
-      const endDate = new Date(`1970-01-01T${endTime}:00`);
+    if (name.trim() === "") {
+      triggerError("common.nameRequired");
+      return;
+    }
 
-      if (endDate <= startDate) {
-        alert(
-          t(
-            "createBreakDialog.endTimeAfterStartTimeError",
-            "Крайното време трябва да е след началното."
-          )
-        );
-        return;
-      }
+    if (
+      allBreaks.some((b) => b.name.toLowerCase() === name.trim().toLowerCase())
+    ) {
+      triggerError("breaksPage.createDialog.nameExistsError");
+      return;
+    }
 
-      createBreak(name, startTime, endTime);
+    const startTime = `${startHour}:${startMinute}`;
+    const endTime = `${endHour}:${endMinute}`;
+    const startDate = new Date(`1970-01-01T${startTime}:00`);
+    const endDate = new Date(`1970-01-01T${endTime}:00`);
+
+    if (endDate <= startDate) {
+      triggerError("createShiftDialog.endTimeAfterStartTimeError");
+      return;
+    }
+
+    try {
+      await createBreak(name, startTime, endTime);
       setIsDialogOpen(false);
-    } else {
-      console.error("Грешка при валидация: Името е задължително.");
+    } catch (err) {
+      console.error("Error creating break:", err);
+      triggerError("common.errorGeneral");
     }
   };
 
@@ -75,6 +108,8 @@ const CreateBreakDialog: React.FC = () => {
 
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={handleOpenChange}>
+      <style>{animationStyle}</style>
+
       <Dialog.Trigger asChild>
         <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-4 py-2.5 text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           <PlusCircle className="h-5 w-5" />
@@ -195,14 +230,19 @@ const CreateBreakDialog: React.FC = () => {
             </div>
 
             {/* Показване на съобщение за грешка */}
-            {error && (
-              <p className="mt-4 text-sm text-red-600">
-                {t(
-                  "common.errorGeneral",
-                  "Възникна грешка. Моля, опитайте отново."
-                )}
-              </p>
-            )}
+            <div className="mt-4 h-12 flex items-center">
+              {validationError && (
+                <div
+                  key={validationError.key} // The key forces a re-render and re-triggers the animation
+                  className="bg-red-50 p-3 rounded-md flex items-center space-x-3 w-full animate-shake"
+                >
+                  <AlertTriangleIcon className="h-5 w-5 text-red-500 flex-shrink-0" />
+                  <p className="text-sm text-red-800">
+                    {validationError.message}
+                  </p>
+                </div>
+              )}
+            </div>
 
             <div className="mt-6 flex justify-end space-x-3">
               <Dialog.Close asChild>

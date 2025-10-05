@@ -30,10 +30,10 @@ const BreaksPage = () => {
           <div className="flex-grow">
             <SearchBar placeholder={t("breaksPage.searchPlaceholder")} />
           </div>
-          <CreateBreakDialog />
+          <CreateBreakDialog allBreaks={breaks} />
         </div>
       </div>
-      <BreaksTable breaks={filteredBreaks} />
+      <BreaksTable breaks={filteredBreaks} query={query} />
     </div>
   );
 };

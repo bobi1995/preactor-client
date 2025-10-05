@@ -36,7 +36,10 @@ export const useRemoveBreakFromShift = () => {
   const removeBreakFromShift = async (shiftId: number, breakId: number) => {
     const { data } = await mutate({
       variables: { breakId, shiftId },
-      refetchQueries: [{ query: GET_SHIFT, variables: { id: shiftId } }],
+      refetchQueries: [
+        { query: GET_SHIFT, variables: { getShiftId: shiftId } },
+      ],
+      awaitRefetchQueries: true,
     });
     return data.removeBreakFromShift;
   };
