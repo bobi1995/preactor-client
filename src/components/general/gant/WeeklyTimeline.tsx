@@ -1,9 +1,7 @@
-// src/components/schedulePage/WeeklyTimeline.tsx
-
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ISchedule, IShift, IBreaks } from "../../../graphql/interfaces";
-import { unixToHoursWithTimezone } from "../../../utils/time-converters";
+import TimelineComponent from "./Timeline"; // The 24-hour ruler at the top
 
 interface WeeklyTimelineProps {
   schedule: ISchedule;
@@ -19,43 +17,46 @@ const weekDays: (keyof ISchedule)[] = [
   "sunday",
 ];
 
+// Helper to convert time string (e.g., "08:00:00.000") to a decimal hour
 const timeToDecimal = (timeStr: string): number => {
   if (typeof timeStr !== "string" || !timeStr.includes(":")) return 0;
-  const [hours, minutes] = timeStr.split(":");
-  return Number(hours) + Number(minutes) / 60;
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours + minutes / 60;
 };
 
-const DayColumn: React.FC<{
-  dayKey: keyof ISchedule;
-  shift: IShift | null;
-}> = ({ dayKey, shift }) => {
-  const { t } = useTranslation("common");
+// A single horizontal row representing one day in the Gantt chart
+const DayRow: React.FC<{ dayKey: keyof ISchedule; shift: IShift | null }> = ({
+  dayKey,
+  shift,
+}) => {
+  const { t } = useTranslation();
 
   const renderShiftBar = () => {
-    if (!shift) {
-      return null; // No shift assigned for this day
-    }
+    if (!shift) return null; // Return nothing if no shift is assigned
 
     const startDecimal = timeToDecimal(shift.startHour);
     let endDecimal = timeToDecimal(shift.endHour);
+    // Handle shifts that cross midnight
     if (endDecimal < startDecimal) endDecimal += 24;
 
+    // Use 'left' and 'width' for horizontal positioning
     const leftPercentage = (startDecimal / 24) * 100;
     const widthPercentage = ((endDecimal - startDecimal) / 24) * 100;
 
     return (
       <div
-        className="absolute inset-y-0 bg-indigo-500 rounded flex items-center justify-center text-white text-xs font-medium shadow-inner"
+        className="absolute h-full bg-indigo-500/80 rounded flex items-center justify-center text-white text-xs font-medium shadow-inner overflow-hidden"
         style={{
           left: `${leftPercentage}%`,
           width: `${widthPercentage}%`,
           zIndex: 10,
         }}
-        title={`${shift.name}: ${unixToHoursWithTimezone(
-          shift.startHour
-        )} - ${unixToHoursWithTimezone(shift.endHour)}`}
+        title={`${shift.name}: ${shift.startHour.slice(
+          0,
+          5
+        )} - ${shift.endHour.slice(0, 5)}`}
       >
-        {/* Render breaks on top of the shift */}
+        {/* Breaks are positioned relative to the parent shift bar */}
         {Array.isArray(shift.breaks) &&
           shift.breaks.map((breakItem: IBreaks) => {
             if (
@@ -69,11 +70,12 @@ const DayColumn: React.FC<{
             let breakEndDecimal = timeToDecimal(breakItem.endTime);
             if (breakEndDecimal < breakStartDecimal) breakEndDecimal += 24;
 
-            // Ensure the break is visually within the shift
+            // Only render breaks that are within the shift's time
             if (
               breakStartDecimal >= startDecimal &&
               breakEndDecimal <= endDecimal
             ) {
+              // Calculate position and width RELATIVE to the parent shift bar
               const breakLeft =
                 ((breakStartDecimal - startDecimal) /
                   (endDecimal - startDecimal)) *
@@ -86,15 +88,16 @@ const DayColumn: React.FC<{
               return (
                 <div
                   key={breakItem.id}
-                  className="absolute inset-y-0 bg-sky-400/80 border-x border-sky-500/50"
+                  className="absolute h-full bg-sky-400/70"
                   style={{
                     left: `${breakLeft}%`,
                     width: `${breakWidth}%`,
                     zIndex: 20,
                   }}
-                  title={`${breakItem.name}: ${unixToHoursWithTimezone(
-                    breakItem.startTime
-                  )} - ${unixToHoursWithTimezone(breakItem.endTime)}`}
+                  title={`${breakItem.name}: ${breakItem.startTime.slice(
+                    0,
+                    5
+                  )} - ${breakItem.endTime.slice(0, 5)}`}
                 />
               );
             }
@@ -105,13 +108,13 @@ const DayColumn: React.FC<{
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="text-center font-semibold text-sm text-slate-600 py-2 border-b border-slate-200">
-        {t(`days.${dayKey}`)}
+    <div className="grid grid-cols-[120px_1fr] border-t border-slate-200">
+      {/* Day Label Column */}
+      <div className="font-semibold text-sm text-slate-600 p-3 flex items-center border-r border-slate-200 bg-slate-50">
+        {t(`common.days.${dayKey}`)}
       </div>
-      <div className="relative h-12 bg-slate-100 border-b border-slate-200">
-        {renderShiftBar()}
-      </div>
+      {/* Timeline Bar Column */}
+      <div className="relative h-12 bg-slate-100">{renderShiftBar()}</div>
     </div>
   );
 };
@@ -119,18 +122,33 @@ const DayColumn: React.FC<{
 const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({ schedule }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white shadow-xl rounded-xl overflow-hidden p-6">
-      <h2 className="text-lg font-semibold text-slate-700 mb-4">
-        {t("shiftPage.timelineTitle")}
-      </h2>
-      <div className="grid grid-cols-1">
-        {weekDays.map((day) => (
-          <DayColumn key={day} dayKey={day} shift={schedule[day]} />
-        ))}
+    <div className="bg-white shadow-xl rounded-xl overflow-hidden">
+      <div className="p-6">
+        <h2 className="text-lg font-semibold text-slate-700 mb-4">
+          {t("shiftPage.timelineTitle")}
+        </h2>
+
+        {/* Header section with an empty spacer for day labels and the 24-hour ruler */}
+        <div className="grid grid-cols-[120px_1fr]">
+          <div>{/* Empty spacer */}</div>
+          <TimelineComponent viewType="hours" day={new Date()} />
+        </div>
+
+        {/* The 7-day Gantt chart rows */}
+        <div className="border border-slate-200 rounded-b-md overflow-hidden">
+          {weekDays.map((day) => (
+            <DayRow
+              key={day}
+              dayKey={day}
+              shift={schedule[day] as IShift | null}
+            />
+          ))}
+        </div>
+
+        <p className="mt-2 text-xs text-slate-400 text-center">
+          {t("shiftPage.timelineNote")}
+        </p>
       </div>
-      <p className="mt-2 text-xs text-slate-400 text-center">
-        {t("shiftPage.timelineNote")}
-      </p>
     </div>
   );
 };

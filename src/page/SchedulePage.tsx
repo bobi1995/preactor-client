@@ -1,7 +1,5 @@
-// src/page/SchedulePage.tsx
-
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams, useBlocker } from "react-router"; // Using 'react-router' as requested
+import { useParams, useBlocker } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useSchedule, useUpdateSchedule } from "../graphql/hook/schedule";
 import { useShifts } from "../graphql/hook/shift";
@@ -9,7 +7,8 @@ import { IShift, ISchedule } from "../graphql/interfaces";
 import DayShiftSelector from "../components/schedulePage/DayShiftSelector";
 import LoadingDialog from "../components/general/LoadingDialog";
 import ErrorComponent from "../components/general/Error";
-import UnsavedChangesDialog from "../components/general/UnsavedChangesDialog"; // Import the new dialog
+import UnsavedChangesDialog from "../components/general/UnsavedChangesDialog";
+import WeeklyTimeline from "../components/general/gant/WeeklyTimeline"; // 1. Import the new component
 import { Save } from "lucide-react";
 
 type DayKey =
@@ -59,14 +58,13 @@ const SchedulePage: React.FC = () => {
     );
   }, [originalSchedule, currentSchedule]);
 
-  // System 1: Hook for intercepting in-app navigation (e.g., clicking a NavLink)
   const blocker = useBlocker(isDirty);
 
-  // System 2: Effect for handling browser-level actions (e.g., closing tab, refresh)
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         event.preventDefault();
+        event.returnValue = t("scheduleBuilder.unsavedChangesWarning");
         return t("scheduleBuilder.unsavedChangesWarning");
       }
     };
@@ -107,7 +105,7 @@ const SchedulePage: React.FC = () => {
   if (error) return <ErrorComponent message={error.message} />;
 
   return (
-    <div className="w-full py-6 px-4">
+    <div className="w-full py-6 px-4 space-y-8">
       <LoadingDialog isLoading={isLoading || isSaving} />
 
       {blocker.state === "blocked" && (
@@ -118,7 +116,7 @@ const SchedulePage: React.FC = () => {
         />
       )}
 
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-3xl font-bold text-slate-800">
           {t("scheduleBuilder.title")}:{" "}
           <span className="text-indigo-600">{currentSchedule?.name}</span>
@@ -138,6 +136,7 @@ const SchedulePage: React.FC = () => {
         </button>
       </div>
 
+      {/* 2. The Day Shift Selectors are at the top */}
       {!isLoading && currentSchedule && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-6">
           {weekDays.map((day) => (
@@ -154,6 +153,11 @@ const SchedulePage: React.FC = () => {
             />
           ))}
         </div>
+      )}
+
+      {/* 3. The new Gantt Chart is now at the bottom, visualizing the current state */}
+      {!isLoading && currentSchedule && (
+        <WeeklyTimeline schedule={currentSchedule} />
       )}
     </div>
   );
