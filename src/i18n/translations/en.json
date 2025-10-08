@@ -139,6 +139,37 @@
     "internal": "An unexpected server error occurred. Please try again later.",
     "unknown": "An unknown error occurred while trying to delete the shift."
   },
+  "schedulesPage": {
+    "title": "Weekly Schedules",
+    "searchPlaceholder": "Search by schedule name...",
+    "noSchedulesAvailable": "No schedules available yet.",
+    "createNewPrompt": "Create a new schedule to get started!",
+    "noSchedulesMatchSearch": "No schedules match your search.",
+    "tryDifferentKeywords": "Try adjusting your search.",
+    "createDialogTitle": "Create New Schedule",
+    "createDialogDescription": "Please enter a name for your new weekly schedule.",
+    "nameLabel": "Schedule Name",
+    "namePlaceholder": "e.g., Standard Week",
+    "deleteTitle": "Delete Schedule",
+    "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone.",
+    "deleteErrorInUse": "Cannot delete schedule. It is assigned to one or more resources."
+  },
+  "scheduleBuilder": {
+    "title": "Schedule Builder",
+    "shiftListTitle": "Available Shifts",
+    "saveButton": "Save Changes",
+    "savingButton": "Saving...",
+    "saveSuccess": "Schedule saved successfully!",
+    "unassigned": "Unassigned",
+    "noShiftOption": "No Shift",
+    "unsavedChangesWarning": "You have unsaved changes. Are you sure you want to leave?"
+  },
+  "unsavedChangesDialog": {
+    "title": "Unsaved Changes",
+    "description": "You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost.",
+    "leaveButton": "Leave Page",
+    "stayButton": "Stay"
+  },
   "breaksPage": {
     "title": "Breaks Management",
     "searchPlaceholder": "Search by break name...",

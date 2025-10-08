@@ -1,16 +1,16 @@
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  getSchedules,
-  getSchedule,
-  updateSchedule,
-  createSchedule,
-  deleteSchedule,
+  GET_SCHEDULES,
+  GET_SCHEDULE,
+  UPDATE_SCHEDULE,
+  CREATE_SCHEDULE,
+  DELETE_SCHEDULE,
 } from "../query/schedule";
 
 export const useSchedules = () => {
-  const { data, loading, error, refetch } = useQuery(getSchedules);
+  const { data, loading, error, refetch } = useQuery(GET_SCHEDULES);
   return {
-    schedules: data?.schedules,
+    schedules: data?.schedules || [],
     loading,
     error,
     reload: () => refetch(),
@@ -18,10 +18,10 @@ export const useSchedules = () => {
 };
 
 export const useSchedule = (id: number) => {
-  const { data, loading, error, refetch } = useQuery(getSchedule, {
+  const { data, loading, error, refetch } = useQuery(GET_SCHEDULE, {
     variables: { getScheduleId: id },
+    skip: !id, // Don't run the query if there's no ID
   });
-
   return {
     schedule: data?.schedule,
     loading,
@@ -30,50 +30,60 @@ export const useSchedule = (id: number) => {
   };
 };
 
+// MODIFIED: This hook now takes all day IDs to create a full schedule
 export const useCreateSchedule = () => {
-  const [mutate, { loading }] = useMutation(createSchedule);
-  const create = async (name: string) => {
-    const {
-      data: { createSchedule },
-    } = await mutate({
-      variables: { name },
+  const [mutate, { loading }] = useMutation(CREATE_SCHEDULE, {
+    // Refetch the list of all schedules after creating a new one
+    refetchQueries: [{ query: GET_SCHEDULES }],
+  });
+  const createSchedule = async (name: string) => {
+    const { data } = await mutate({
+      variables: {
+        // Create a new schedule with a name and all days set to null
+        input: {
+          name,
+          mondayId: null,
+          tuesdayId: null,
+          wednesdayId: null,
+          thursdayId: null,
+          fridayId: null,
+          saturdayId: null,
+          sundayId: null,
+        },
+      },
     });
-    return createSchedule;
+    return data.createSchedule; // Return the new schedule object (including its ID)
   };
-  return {
-    create,
-    loading,
-  };
+  return { createSchedule, loading };
 };
 
 export const useUpdateSchedule = () => {
-  const [mutate, { loading }] = useMutation(updateSchedule);
-  const update = async (updateScheduleId: string, input: any) => {
-    const inputData = {
-      monday: parseInt(input.monday),
-      tuesday: parseInt(input.tuesday),
-      wednesday: parseInt(input.wednesday),
-      thursday: parseInt(input.thursday),
-      friday: parseInt(input.friday),
-      saturday: parseInt(input.saturday),
-      sunday: parseInt(input.sunday),
-      name: input.name,
-    };
-    const {
-      data: { updateSchedule },
-    } = await mutate({
-      variables: { updateScheduleId, input: inputData },
+  const [mutate, { loading }] = useMutation(UPDATE_SCHEDULE);
+
+  const updateSchedule = async (updateScheduleId: string, input: any) => {
+    const { data } = await mutate({
+      variables: { updateScheduleId, input },
+      refetchQueries: [
+        {
+          query: GET_SCHEDULE,
+          variables: { getScheduleId: updateScheduleId },
+        },
+      ],
+      awaitRefetchQueries: true,
     });
-    return updateSchedule;
+    return data.updateSchedule;
   };
+
   return {
-    update,
+    updateSchedule,
     loading,
   };
 };
 
 export const useDeleteSchedule = () => {
-  const [mutate, { loading }] = useMutation(deleteSchedule);
+  const [mutate, { loading }] = useMutation(DELETE_SCHEDULE, {
+    refetchQueries: [{ query: GET_SCHEDULES }],
+  });
   const remove = async (id: string) => {
     await mutate({
       variables: { deleteScheduleId: id },

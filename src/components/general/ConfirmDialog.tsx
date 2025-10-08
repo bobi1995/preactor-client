@@ -57,7 +57,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             </div>
             <div className="flex-1">
               <Dialog.Title className="text-lg font-semibold text-gray-900">
-                {title} {}
+                {title}
               </Dialog.Title>
               <div className="mt-2 text-sm text-gray-600">
                 {description || <p>{t("confirmationDialog.areYouSure")}</p>}
