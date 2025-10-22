@@ -1,65 +1,64 @@
-import React, { useState, useEffect } from "react";
+// src/components/shiftPage/AssignBreakDialogBtn.tsx
+
+import React, { useState, useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { useAssignBreak, useBreaks } from "../../graphql/hook/shift";
-import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
 import { IBreaks } from "../../graphql/interfaces";
 import CreateNewBreakBtn from "./CreateNewBreakBtn";
 import { useTranslation } from "react-i18next";
+import { useBreaks, useAssignBreak } from "../../graphql/hook/break";
+import { ChevronsUpDown } from "lucide-react";
+import Spinner from "../general/Spinner";
+import { toast } from "react-toastify";
 
 interface AssignBreakDialogBtnProps {
   shiftId: string;
+  assignedBreaks: IBreaks[]; // 1. Accept the list of currently assigned breaks
   onAssignmentSuccess?: () => void;
 }
 
 const DialogContent: React.FC<{
   shiftId: string;
+  assignedBreaks: IBreaks[]; // Pass down to content
   setIsOpen: (isOpen: boolean) => void;
   onAssignmentSuccess?: () => void;
-}> = ({ shiftId, setIsOpen, onAssignmentSuccess }) => {
+}> = ({ shiftId, assignedBreaks, setIsOpen, onAssignmentSuccess }) => {
   const { t } = useTranslation();
-  const { breaks, loading, error, reload } = useBreaks();
-  // Assume useAssignBreak is updated to also return the error object from the mutation
+  const { breaks: allBreaks, loading, error, reload } = useBreaks();
   const { assignBreak, loading: assignLoading } = useAssignBreak();
   const [selectedBreakId, setSelectedBreakId] = useState<string>("");
-  // State to hold submission-specific errors
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+  // 2. Filter the list of all breaks to exclude those already assigned
+  const availableBreaks = useMemo(() => {
+    if (!allBreaks) return [];
+    const assignedBreakIds = new Set(assignedBreaks.map((b) => b.id));
+    return allBreaks.filter(
+      (breakItem: IBreaks) => !assignedBreakIds.has(breakItem.id)
+    );
+  }, [allBreaks, assignedBreaks]);
 
   const handleSubmit = async () => {
     if (!selectedBreakId) return;
-
-    setSubmissionError(null); // Clear previous errors before a new attempt
-
+    setSubmissionError(null);
     try {
-      const result = await assignBreak(shiftId, selectedBreakId);
-
-      // Check for GraphQL errors returned in the mutation result
-      if (result && result.errors) {
-        throw new Error(
-          result.errors[0].message || t("assignBreakDialog.assignmentFailed")
-        );
-      }
-
-      // If we get here, the mutation was successful
+      await assignBreak(shiftId, selectedBreakId);
       setIsOpen(false);
-      if (onAssignmentSuccess) {
-        onAssignmentSuccess();
-      }
+      onAssignmentSuccess?.();
+      toast.success(t("assignBreakDialog.assignmentSuccess"));
     } catch (e: any) {
-      console.error("Failed to assign break:", e);
-      // Set a user-friendly error message to display in the UI
       setSubmissionError(e.message || t("assignBreakDialog.assignmentFailed"));
     }
   };
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSubmissionError(null); // Clear error when user changes selection
+    setSubmissionError(null);
     setSelectedBreakId(e.target.value);
   };
 
   const selectClassName =
-    "w-full appearance-none bg-white px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm";
+    "w-full appearance-none bg-white px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm";
 
   return (
     <>
@@ -70,7 +69,6 @@ const DialogContent: React.FC<{
         {t("assignBreakDialog.description")}
       </Dialog.Description>
 
-      {/* This error is for fetching the list of breaks */}
       {error && (
         <div className="my-4">
           <ErrorComponent
@@ -80,67 +78,67 @@ const DialogContent: React.FC<{
         </div>
       )}
 
-      {loading && (
-        <div className="h-40 flex justify-center items-center">
-          <InfinityLoader />
-        </div>
-      )}
-
-      {!loading && !error && breaks && (
-        <div className="space-y-4">
-          <div>
-            <label
-              htmlFor="break-select"
-              className="block text-sm font-medium text-slate-700 mb-1"
+      <div className="space-y-4">
+        <div>
+          <label
+            htmlFor="break-select"
+            className="block text-sm font-medium text-slate-700 mb-1"
+          >
+            {t("assignBreakDialog.label")}
+          </label>
+          <div className="relative">
+            <select
+              id="break-select"
+              value={selectedBreakId}
+              onChange={handleSelectionChange}
+              disabled={loading}
+              className={`${selectClassName} ${
+                loading ? "bg-slate-100 cursor-wait" : ""
+              }`}
             >
-              {t("assignBreakDialog.label")}
-            </label>
-            <div className="relative">
-              <select
-                id="break-select"
-                value={selectedBreakId}
-                onChange={handleSelectionChange} // Use new handler
-                className={selectClassName}
-              >
-                <option value="" disabled>
-                  {t("assignBreakDialog.placeholder")}
-                </option>
-                {breaks.map((br: IBreaks) => (
+              <option value="" disabled>
+                {loading
+                  ? t("common.loading")
+                  : t("assignBreakDialog.placeholder")}
+              </option>
+              {/* 3. Map over the new, filtered list */}
+              {!loading &&
+                availableBreaks.map((br: IBreaks) => (
                   <option key={br.id} value={br.id}>
-                    {br.name} ({br.startHour} - {br.endHour})
+                    {br.name} ({br.startTime.slice(0, 5)} -{" "}
+                    {br.endTime.slice(0, 5)})
                   </option>
                 ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
-                <svg
-                  className="h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+              {loading ? (
+                <Spinner className="h-4 w-4" />
+              ) : (
+                <ChevronsUpDown className="h-4 w-4" />
+              )}
             </div>
           </div>
-          <div className="text-center text-sm text-slate-500 my-2 relative flex items-center">
-            <div className="flex-grow border-t border-slate-200"></div>
-            <span className="flex-shrink mx-4 text-slate-400">
-              {t("common.or", "or")}
-            </span>
-            <div className="flex-grow border-t border-slate-200"></div>
-          </div>
-          <div className="flex justify-center">
-            <CreateNewBreakBtn />
-          </div>
+          {/* 4. Show a message if there are no available breaks to assign */}
+          {!loading && availableBreaks.length === 0 && (
+            <p className="mt-2 text-xs text-center text-slate-500 italic">
+              {t("assignBreakDialog.noAvailableBreaks")}
+            </p>
+          )}
         </div>
-      )}
 
-      {/* This is the new error display for the submission action */}
+        <div className="text-center text-sm text-slate-500 my-2 relative flex items-center">
+          <div className="flex-grow border-t border-slate-200"></div>
+          <span className="flex-shrink mx-4 text-slate-400">
+            {t("common.or")}
+          </span>
+          <div className="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <div className="flex justify-center">
+          <CreateNewBreakBtn />
+        </div>
+      </div>
+
       {submissionError && (
         <div className="mt-4 text-sm text-red-700 bg-red-50 p-3 rounded-md border border-red-200">
           {submissionError}
@@ -152,24 +150,27 @@ const DialogContent: React.FC<{
           <button
             type="button"
             disabled={assignLoading}
-            className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200"
           >
             {t("common.cancel")}
           </button>
         </Dialog.Close>
         <button
           type="button"
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 shadow-sm"
+          className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
           onClick={handleSubmit}
-          disabled={assignLoading || !selectedBreakId}
+          disabled={loading || assignLoading || !selectedBreakId}
         >
+          {assignLoading && (
+            <Spinner className="h-4 w-4 -ml-1 mr-2 border-white/40 border-t-white" />
+          )}
           {assignLoading ? t("common.saving") : t("common.save")}
         </button>
       </div>
 
       <Dialog.Close asChild>
         <button
-          className="absolute top-3 right-3 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="absolute top-3 right-3 p-1 rounded-full text-slate-400 hover:text-slate-600"
           aria-label={t("common.closeDialog")}
         >
           <XMarkIcon className="h-5 w-5" />
@@ -181,6 +182,7 @@ const DialogContent: React.FC<{
 
 const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
   shiftId,
+  assignedBreaks,
   onAssignmentSuccess,
 }) => {
   const { t } = useTranslation();
@@ -189,17 +191,18 @@ const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg px-4 py-2 text-sm flex items-center gap-2 shadow hover:shadow-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-4 py-2 text-sm flex items-center gap-2 shadow hover:shadow-lg transition-all">
           <PlusIcon className="h-5 w-5" />
           {t("assignBreakDialog.assignButton")}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-sm data-[state=open]:animate-overlayShow z-40" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl max-w-md w-[90vw] p-6 data-[state=open]:animate-contentShow focus:outline-none z-50">
+        <Dialog.Overlay className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl max-w-md w-[90vw] p-6 z-50">
           {isOpen && (
             <DialogContent
               shiftId={shiftId}
+              assignedBreaks={assignedBreaks}
               setIsOpen={setIsOpen}
               onAssignmentSuccess={onAssignmentSuccess}
             />

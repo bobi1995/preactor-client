@@ -2,13 +2,14 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import NavBar from "../components/general/NavBar";
 import Home from "../page/Home";
 import Resource from "../page/Resource";
-import Shift from "../page/Shift";
+import Shift from "../page/ShiftsPage";
 import ResourcePage from "../page/ResourcePage";
 import ShiftPage from "../page/ShiftPage";
 import SchedulePage from "../page/SchedulePage";
-import Schedule from "../page/Schedule";
+import SchedulesPage from "../page/SchedulesPage";
 import Group from "../page/Group";
 import LNOrders from "../page/LNOrders";
+import BreaksPage from "../page/BreaksPage";
 
 const AppLayout = () => {
   return (
@@ -49,7 +50,7 @@ const mainRouter = createBrowserRouter([
       },
       {
         path: "/schedule",
-        element: <Schedule />,
+        element: <SchedulesPage />,
       },
       {
         path: "/schedule/:id",
@@ -62,6 +63,10 @@ const mainRouter = createBrowserRouter([
       {
         path: "/group",
         element: <Group />,
+      },
+      {
+        path: "/breaks",
+        element: <BreaksPage />,
       },
     ],
   },

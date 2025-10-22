@@ -50,6 +50,7 @@ export interface IBreaks {
   name: string;
   startTime: string;
   endTime: string;
+  shifts: IShift[];
 }
 
 export interface IRestriction {

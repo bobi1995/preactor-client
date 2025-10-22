@@ -42,7 +42,7 @@ const TimelineComponent: React.FC<TimelineProps> = ({
 
   const getDayOfWeek = (date: Date) =>
     t(
-      `common:days.${moment(date).format("dddd").toLowerCase()}`, // Using moment for day name and common namespace
+      `common.days.${moment(date).format("dddd").toLowerCase()}`, // Using moment for day name and common namespace
       moment(date).format("ddd") // Fallback to short day name if translation missing
     );
 
@@ -82,12 +82,12 @@ const TimelineComponent: React.FC<TimelineProps> = ({
       for (let i = 0; i < 5; i++) {
         if (i === 0) {
           weeks.push(
-            `${t("common:week")} ${getWeekNumber(currentDateForWeekGen)}`
+            `${t("common.week")} ${getWeekNumber(currentDateForWeekGen)}`
           );
         } else {
           currentDateForWeekGen.setDate(currentDateForWeekGen.getDate() + 7);
           weeks.push(
-            `${t("common:week")} ${getWeekNumber(currentDateForWeekGen)}`
+            `${t("common.week")} ${getWeekNumber(currentDateForWeekGen)}`
           );
         }
       }

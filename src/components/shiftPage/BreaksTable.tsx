@@ -1,40 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { IBreaks } from "../../graphql/interfaces";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { TrashIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useRemoveBreakFromShift } from "../../graphql/hook/break";
-import InfinityLoader from "../general/Loader"; // Assuming a small loader component
-import { unixToHoursWithTimezone } from "../../utils/time-converters";
+import { timesToRepresentativeString } from "../../utils/time-converters";
+import ConfirmationDialog from "../general/ConfirmDialog";
+import { toast } from "react-toastify";
 
 interface BreaksTableProps {
   breaks: IBreaks[];
-  shiftId: number;
+  shiftId?: number;
 }
 
 const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
   const { t } = useTranslation();
   const { removeBreakFromShift } = useRemoveBreakFromShift();
-  // State to track which break is currently being deleted
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-
   const handleRemove = async (breakId: number) => {
-    // 1. Ask for confirmation
-    if (window.confirm(t("breaksTable.confirmRemove"))) {
-      setDeletingId(breakId); // 2. Set loading state for this specific row
-      try {
-        const result = await removeBreakFromShift(shiftId, breakId);
-        if (result.error) {
-          throw new Error(
-            result?.error?.message || t("breaksTable.removeFailed")
-          );
-        }
-      } catch (error: any) {
-        // 4. Handle exceptions and show an error message
-        console.error("Error removing break:", error);
-        alert(error.message || t("breaksTable.removeFailed"));
-      } finally {
-        setDeletingId(null); // 5. Reset loading state regardless of outcome
-      }
+    if (!shiftId) return;
+    try {
+      await removeBreakFromShift(shiftId, breakId);
+      toast.success(t("breaksTable.removeSuccess"));
+    } catch (error: any) {
+      throw error;
     }
   };
 
@@ -79,32 +66,40 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {unixToHoursWithTimezone(breakItem.startTime)}
+                    {timesToRepresentativeString(breakItem.startTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
                     <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
-                    {unixToHoursWithTimezone(breakItem.endTime)}
+                    {timesToRepresentativeString(breakItem.endTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-center">
-                  <div className="w-6 h-6 mx-auto">
-                    {deletingId === Number(breakItem.id) ? (
-                      // Show a loader on the specific row being deleted
-                      <InfinityLoader />
-                    ) : (
+                  <ConfirmationDialog
+                    title={t("breaksTable.removeBreak")}
+                    description={
+                      // 2. Use the Trans component to handle the translation with parameters and styling
+                      <Trans
+                        i18nKey="breaksTable.confirmRemove"
+                        values={{ breakName: breakItem.name }}
+                        components={{
+                          bold: (
+                            <span className="font-semibold text-slate-800" />
+                          ),
+                        }}
+                      />
+                    }
+                    confirmAction={() => handleRemove(Number(breakItem.id))}
+                    triggerButton={
                       <button
-                        onClick={() => handleRemove(Number(breakItem.id))}
                         title={t("breaksTable.removeBreak")}
-                        // Disable the button if any deletion is in progress
-                        disabled={deletingId !== null}
-                        className="text-slate-500 hover:text-red-600 p-1 rounded-full hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-slate-500 hover:text-red-600 p-1 rounded-full hover:bg-red-100 transition-colors"
                       >
                         <TrashIcon className="w-5 h-5" />
                       </button>
-                    )}
-                  </div>
+                    }
+                  />
                 </td>
               </tr>
             ))}

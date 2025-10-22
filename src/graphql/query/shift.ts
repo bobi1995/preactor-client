@@ -7,6 +7,12 @@ export const GET_SHIFTS = gql`
       startHour
       name
       endHour
+      breaks {
+        startTime
+        endTime
+        id
+        name
+      }
     }
   }
 `;
@@ -24,36 +30,6 @@ export const GET_SHIFT = gql`
         id
         name
       }
-    }
-  }
-`;
-
-export const getBreaks = gql`
-  query getBreaks {
-    breaks: getBreaks {
-      id
-      name
-      startHour
-      endHour
-    }
-  }
-`;
-
-export const assignBreakMutation = gql`
-  mutation AssignBreakToShift($shiftId: ID!, $breakId: ID!) {
-    assignBreakToShift(shiftId: $shiftId, breakId: $breakId) {
-      id
-    }
-  }
-`;
-
-export const createBreakMutation = gql`
-  mutation Mutation($input: BreakInput!) {
-    createBreak(input: $input) {
-      id
-      name
-      startHour
-      endHour
     }
   }
 `;

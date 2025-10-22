@@ -8,14 +8,14 @@ const DayFragment = gql`
     startHour
     breaks {
       id
-      endHour
+      startTime
       name
-      startHour
+      endTime
     }
   }
 `;
 
-export const getSchedules = gql`
+export const GET_SCHEDULES = gql`
   query Query {
     schedules: getSchedules {
       id
@@ -46,7 +46,7 @@ export const getSchedules = gql`
   ${DayFragment}
 `;
 
-export const getSchedule = gql`
+export const GET_SCHEDULE = gql`
   query Query($getScheduleId: ID!) {
     schedule: getSchedule(id: $getScheduleId) {
       id
@@ -75,28 +75,4 @@ export const getSchedule = gql`
     }
   }
   ${DayFragment}
-`;
-
-export const createSchedule = gql`
-  mutation Mutation($name: String!) {
-    createSchedule(name: $name) {
-      id
-    }
-  }
-`;
-
-export const updateSchedule = gql`
-  mutation Mutation($updateScheduleId: ID!, $input: WeekScheduleInput!) {
-    updateSchedule(id: $updateScheduleId, input: $input) {
-      id
-    }
-  }
-`;
-
-export const deleteSchedule = gql`
-  mutation Mutation($deleteScheduleId: ID!) {
-    deleteSchedule(id: $deleteScheduleId) {
-      id
-    }
-  }
 `;

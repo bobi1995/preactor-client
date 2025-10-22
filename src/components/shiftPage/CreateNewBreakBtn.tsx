@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useBreaks, useCreateBreak } from "../../graphql/hook/shift";
+import { useCreateBreak } from "../../graphql/hook/break";
 import { useTranslation } from "react-i18next";
-
+import { useBreaks } from "../../graphql/hook/break";
 // Helper to generate time options for custom selects
 const generateTimeOptions = (
   max: number,

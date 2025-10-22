@@ -4,7 +4,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 // import { useCreateResource } from "../../graphql/hook/resource";
 import { useAddResourcesToGroup } from "../../graphql/hook/group";
-import ResourcesSelect from "../schedule/MassShiftDialog/ResourcesSelect";
+import ResourcesSelect from "../schedulesPage/MassShiftDialog";
 import { IResource } from "../../graphql/interfaces";
 
 interface CreateGroupBtnProps {

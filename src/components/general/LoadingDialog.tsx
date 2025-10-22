@@ -4,6 +4,7 @@ import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfinitySpin } from "react-loader-spinner";
 import { useTranslation } from "react-i18next";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface LoadingDialogProps {
   isLoading: boolean;
@@ -24,6 +25,9 @@ const LoadingDialog: React.FC<LoadingDialogProps> = ({ isLoading }) => {
           onPointerDownOutside={(e) => e.preventDefault()}
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] focus:outline-none bg-white rounded-xl shadow-2xl p-8 w-auto h-auto flex flex-col items-center justify-center data-[state=open]:animate-contentShow"
         >
+          <Dialog.Title asChild>
+            <VisuallyHidden>{t("common.loading", "Loading...")}</VisuallyHidden>
+          </Dialog.Title>
           <div className="flex flex-col items-center">
             <InfinitySpin width="150" color="#4f46e5" />
             <p className="text-center text-indigo-600 font-semibold mt-2 animate-pulse">
