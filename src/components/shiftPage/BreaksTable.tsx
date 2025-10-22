@@ -5,6 +5,7 @@ import { TrashIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useRemoveBreakFromShift } from "../../graphql/hook/break";
 import { timesToRepresentativeString } from "../../utils/time-converters";
 import ConfirmationDialog from "../general/ConfirmDialog";
+import { toast } from "react-toastify";
 
 interface BreaksTableProps {
   breaks: IBreaks[];
@@ -18,6 +19,7 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
     if (!shiftId) return;
     try {
       await removeBreakFromShift(shiftId, breakId);
+      toast.success(t("breaksTable.removeSuccess"));
     } catch (error: any) {
       throw error;
     }

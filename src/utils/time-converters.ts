@@ -32,3 +32,22 @@ export const isSameDay = (date1: number, date2: number): boolean => {
 
   return momentDate1.isSame(momentDate2, "day");
 };
+
+export const timeToMinutes = (timeStr: string): number => {
+  if (typeof timeStr !== "string" || !timeStr.includes(":")) return 0;
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+export const formatMinutes = (totalMinutes: number): string => {
+  if (totalMinutes < 0) totalMinutes = 0; // Safety check
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours} h`);
+  if (minutes > 0) parts.push(`${minutes} m`);
+  if (parts.length === 0) return "0 m";
+
+  return parts.join(" ");
+};

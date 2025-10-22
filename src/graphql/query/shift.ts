@@ -7,6 +7,12 @@ export const GET_SHIFTS = gql`
       startHour
       name
       endHour
+      breaks {
+        startTime
+        endTime
+        id
+        name
+      }
     }
   }
 `;

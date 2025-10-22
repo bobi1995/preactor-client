@@ -1,31 +1,66 @@
-// src/components/schedulesPage/CreateScheduleDialog.tsx
-
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { PlusCircle, X, LoaderCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useCreateSchedule } from "../../graphql/hook/schedule";
+import { toast } from "react-toastify";
+import { ISchedule } from "../../graphql/interfaces";
+import ValidationError from "../general/ValidationError";
 
-const CreateScheduleDialog: React.FC = () => {
+const ERROR_CODE_MAP: { [key: string]: string } = {
+  BAD_USER_INPUT: "errors.createErrorDuplicate",
+  INTERNAL_SERVER_ERROR: "errors.errorGeneral",
+};
+interface CreateScheduleDialogProps {
+  allSchedules: ISchedule[];
+}
+
+const CreateScheduleDialog: React.FC<CreateScheduleDialogProps> = ({
+  allSchedules,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const { createSchedule, loading } = useCreateSchedule();
+  const [validationError, setValidationError] = useState<{
+    message: string;
+    key: number;
+  } | null>(null);
+
+  const triggerError = (messageKey: string) => {
+    setValidationError({ message: t(messageKey), key: Date.now() });
+  };
 
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (name && name.trim() !== "") {
-      try {
-        const newSchedule = await createSchedule(name.trim());
-        if (newSchedule?.id) {
-          navigate(`/schedule/${newSchedule.id}`);
-        }
-      } catch (e) {
-        console.error("Failed to create schedule", e);
-        alert(t("common.errorGeneral"));
+    setValidationError(null);
+
+    if (name.trim() === "") {
+      triggerError("common.nameRequired");
+      return;
+    }
+    if (
+      allSchedules.some(
+        (s) => s.name.toLowerCase() === name.trim().toLowerCase()
+      )
+    ) {
+      triggerError("errors.createErrorDuplicate");
+      return;
+    }
+
+    try {
+      const newSchedule = await createSchedule(name.trim());
+      if (newSchedule?.id) {
+        toast.success(
+          t("success.createSuccess", { scheduleName: name.trim() })
+        );
+        navigate(`/schedule/${newSchedule.id}`);
       }
+    } catch (e: any) {
+      const translationKey = ERROR_CODE_MAP[e.message] || "errors.errorGeneral";
+      triggerError(translationKey);
     }
   };
 
@@ -70,6 +105,7 @@ const CreateScheduleDialog: React.FC = () => {
                 required
               />
             </div>
+            <ValidationError error={validationError} />
             <div className="mt-6 flex justify-end space-x-3">
               <Dialog.Close asChild>
                 <button

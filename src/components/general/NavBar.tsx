@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router"; // Using 'react-router'
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import {
   Home,
@@ -26,45 +26,48 @@ const AppLogo: React.FC<{ className?: string }> = ({ className }) => (
   />
 );
 
-// Reusable component for a single navigation link
-const NavItem: React.FC<{
+interface NavItemProps {
   to: string;
   icon: React.ElementType;
   label: string;
   onClick?: () => void;
-}> = ({ to, icon: Icon, label, onClick }) => (
-  <NavLink
-    to={to}
-    end={to === "/"}
-    onClick={onClick}
-    className={({ isActive }) =>
-      `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-        isActive
-          ? "bg-indigo-100 text-indigo-700 font-semibold shadow-inner"
-          : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-600"
-      }`
-    }
-  >
-    <Icon className="h-5 w-5" />
-    <span>{label}</span>
-  </NavLink>
+}
+
+// FIX: Rewritten using a standard function declaration inside forwardRef
+// This is a more robust syntax that avoids parsing issues with complex types.
+const NavItem = React.forwardRef<HTMLAnchorElement, NavItemProps>(
+  function NavItem({ to, icon: Icon, label, onClick }, ref) {
+    return (
+      <NavLink
+        ref={ref}
+        to={to}
+        end={to === "/"}
+        onClick={onClick}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+            isActive
+              ? "bg-indigo-100 text-indigo-700 font-semibold shadow-inner"
+              : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-600"
+          }`
+        }
+      >
+        <Icon className="h-5 w-5" />
+        <span>{label}</span>
+      </NavLink>
+    );
+  }
 );
 
-// Reusable component for a dropdown menu
 const NavDropdown: React.FC<{
   triggerLabel: string;
   triggerIcon: React.ElementType;
   items: any[];
-  // The onClick from the parent is for the mobile menu, let's rename it
-  onItemClick?: () => void;
-}> = ({ triggerLabel, triggerIcon: Icon, items, onItemClick }) => {
+  onClick?: () => void;
+}> = ({ triggerLabel, triggerIcon: Icon, items, onClick }) => {
   const { t } = useTranslation();
-  // ADD: State to control the dropdown's open/closed status
-  const [open, setOpen] = useState(false);
 
   return (
-    // MODIFIED: Control the open state here
-    <DropdownMenu.Root open={open} onOpenChange={setOpen}>
+    <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
           <Icon className="h-5 w-5" />
@@ -83,10 +86,7 @@ const NavDropdown: React.FC<{
                 to={item.path}
                 icon={item.icon}
                 label={t(item.labelKey)}
-                onClick={() => {
-                  setOpen(false);
-                  onItemClick?.();
-                }}
+                onClick={onClick}
               />
             </DropdownMenu.Item>
           ))}
@@ -95,6 +95,7 @@ const NavDropdown: React.FC<{
     </DropdownMenu.Root>
   );
 };
+
 const NavBar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -122,7 +123,6 @@ const NavBar: React.FC = () => {
   return (
     <header className="sticky top-0 bg-white/80 backdrop-blur-md text-slate-800 shadow-sm border-b border-slate-200 z-50">
       <div className="container mx-auto flex justify-between items-center px-4 py-3">
-        {/* Logo */}
         <NavLink to="/" className="flex items-center space-x-2 text-indigo-600">
           <AppLogo className="h-7 w-auto" />
           <span className="text-xl font-bold hidden sm:inline">
@@ -130,7 +130,6 @@ const NavBar: React.FC = () => {
           </span>
         </NavLink>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavItem to="/" icon={Home} label={t("nav.home")} />
           <NavDropdown
@@ -145,7 +144,6 @@ const NavBar: React.FC = () => {
           />
         </nav>
 
-        {/* Right side items */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1.5 p-0.5 bg-slate-100 rounded-lg">
             {languageOptions.map((lang) => (
@@ -166,7 +164,6 @@ const NavBar: React.FC = () => {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -183,7 +180,6 @@ const NavBar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Panel */}
       {isMobileMenuOpen && (
         <div className="md:hidden animate-in slide-in-from-top-2 fade-in-75">
           <nav className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-slate-200">

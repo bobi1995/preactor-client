@@ -4,8 +4,16 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { AlertTriangleIcon, TrashIcon, XIcon } from "lucide-react";
 import { useDeleteShift } from "../../graphql/hook/shift";
 import LoadingDialog from "../general/LoadingDialog";
+import { toast } from "react-toastify";
 
-// Define a mapping from your backend error codes to your translation keys
+const ERROR_CODE_MAP: { [key: string]: string } = {
+  SHIFT_IN_USE_BY_RESOURCE: "deleteShiftErrors.inUseByResource",
+  SHIFT_IN_USE_BY_SCHEDULE: "deleteShiftErrors.inUseBySchedule",
+  SHIFT_IN_USE_BY_ALTERNATIVE: "deleteShiftErrors.inUseByAlternative",
+  NOT_FOUND: "deleteShiftErrors.notFound",
+  INTERNAL_SERVER_ERROR: "errors.errorGeneral",
+};
+
 const ERROR_CODE_TO_TRANSLATION_KEY: { [key: string]: string } = {
   SHIFT_IN_USE_BY_RESOURCE: "deleteShiftErrors.inUseByResource",
   SHIFT_IN_USE_BY_SCHEDULE: "deleteShiftErrors.inUseBySchedule",
@@ -28,17 +36,15 @@ const DeleteShiftDialog: React.FC<DeleteShiftDialogProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { deleteShift, loading: isDeleting } = useDeleteShift();
 
-  const handleDelete = () => {
-    setErrorMessage(null); // Reset error message on new attempt
+  const handleDelete = async () => {
+    setErrorMessage(null);
     try {
       deleteShift(shiftId.toString());
+      toast.success(t("shiftPage.toastMessage.deleteSuccess", { shiftName }));
     } catch (error: any) {
-      // The error.message is now our specific code (e.g., "SHIFT_IN_USE_BY_RESOURCE")
       const errorCode = error.message;
-      // Look up the code in our map, or use a fallback for unknown errors
       const translationKey =
         ERROR_CODE_TO_TRANSLATION_KEY[errorCode] || "deleteShiftErrors.unknown";
-      // Set the translated message to be displayed
       setErrorMessage(t(translationKey));
     }
   };

@@ -1,9 +1,7 @@
-// src/components/general/ConfirmationDialog.tsx
-
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "react-i18next";
-import { AlertTriangleIcon, XIcon } from "lucide-react";
+import { AlertTriangleIcon } from "lucide-react";
 import Spinner from "./Spinner";
 
 interface ConfirmationDialogProps {
@@ -33,10 +31,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       await confirmAction();
       setIsOpen(false);
     } catch (error: any) {
-      setErrorMessage(
-        error.message ||
-          t("common.errorGeneral", "An unexpected error occurred.")
-      );
+      setErrorMessage(error.message || t("errors.errorGeneral"));
     } finally {
       setIsConfirming(false);
     }

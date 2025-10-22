@@ -1,5 +1,3 @@
-// src/page/SchedulesPage.tsx
-
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
@@ -11,6 +9,8 @@ import LoadingDialog from "../components/general/LoadingDialog";
 import CreateScheduleDialog from "../components/schedulesPage/CreateScheduleDialog"; // Updated path
 import SchedulesTable from "../components/schedulesPage/SchedulesTable"; // Updated path
 import Pagination, { itemsPerPage } from "../components/general/Pagination";
+import { toast } from "react-toastify";
+import { ERROR_CODE_TO_TRANSLATION_KEY } from "../utils/error-mapping";
 
 const SchedulesPage: React.FC = () => {
   const { t } = useTranslation();
@@ -32,16 +32,14 @@ const SchedulesPage: React.FC = () => {
     filteredSchedules
   );
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     try {
       await deleteSchedule(id);
-      // No reload() needed if refetchQueries is working in the hook
+      toast.success(t("schedulesPage.deleteSuccess", { scheduleName: name }));
     } catch (e: any) {
-      if (e.message === "SCHEDULE_IN_USE") {
-        alert(t("schedulesPage.deleteErrorInUse"));
-      } else {
-        alert(t("common.errorGeneral"));
-      }
+      const translationKey =
+        ERROR_CODE_TO_TRANSLATION_KEY[e.message] || "errors.deleteErrorGeneral";
+      toast.error(t(translationKey));
       throw e;
     }
   };
@@ -54,13 +52,13 @@ const SchedulesPage: React.FC = () => {
           {t("schedulesPage.title")}
         </h1>
         <div className="flex gap-4 w-full sm:w-auto">
-          <div className="flex-grow sm:max-w-xs">
+          <div className="flex-grow sm:flex-grow-0 sm:w-80">
             <SearchBar placeholder={t("schedulesPage.searchPlaceholder")} />
           </div>
-          <CreateScheduleDialog />
+
+          <CreateScheduleDialog allSchedules={schedules} />
         </div>
       </div>
-
       <SchedulesTable
         schedules={paginatedSchedules}
         query={query}

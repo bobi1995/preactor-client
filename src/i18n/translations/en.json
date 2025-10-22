@@ -1,4 +1,13 @@
 {
+  "errors": {
+    "errorGeneral": "An unexpected error occurred. Please try again.",
+    "errorNotFound": "The requested item could not be found.",
+    "createErrorDuplicate": "A schedule with this name already exists.",
+    "createErrorGeneral": "Failed to create the schedule. Please try again."
+  },
+  "success": {
+    "createSuccess": "Schedule '{{scheduleName}}' was created successfully."
+  },
   "common": {
     "loading": "Loading...",
     "appName": "MyApp",
@@ -19,6 +28,10 @@
     "notAvailable": "N/A",
     "closeDialog": "Close",
     "or": "or",
+    "saveChanges": "Save Changes",
+    "close": "Close",
+    "nameRequired": "Name is required.",
+    "switchTo": "Switch to {{language}}",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -40,6 +53,7 @@
     "schedule": "Schedules",
     "openMenu": "Open main menu"
   },
+
   "resourceTable": {
     "searchByName": "Search by name...",
     "noResultsFound": "No resources match your search.",
@@ -61,7 +75,15 @@
     "deleteShift": "Delete Shift",
     "viewDetails": "View Details",
     "createNewPrompt": "Create a new shift to get started!",
-    "tryDifferentKeywords": "Try adjusting your search."
+    "tryDifferentKeywords": "Try adjusting your search.",
+    "breakTime": "In Break",
+    "productivityTime": "Productive",
+    "viewBreaksTooltip": "View assigned breaks",
+    "noBreaksAssigned": "No breaks assigned",
+    "breaksModal": {
+      "title": "Assigned Breaks for",
+      "description": "The following breaks are scheduled for this shift:"
+    }
   },
   "createShiftDialog": {
     "title": "Create New Shift",
@@ -75,6 +97,7 @@
   },
   "shiftPage": {
     "title": "Shift Details",
+    "title2": "Manage Shifts",
     "viewingDetailsFor": "Viewing details for shift starting at {{startHour}} and ending at {{endHour}}.",
     "timelineTitle": "Shift Timeline Visualization",
     "timelineNote": "Timeline represents a 24-hour period.",
@@ -90,6 +113,12 @@
     "tabs": {
       "breaks": "Assigned Breaks",
       "resources": "Assigned Resources"
+    },
+    "toastMessage": {
+      "createSuccess": "Shift '{{shiftName}}' was created successfully.",
+      "updateSuccess": "Shift '{{shiftName}}' was updated successfully.",
+      "deleteSuccess": "Shift '{{shiftName}}' was deleted successfully.",
+      "errorDuplicate": "A shift with this name already exists. Please choose another name."
     }
   },
   "assignBreakDialog": {
@@ -100,7 +129,8 @@
     "placeholder": "-- Select a break --",
     "unableToFetch": "Unable to fetch breaks. Please check your connection.",
     "assignmentFailed": "Failed to assign break. Please check your connection and try again.",
-    "noAvailableBreaks": "There are no more breaks available to assign."
+    "noAvailableBreaks": "There are no more breaks available to assign.",
+    "assignmentSuccess": "Break was successfully assigned to the shift."
   },
   "createNewBreakDialog": {
     "link": "Create a new break",
@@ -116,7 +146,8 @@
     "noBreaksAssigned": "No breaks have been assigned to this shift.",
     "removeBreak": "Remove Break",
     "confirmRemove": "Are you sure you want to remove the break <bold>\"{{breakName}}\"</bold> from the shift?",
-    "removeFailed": "Failed to remove break. Please try again."
+    "removeFailed": "Failed to remove break. Please try again.",
+    "removeSuccess": "Break was successfully removed from the shift."
   },
   "editShiftDialog": {
     "title": "Edit Shift",
@@ -140,7 +171,7 @@
     "unknown": "An unknown error occurred while trying to delete the shift."
   },
   "schedulesPage": {
-    "title": "Weekly Schedules",
+    "title": "Schedules management",
     "searchPlaceholder": "Search by schedule name...",
     "noSchedulesAvailable": "No schedules available yet.",
     "createNewPrompt": "Create a new schedule to get started!",
@@ -152,12 +183,17 @@
     "namePlaceholder": "e.g., Standard Week",
     "deleteTitle": "Delete Schedule",
     "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone.",
-    "deleteErrorInUse": "Cannot delete schedule. It is assigned to one or more resources."
+    "deleteErrorInUse": "Cannot delete schedule. It is assigned to one or more resources.",
+    "deleteSuccess": "Schedule was deleted successfully.",
+    "editDialogTitle": "Edit Schedule Name",
+    "editDialogDescription": "Update the name for the schedule \"{{scheduleName}}\".",
+    "updateSuccess": "Schedule name updated successfully.",
+    "nameExistsError": "A schedule with this name already exists. Please choose a unique name."
   },
   "scheduleBuilder": {
     "title": "Schedule Builder",
     "shiftListTitle": "Available Shifts",
-    "saveButton": "Save Changes",
+    "saveButton": "Save",
     "savingButton": "Saving...",
     "saveSuccess": "Schedule saved successfully!",
     "unassigned": "Unassigned",
@@ -183,7 +219,9 @@
       "noBreaksAvailable": "No breaks available yet.",
       "createNewPrompt": "Create a new break to get started!",
       "noBreaksMatchSearch": "No breaks match your search.",
-      "tryDifferentKeywords": "Try adjusting your search."
+      "tryDifferentKeywords": "Try adjusting your search.",
+      "duration": "Duration",
+      "assignedShifts": "Assigned Shifts"
     },
     "createDialog": {
       "title": "Create New Break",
@@ -191,15 +229,27 @@
       "nameLabel": "Break Name",
       "namePlaceholder": "e.g., Lunch Break",
       "timeLabel": "Time Range",
-      "nameExistsError": "A break with this name already exists. Please enter a unique name."
+      "nameExistsError": "A break with this name already exists. Please enter a unique name.",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "successToast": "Break was created successfully."
     },
     "editDialog": {
       "title": "Edit Break",
-      "description": "Update the details for the break below."
+      "description": "Update the details for the break below.",
+      "nameLabel": "Break Name",
+      "namePlaceholder": "e.g., Lunch Break",
+      "timeLabel": "Time Range",
+      "nameExistsError": "A break with this name already exists. Please enter a unique name.",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "successToast": "Break was updated successfully.",
+      "timeValidationError": "End time must be after start time."
     },
     "deleteDialog": {
       "title": "Delete Break",
-      "description": "Are you sure you want to permanently delete the break \"{{breakName}}\"? This action cannot be undone."
+      "description": "Are you sure you want to permanently delete the break \"{{breakName}}\"? This action cannot be undone.",
+      "successToast": "Break was deleted successfully."
     },
     "assignedShiftsDialog": {
       "title": "Assigned to Shifts",

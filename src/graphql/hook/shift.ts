@@ -85,7 +85,6 @@ export const useUpdateShift = () => {
 
 export const useDeleteShift = () => {
   const [mutate, { loading }] = useMutation(DELETE_SHIFT_MUTATION, {
-    // We update the cache manually or refetch after a successful mutation
     refetchQueries: [{ query: GET_SHIFTS }],
   });
 
@@ -96,17 +95,12 @@ export const useDeleteShift = () => {
       });
       return response.data;
     } catch (error: any) {
-      // Check if this is an ApolloError and if it has a specific code
       if (
         error instanceof ApolloError &&
         error.graphQLErrors[0]?.extensions?.code
       ) {
-        // This is our custom error from the backend.
-        // We re-throw an error where the message IS the code.
         throw new Error(error.graphQLErrors[0].extensions.code as string);
       }
-      // This handles network errors or other unexpected issues
-      console.error("Unhandled error in useDeleteShift:", error);
       throw new Error("INTERNAL_SERVER_ERROR");
     }
   };

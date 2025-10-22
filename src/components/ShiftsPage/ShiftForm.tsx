@@ -1,11 +1,10 @@
-// src/components/shift/ShiftForm.tsx
+// src/components/ShiftsPage/ShiftForm.tsx
 
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { IShift } from "../../graphql/interfaces";
-import { AlertTriangleIcon } from "lucide-react";
+import ValidationError from "../general/ValidationError";
 
-// Helper to generate time options
 const generateTimeOptions = (
   max: number,
   step: number = 1,
@@ -21,19 +20,25 @@ const hourOptions = generateTimeOptions(24);
 const minuteOptions = generateTimeOptions(60, 15);
 
 interface ShiftFormProps {
-  initialData?: IShift | null; // Optional initial data for editing
+  initialData?: IShift | null;
   onSubmit: (details: {
     name: string;
     startHour: string;
     endHour: string;
   }) => void;
   allShifts?: IShift[];
+  onDirtyChange: (isDirty: boolean) => void;
+  serverError?: string | null;
+  onClearServerError?: () => void;
 }
 
 export const ShiftForm: React.FC<ShiftFormProps> = ({
   initialData,
   onSubmit,
   allShifts = [],
+  onDirtyChange,
+  serverError,
+  onClearServerError,
 }) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -45,32 +50,82 @@ export const ShiftForm: React.FC<ShiftFormProps> = ({
     message: string;
     key: number;
   } | null>(null);
+  const [initialState, setInitialState] = useState({
+    name: "",
+    startHour: "08:00",
+    endHour: "17:00",
+  });
 
   const triggerError = (messageKey: string) => {
     setValidationError({ message: t(messageKey), key: Date.now() });
   };
 
+  // Effect to display server error when it comes from the parent
   useEffect(() => {
-    if (initialData) {
-      setName(initialData.name);
-      const [sHour, sMin] = initialData.startHour.split(":");
-      const [eHour, eMin] = initialData.endHour.split(":");
-      setStartHour(sHour);
-      setStartMinute(sMin);
-      setEndHour(eHour);
-      setEndMinute(eMin);
+    if (serverError) {
+      setValidationError({ message: serverError, key: Date.now() });
     }
+  }, [serverError]);
+
+  // Effect to set initial form data
+  useEffect(() => {
+    const data = initialData
+      ? {
+          name: initialData.name,
+          startHour: initialData.startHour.slice(0, 5),
+          endHour: initialData.endHour.slice(0, 5),
+        }
+      : { name: "", startHour: "08:00", endHour: "17:00" };
+
+    setName(data.name);
+    const [sH, sM] = data.startHour.split(":");
+    const [eH, eM] = data.endHour.split(":");
+    setStartHour(sH);
+    setStartMinute(sM);
+    setEndHour(eH);
+    setEndMinute(eM);
+    setInitialState(data);
   }, [initialData]);
 
+  // Effect to track dirty state and clear errors on user input
+  useEffect(() => {
+    const currentStart = `${startHour}:${startMinute}`;
+    const currentEnd = `${endHour}:${endMinute}`;
+    const isDirty =
+      name.trim() !== initialState.name ||
+      currentStart !== initialState.startHour ||
+      currentEnd !== initialState.endHour;
+    onDirtyChange(isDirty);
+
+    // If the user starts typing, clear any displayed validation error
+    if (isDirty) {
+      setValidationError(null);
+      onClearServerError?.();
+    }
+  }, [
+    name,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
+    initialState,
+    onDirtyChange,
+    onClearServerError,
+  ]);
+
+  // Original handleSubmit logic is fully restored
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError(null);
+    onClearServerError?.();
 
     if (name.trim() === "") {
       triggerError("common.nameRequired");
       return;
     }
+    // Client-side check for duplicates (works when allShifts is available)
     if (
+      allShifts.length > 0 &&
       allShifts.some(
         (s) =>
           s.id !== initialData?.id &&
@@ -85,14 +140,13 @@ export const ShiftForm: React.FC<ShiftFormProps> = ({
     const startDate = new Date(`1970-01-01T${startTime}:00`);
     const endDate = new Date(`1970-01-01T${endTime}:00`);
 
-    // The new validation logic
     if (endDate <= startDate) {
       triggerError("createShiftDialog.endTimeAfterStartTimeError");
-      return; // Stop the submission
+      return;
     }
 
     onSubmit({
-      name,
+      name: name.trim(),
       startHour: startTime,
       endHour: endTime,
     });
@@ -188,16 +242,9 @@ export const ShiftForm: React.FC<ShiftFormProps> = ({
         </div>
       </div>
 
-      <div className="h-12 flex items-center">
-        {validationError && (
-          <div
-            key={validationError.key}
-            className="bg-red-50 p-3 rounded-md flex items-center space-x-3 w-full animate-shake"
-          >
-            <AlertTriangleIcon className="h-5 w-5 text-red-500 flex-shrink-0" />
-            <p className="text-sm text-red-800">{validationError.message}</p>
-          </div>
-        )}
+      {/* The validation component is restored and works for all errors */}
+      <div className="min-h-[20px]">
+        <ValidationError error={validationError} />
       </div>
     </form>
   );

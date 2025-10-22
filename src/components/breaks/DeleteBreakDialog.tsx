@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { IBreaks } from "../../graphql/interfaces";
 import { AlertTriangle, TrashIcon } from "lucide-react";
 import { useDeleteBreak } from "../../graphql/hook/break";
-import InfinityLoader from "../general/Loader";
 import { InfinitySpin } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 interface Props {
   breakItem: IBreaks;
@@ -22,6 +22,7 @@ const DeleteBreakDialog: React.FC<Props> = ({ breakItem }) => {
       const result = await deleteBreak(breakItem.id);
       if (result && result.success) {
         setIsOpen(false);
+        toast.success(t("breaksPage.deleteDialog.successToast"));
       }
     } catch (err) {
       console.error("Failed to delete break:", err);

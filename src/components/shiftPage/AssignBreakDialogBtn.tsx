@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useBreaks, useAssignBreak } from "../../graphql/hook/break";
 import { ChevronsUpDown } from "lucide-react";
 import Spinner from "../general/Spinner";
+import { toast } from "react-toastify";
 
 interface AssignBreakDialogBtnProps {
   shiftId: string;
@@ -45,6 +46,7 @@ const DialogContent: React.FC<{
       await assignBreak(shiftId, selectedBreakId);
       setIsOpen(false);
       onAssignmentSuccess?.();
+      toast.success(t("assignBreakDialog.assignmentSuccess"));
     } catch (e: any) {
       setSubmissionError(e.message || t("assignBreakDialog.assignmentFailed"));
     }

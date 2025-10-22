@@ -1,16 +1,15 @@
-// src/components/schedulesPage/SchedulesTable.tsx
-
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { ISchedule, IShift } from "../../graphql/interfaces";
-import { CircleArrowRight, Trash2 } from "lucide-react";
+import { CircleArrowRight, Trash2, SquarePenIcon } from "lucide-react";
 import ConfirmationDialog from "../general/ConfirmDialog";
+import EditScheduleDialog from "./EditScheduleDialog";
 
 interface SchedulesTableProps {
   schedules: ISchedule[];
   query: string;
-  onDelete: (id: string) => Promise<void>;
+  onDelete: (id: string, name: string) => Promise<void>;
 }
 
 const ShiftChip: React.FC<{ shift: IShift | null }> = ({ shift }) => {
@@ -112,16 +111,28 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({
                     <Link
                       to={`/schedule/${schedule.id}`}
                       title={t("common.edit")}
-                      className="p-1 rounded-full text-gray-500 hover:text-green-600"
+                      className="p-1 rounded-full text-gray-500 hover:text-indigo-600"
                     >
                       <CircleArrowRight className="w-5 h-5" />
                     </Link>
+                    <EditScheduleDialog
+                      schedule={schedule}
+                      allSchedules={schedules}
+                    >
+                      <button
+                        title={t("common.edit")}
+                        className="p-1 rounded-full text-gray-500 hover:text-green-600"
+                      >
+                        <SquarePenIcon className="w-5 h-5" />
+                      </button>
+                    </EditScheduleDialog>
+
                     <ConfirmationDialog
                       title={t("schedulesPage.deleteTitle")}
                       description={t("schedulesPage.deleteDescription", {
                         scheduleName: schedule.name,
                       })}
-                      confirmAction={() => onDelete(schedule.id)}
+                      confirmAction={() => onDelete(schedule.id, schedule.name)}
                       triggerButton={
                         <button
                           title={t("common.delete")}

@@ -1,12 +1,16 @@
 // src/components/breaks/BreaksTable.tsx
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { IBreaks } from "../../graphql/interfaces";
-import { ClockIcon } from "lucide-react";
+import { Clock, Timer } from "lucide-react";
 import AssignedShiftsDialog from "./AssignedShiftsDialog";
 import EditBreakDialog from "./EditBreakDialog";
 import DeleteBreakDialog from "./DeleteBreakDialog";
-import { timesToRepresentativeString } from "../../utils/time-converters";
+import {
+  timesToRepresentativeString,
+  timeToMinutes,
+  formatMinutes,
+} from "../../utils/time-converters";
 
 interface Props {
   breaks: IBreaks[];
@@ -15,30 +19,48 @@ interface Props {
 
 const BreaksTable: React.FC<Props> = ({ breaks, query }) => {
   const { t } = useTranslation();
-  console.log(breaks);
+
+  const enrichedData = useMemo(() => {
+    return breaks.map((breakItem) => {
+      const breakDuration =
+        timeToMinutes(breakItem.endTime) - timeToMinutes(breakItem.startTime);
+      return {
+        ...breakItem,
+        displayDuration: formatMinutes(breakDuration > 0 ? breakDuration : 0),
+      };
+    });
+  }, [breaks]);
+
   return (
     <div className="bg-white shadow-xl rounded-lg overflow-x-auto">
-      <table className="min-w-full">
+      {/* Added table-fixed for more predictable column widths */}
+      <table className="min-w-full table-fixed">
         <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
           <tr>
-            <th className="px-6 py-4 text-left text-sm font-semibold uppercase">
-              {t("breaksPage.table.name")}
+            <th className="w-4/12 px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+              {t("breaksPage.table.name", "Name")}
             </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold uppercase">
-              {t("breaksPage.table.start")}
+            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+              {t("breaksPage.table.start", "Start Time")}
             </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold uppercase">
-              {t("breaksPage.table.end")}
+            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+              {t("breaksPage.table.end", "End Time")}
             </th>
-            <th className="px-6 py-4 text-center text-sm font-semibold uppercase">
-              {t("common.actions")}
+            <th className="w-1/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+              {t("breaksPage.table.duration", "Duration")}
+            </th>
+            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+              {t("breaksPage.table.assignedShifts", "Assigned Shifts")}
+            </th>
+            <th className="w-1/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+              {t("common.actions", "Actions")}
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {breaks.length === 0 ? (
+          {enrichedData.length === 0 ? (
             <tr>
-              <td colSpan={4} className="px-6 py-12 text-center">
+              <td colSpan={6} className="px-6 py-12 text-center">
                 <div className="flex flex-col items-center">
                   <svg
                     className="w-16 h-16 text-gray-300"
@@ -54,7 +76,6 @@ const BreaksTable: React.FC<Props> = ({ breaks, query }) => {
                       d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
                     />
                   </svg>
-                  {/* FIX: Removed the conditional logic for the message */}
                   <p className="mt-3 text-base font-medium text-gray-500">
                     {query
                       ? t("breaksPage.table.noBreaksMatchSearch")
@@ -69,30 +90,46 @@ const BreaksTable: React.FC<Props> = ({ breaks, query }) => {
               </td>
             </tr>
           ) : (
-            breaks.map((breakItem) => (
-              <tr key={breakItem.id} className="hover:bg-indigo-50/50">
-                <td className="px-6 py-4 whitespace-nowrap text-base font-medium text-indigo-700 hover:text-indigo-900">
-                  {breakItem.name}
+            enrichedData.map((breakItem, index) => (
+              <tr
+                key={breakItem.id}
+                className={`${
+                  index % 2 === 0 ? "bg-white" : "bg-indigo-50/50"
+                } hover:bg-indigo-100/70 transition-colors duration-150 ease-in-out`}
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="text-base font-medium text-indigo-700">
+                    {breakItem.name}
+                  </span>
                 </td>
-                <td className="px-6 py-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <ClockIcon className="w-5 h-5 mr-2 text-indigo-400" />
+                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                  {/* Added justify-center to center the content */}
+                  <div className="flex items-center justify-center text-sm">
+                    <Clock className="w-4 h-4 mr-2 text-indigo-400" />
                     {timesToRepresentativeString(breakItem.startTime)}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <ClockIcon className="w-5 h-5 mr-2 text-purple-400" />
+                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                  <div className="flex items-center justify-center text-sm">
+                    <Clock className="w-4 h-4 mr-2 text-purple-400" />
                     {timesToRepresentativeString(breakItem.endTime)}
                   </div>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                  <div className="flex items-center justify-center text-sm">
+                    <Timer className="w-4 h-4 mr-2 text-red-400" />
+                    {breakItem.displayDuration}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <AssignedShiftsDialog breakItem={breakItem} />
+                </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-center space-x-3">
-                    <AssignedShiftsDialog
-                      shifts={breakItem.shifts}
-                      breakName={breakItem.name}
+                    <EditBreakDialog
+                      breakItem={breakItem}
+                      allBreaks={enrichedData}
                     />
-                    <EditBreakDialog breakItem={breakItem} />
                     <DeleteBreakDialog breakItem={breakItem} />
                   </div>
                 </td>
