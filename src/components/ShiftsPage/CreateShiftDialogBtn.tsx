@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import UnsavedChangesDialog from "../general/UnsavedChangesDialog";
 
 const ERROR_CODE_MAP: { [key: string]: string } = {
-  BAD_USER_INPUT: "erros.errorDuplicate",
+  BAD_USER_INPUT: "errors.errorDuplicate",
   INTERNAL_SERVER_ERROR: "errors.errorGeneral",
 };
 
