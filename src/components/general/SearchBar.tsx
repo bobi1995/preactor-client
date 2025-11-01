@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Search } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -42,7 +42,7 @@ const SearchBar = ({ placeholder }: { placeholder: string }) => {
         value={term}
         onChange={handleInputChange}
       />
-      <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+      <Search className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
     </div>
   );
 };

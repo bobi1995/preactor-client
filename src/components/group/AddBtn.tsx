@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-// import { useCreateResource } from "../../graphql/hook/resource";
 import { useAddResourcesToGroup } from "../../graphql/hook/group";
 import ResourcesSelect from "../schedulesPage/MassShiftDialog";
 import { IResource } from "../../graphql/interfaces";
+import { PlusCircle, XIcon } from "lucide-react";
 
 interface CreateGroupBtnProps {
   t: (key: string, options?: any) => string;
@@ -30,7 +28,7 @@ const AddBtn: React.FC<CreateGroupBtnProps> = ({
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button>
-          <PlusCircleIcon className="h-6 w-6" />
+          <PlusCircle className="h-6 w-6" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -49,12 +47,7 @@ const AddBtn: React.FC<CreateGroupBtnProps> = ({
               gap: "15px",
             }}
           >
-            <ResourcesSelect
-              assignedResources={assignedResources}
-              selectedResources={selectedResources}
-              setSelectedResources={setSelectedResources}
-              t={t}
-            />
+            <ResourcesSelect t={t} />
           </div>
 
           <div className="mt-4 flex justify-end gap-3">
@@ -79,7 +72,7 @@ const AddBtn: React.FC<CreateGroupBtnProps> = ({
               className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
               aria-label="Close"
             >
-              <XMarkIcon color="red" width={30} />
+              <XIcon color="red" width={30} />
             </button>
           </Dialog.Close>
         </Dialog.Content>

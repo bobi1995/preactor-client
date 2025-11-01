@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "react-i18next";
 import { IBreaks } from "../../graphql/interfaces";
-import { AlertTriangle, TrashIcon } from "lucide-react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 import { useDeleteBreak } from "../../graphql/hook/break";
 import { InfinitySpin } from "react-loader-spinner";
 import { toast } from "react-toastify";
@@ -36,7 +36,7 @@ const DeleteBreakDialog: React.FC<Props> = ({ breakItem }) => {
           title={t("common.delete")}
           className="p-1 rounded-full hover:bg-red-100"
         >
-          <TrashIcon className="w-5 h-5 text-gray-500 hover:text-red-600" />
+          <Trash2 className="w-5 h-5 text-gray-500 hover:text-red-600" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

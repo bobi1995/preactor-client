@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Dialog from "@radix-ui/react-dialog";
-import { AlertTriangleIcon, TrashIcon, XIcon } from "lucide-react";
+import { AlertTriangleIcon, Trash2, XIcon } from "lucide-react";
 import { useDeleteShift } from "../../graphql/hook/shift";
 import LoadingDialog from "../general/LoadingDialog";
 import { toast } from "react-toastify";
@@ -56,7 +56,7 @@ const DeleteShiftDialog: React.FC<DeleteShiftDialogProps> = ({
           title={t("shiftTable.deleteShift", "Delete Shift")}
           className="text-gray-500 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-100"
         >
-          <TrashIcon className="w-5 h-5" />
+          <Trash2 className="w-5 h-5" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

@@ -2,9 +2,8 @@ import React from "react";
 import AssignAlternativeBtn from "./AssignAlternativeBtn";
 import { IResource } from "../../../graphql/interfaces";
 import { convertUnixToDate } from "../../../utils/time-converters";
-import { TrashIcon } from "@heroicons/react/24/solid";
 import { useDeleteAlternativeShift } from "../../../graphql/hook/resource";
-
+import { Trash2 } from "lucide-react";
 interface AlternativeComponentProps {
   t: (key: string, options?: any) => string;
   resource: IResource;
@@ -48,7 +47,7 @@ const AlternativeComponent: React.FC<AlternativeComponentProps> = ({
                   {convertUnixToDate(parseInt(shift.endDate))}
                 </td>
                 <td className="border px-4 py-2">
-                  <TrashIcon
+                  <Trash2
                     className="text-red-500 cursor-pointer h-8 w-8 m-auto"
                     onClick={() => handleDelete(shift.id)}
                   />

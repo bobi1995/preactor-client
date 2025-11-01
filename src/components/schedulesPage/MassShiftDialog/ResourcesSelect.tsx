@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { IResource } from "../../../graphql/interfaces";
 import { useResources } from "../../../graphql/hook/resource";
+import { Check, ChevronDown } from "lucide-react";
 
 interface ResourcesSelectProps {
   t: (key: string, options?: any) => string;
@@ -87,7 +87,7 @@ const ResourcesSelect: React.FC<ResourcesSelectProps> = ({
             ? getSelectedResourceNames()
             : t("select_resources")}
         </span>
-        <ChevronDownIcon className="w-5 h-5" />
+        <ChevronDown className="w-5 h-5" />
       </button>
       {isDropdownOpen && !res_loading && !res_error && (
         <div className="absolute mt-1 w-full border border-gray-300 rounded bg-white z-10">
@@ -98,7 +98,7 @@ const ResourcesSelect: React.FC<ResourcesSelectProps> = ({
             onClick={() => handleResourceChange("ALL")}
           >
             {selectedResources.length === resources.length && (
-              <CheckIcon className="w-5 h-5 text-blue-600 mr-1" />
+              <Check className="w-5 h-5 text-blue-600 mr-1" />
             )}
             <span className="font-bold">{t("select_all")}</span>
           </div>
@@ -110,9 +110,8 @@ const ResourcesSelect: React.FC<ResourcesSelectProps> = ({
               }`}
               onClick={() => handleResourceChange(resource.id)}
             >
-              {" "}
               {isResourceSelected(resource.id) && (
-                <CheckIcon className="w-5 h-5  text-blue-600 mr-1" />
+                <Check className="w-5 h-5  text-blue-600 mr-1" />
               )}
               <span>{resource.name}</span>
             </div>

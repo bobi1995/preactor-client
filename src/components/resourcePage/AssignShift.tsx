@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import InfinityLoader from "../general/Loader";
 import ErrorComponent from "../general/Error";
 import { ISchedule } from "../../graphql/interfaces";
 import { useAssignSchedule } from "../../graphql/hook/resource";
 import { useSchedules } from "../../graphql/hook/schedule";
+import { XIcon } from "lucide-react";
 
 interface AssignBreakDialogBtnProps {
   t: (key: string, options?: any) => string;
@@ -100,7 +100,7 @@ const AssignShift: React.FC<AssignBreakDialogBtnProps> = ({
               className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
               aria-label="Close"
             >
-              <XMarkIcon color="red" width={30} />
+              <XIcon color="red" width={30} />
             </button>
           </Dialog.Close>
         </Dialog.Content>

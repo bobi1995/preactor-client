@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useAssignMassiveAlternativeShiftToResource } from "../../graphql/hook/resource";
 import ResourcesSelect from "./MassShiftDialog/ResourcesSelect";
 import ShiftSelect from "./MassShiftDialog/ShiftSelect";
+import { XIcon } from "lucide-react";
 
 interface MassShiftDialogProps {
   t: (key: string, options?: any) => string;
@@ -132,7 +132,7 @@ const MassShiftDialog: React.FC<MassShiftDialogProps> = ({ t }) => {
               className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
               aria-label="Close"
             >
-              <XMarkIcon color="red" width={30} />
+              <XIcon color="red" width={30} />
             </button>
           </Dialog.Close>
         </Dialog.Content>

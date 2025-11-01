@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
 import ErrorComponent from "../general/Error";
 import { IBreaks } from "../../graphql/interfaces";
 import CreateNewBreakBtn from "./CreateNewBreakBtn";
@@ -11,6 +10,7 @@ import { useBreaks, useAssignBreak } from "../../graphql/hook/break";
 import { ChevronsUpDown } from "lucide-react";
 import Spinner from "../general/Spinner";
 import { toast } from "react-toastify";
+import { XIcon, Plus } from "lucide-react";
 
 interface AssignBreakDialogBtnProps {
   shiftId: string;
@@ -173,7 +173,7 @@ const DialogContent: React.FC<{
           className="absolute top-3 right-3 p-1 rounded-full text-slate-400 hover:text-slate-600"
           aria-label={t("common.closeDialog")}
         >
-          <XMarkIcon className="h-5 w-5" />
+          <XIcon className="h-5 w-5" />
         </button>
       </Dialog.Close>
     </>
@@ -192,7 +192,7 @@ const AssignBreakDialogBtn: React.FC<AssignBreakDialogBtnProps> = ({
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-4 py-2 text-sm flex items-center gap-2 shadow hover:shadow-lg transition-all">
-          <PlusIcon className="h-5 w-5" />
+          <Plus className="h-5 w-5" />
           {t("assignBreakDialog.assignButton")}
         </button>
       </Dialog.Trigger>

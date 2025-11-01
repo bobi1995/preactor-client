@@ -14,7 +14,7 @@ import { useLocation } from "react-router";
 import Pagination, { itemsPerPage } from "../general/Pagination";
 import AddBtn from "./AddBtn";
 import { useDeleteResourceFromGroup } from "../../graphql/hook/group";
-import { TrashIcon } from "@heroicons/react/24/solid";
+import { Trash2 } from "lucide-react";
 
 interface GroupTableProps {
   groups: IGroup[];
@@ -117,7 +117,7 @@ const GroupTable: React.FC<GroupTableProps> = ({ groups }) => {
                         <td className="px-6 py-4">{resource.name}</td>
                         <td className="px-6 py-4">{resource.description}</td>
                         <td className="px-6 py-4">
-                          <TrashIcon
+                          <Trash2
                             className="h-5 w-5 hover:cursor-pointer"
                             onClick={() => handleDelete(group.id, resource.id)}
                           />

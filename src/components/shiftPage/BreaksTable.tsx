@@ -1,11 +1,11 @@
 import React from "react";
 import { IBreaks } from "../../graphql/interfaces";
 import { Trans, useTranslation } from "react-i18next";
-import { TrashIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useRemoveBreakFromShift } from "../../graphql/hook/break";
 import { timesToRepresentativeString } from "../../utils/time-converters";
 import ConfirmationDialog from "../general/ConfirmDialog";
 import { toast } from "react-toastify";
+import { Trash2, Clock } from "lucide-react";
 
 interface BreaksTableProps {
   breaks: IBreaks[];
@@ -65,13 +65,13 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
-                    <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
+                    <Clock className="w-4 h-4 mr-1.5 text-slate-400" />
                     {timesToRepresentativeString(breakItem.startTime)}
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-600">
                   <div className="flex items-center">
-                    <ClockIcon className="w-4 h-4 mr-1.5 text-slate-400" />
+                    <Clock className="w-4 h-4 mr-1.5 text-slate-400" />
                     {timesToRepresentativeString(breakItem.endTime)}
                   </div>
                 </td>
@@ -96,7 +96,7 @@ const BreaksTable: React.FC<BreaksTableProps> = ({ breaks, shiftId }) => {
                         title={t("breaksTable.removeBreak")}
                         className="text-slate-500 hover:text-red-600 p-1 rounded-full hover:bg-red-100 transition-colors"
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     }
                   />

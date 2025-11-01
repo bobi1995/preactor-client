@@ -4,19 +4,15 @@ import { useTranslation } from "react-i18next";
 import SearchBar from "../general/SearchBar";
 import CreateDialogBtn from "./CreateDialogBtn";
 // Updated imports for React Router v6+
-import { Link, useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { endpoint } from "../../../dbconfig";
 import Pagination, { itemsPerPage } from "../general/Pagination";
-import { Cog8ToothIcon } from "@heroicons/react/24/solid"; // Existing Machine Icon base
-import {
-  PencilSquareIcon,
-  TrashIcon,
-  ArrowRightCircleIcon,
-} from "@heroicons/react/24/outline"; // Using outline icons for actions for variety
+
+import { Trash2, ArrowRightCircle, Settings, PencilIcon } from "lucide-react";
 
 // Fallback icon for resources if no picture is available
 const MachineIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <Cog8ToothIcon
+  <Settings
     className={`w-full h-full text-gray-400 ${className}`} // Adjusted for parent div control
     aria-hidden="true"
   />
@@ -227,21 +223,21 @@ const ResourceTable: React.FC<ResourceTableProps> = ({ resources }) => {
                         title={t("viewDetails", "View Details")}
                         className="text-gray-500 hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
                       >
-                        <ArrowRightCircleIcon className="w-6 h-6" />
+                        <ArrowRightCircle className="w-6 h-6" />
                       </button>
                       <button
                         onClick={() => handleEdit(resource.id)}
                         title={t("editResource", "Edit Resource")}
                         className="text-gray-500 hover:text-green-600 transition-colors p-1 rounded-full hover:bg-green-100"
                       >
-                        <PencilSquareIcon className="w-5 h-5" />
+                        <PencilIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(resource.id)}
                         title={t("deleteResource", "Delete Resource")}
                         className="text-gray-500 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-100"
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </td>

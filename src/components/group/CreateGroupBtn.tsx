@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-// import { useCreateResource } from "../../graphql/hook/resource";
 import { useNavigate } from "react-router";
 import { useCreateGroup } from "../../graphql/hook/group";
+import { XIcon, PlusCircle } from "lucide-react";
 
 interface CreateGroupBtnProps {
   t: (key: string, options?: any) => string;
@@ -33,7 +31,7 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="bg-green-600 text-white rounded-md px-5 w-36 flex justify-center items-center gap-2 uppercase">
-          <PlusCircleIcon className="h-6 w-6" />
+          <PlusCircle className="h-6 w-6" />
           {t("create")}
         </button>
       </Dialog.Trigger>
@@ -106,7 +104,7 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
               className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600"
               aria-label="Close"
             >
-              <XMarkIcon color="red" width={30} />
+              <XIcon color="red" width={30} />
             </button>
           </Dialog.Close>
         </Dialog.Content>

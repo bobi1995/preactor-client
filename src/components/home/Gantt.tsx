@@ -2,8 +2,8 @@ import { useState } from "react";
 import { IResource } from "../../graphql/interfaces";
 import ResourceRow from "./ResourceRow";
 import ViewPicker from "./ViewPicker";
-import { ForwardIcon, BackwardIcon } from "@heroicons/react/24/solid";
 import moment from "moment";
+import { ArrowBigRightDashIcon, ArrowBigLeftDashIcon } from "lucide-react";
 
 interface GantComponentProps {
   resources: IResource[];
@@ -95,11 +95,11 @@ const GantComponent: React.FC<GantComponentProps> = ({ resources, t }) => {
           <strong>{time}</strong>
         </p>
         <div className="flex gap-4">
-          <BackwardIcon
+          <ArrowBigLeftDashIcon
             className="h-6 w-6 cursor-pointer"
             onClick={previousPeriod}
           />
-          <ForwardIcon
+          <ArrowBigRightDashIcon
             className="h-6 w-6 cursor-pointer"
             onClick={nextPeriod}
           />

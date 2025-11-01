@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useCreateBreak } from "../../graphql/hook/break";
 import { useTranslation } from "react-i18next";
 import { useBreaks } from "../../graphql/hook/break";
+import { XIcon } from "lucide-react";
 // Helper to generate time options for custom selects
 const generateTimeOptions = (
   max: number,
@@ -263,7 +263,7 @@ const CreateNewBreakBtn: React.FC = () => {
               className="absolute top-3 right-3 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               aria-label={t("common.closeDialog")}
             >
-              <XMarkIcon className="h-5 w-5" />
+              <XIcon className="h-5 w-5" />
             </button>
           </Dialog.Close>
         </Dialog.Content>
