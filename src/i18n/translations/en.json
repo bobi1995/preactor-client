@@ -54,16 +54,54 @@
     "openMenu": "Open main menu"
   },
 
+  "resourcePage": {
+    "title": "Resource Management",
+    "searchPlaceholder": "Search by resource name...",
+    "noResourcesAvailable": "No resources available yet.",
+    "createNewPrompt": "Create a new resource to get started!",
+    "noResourcesMatchSearch": "No resources match your search.",
+    "tryDifferentKeywords": "Try adjusting your search.",
+    "createResourceDialog": {
+      "title": "Create New Resource",
+      "description": "Fill in the details below to add a new resource.",
+      "namePlaceholder": "e.g., Machine 1",
+      "descriptionLabel": "Resource Description",
+      "descriptionPlaceholder": "e.g., CNC machine for metal processing",
+      "scheduleLabel": "Assign Schedule",
+      "schedulePlaceholder": "-- Select Schedule --",
+      "nameExistsError": "A resource with this name already exists. Please choose a unique name.",
+      "createSuccess": "Resource '{{resourceName}}' was created successfully."
+    },
+    "editDialog": {
+      "title": "Edit Resource",
+      "description": "Fill in the details below to edit the resource.",
+      "externalCodeLabel": "External Code",
+      "externalCodePlaceholder": "e.g., EXT-12345",
+      "colorLabel": "Color",
+      "noSchedule": "-- No Schedule --",
+      "nameExistsError": "A resource with this name already exists. Please choose a unique name.",
+      "updateSuccess": "Resource '{{resourceName}}' was updated successfully."
+    }
+  },
   "resourceTable": {
     "searchByName": "Search by name...",
     "noResultsFound": "No resources match your search.",
     "noResourcesAvailable": "No resources available yet.",
     "noDescriptionProvided": "No description provided",
     "noScheduleAssigned": "No schedule assigned",
+    "noColorAssigned": "No color assigned",
+    "externalCode": "Code",
+    "noExternalCode": "N/A",
     "createNewResourcePromptTable": "Create a new resource to get started!",
     "editResource": "Edit Resource",
     "deleteResource": "Delete Resource",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "viewScheduleTooltip": "View assigned schedule",
+    "deleteDialog": {
+      "title": "Delete Resource",
+      "description": "Are you sure you want to permanently delete the resource \"{{resourceName}}\"? This action cannot be undone.",
+      "successToast": "The resource was deleted successfully."
+    }
   },
   "shiftTable": {
     "searchShiftByName": "Search by shift name...",

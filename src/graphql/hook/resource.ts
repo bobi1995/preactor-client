@@ -1,7 +1,6 @@
 import { IResource } from "../interfaces";
 import {
   getResourcesQuery,
-  createResourceMutation,
   getResourceByIdQuery,
   assignAlternativeShiftMutation,
   assignSchedule,
@@ -9,10 +8,14 @@ import {
   deleteAlternativeShiftMutation,
 } from "../query/resource";
 import { useQuery, useMutation, gql } from "@apollo/client";
+import {
+  CREATE_RESOURCE_MUTATION,
+  UPDATE_RESOURCE_MUTATION,
+  DELETE_RESOURCE_MUTATION,
+} from "../mutation/resource";
 
 export const useResources = () => {
   const { data, loading, error, refetch } = useQuery(getResourcesQuery);
-  console.log(error);
   return {
     resources: data?.resource,
     loading,
@@ -48,7 +51,7 @@ export const useResource = (id: string) => {
 };
 
 export const useCreateResource = () => {
-  const [mutate, { loading }] = useMutation(createResourceMutation);
+  const [mutate, { loading }] = useMutation(CREATE_RESOURCE_MUTATION);
 
   const createResource = async (name: string, description: string) => {
     const {
@@ -154,5 +157,67 @@ export const useDeleteAlternativeShift = () => {
   return {
     deleteAlternativeShift,
     loading,
+  };
+};
+
+export const useUpdateResource = () => {
+  const [mutate, { loading, error }] = useMutation(UPDATE_RESOURCE_MUTATION);
+  const updateResource = async ({
+    id,
+    name,
+    description,
+    color,
+    externalCode,
+    scheduleId,
+  }: {
+    id: number;
+    name: string;
+    description: string;
+    color: string;
+    externalCode?: string;
+    scheduleId?: number;
+  }) => {
+    try {
+      const response = await mutate({
+        variables: {
+          input: { id, name, description, color, externalCode, scheduleId },
+        },
+        refetchQueries: [{ query: getResourcesQuery }],
+        awaitRefetchQueries: true,
+      });
+      return response.data.updateResource;
+    } catch (error) {
+      console.error("Failed to update resource:", error);
+      throw error;
+    }
+  };
+  return {
+    updateResource,
+    loading,
+    error,
+  };
+};
+
+export const useDeleteResource = () => {
+  const [mutate, { loading, error }] = useMutation(DELETE_RESOURCE_MUTATION);
+
+  const deleteResource = async (id: number) => {
+    try {
+      const response = await mutate({
+        variables: { deleteResourceId: id },
+        refetchQueries: [{ query: getResourcesQuery }],
+        awaitRefetchQueries: true,
+      });
+      return response.data.deleteResource;
+    } catch (error) {
+      console.error("Failed to delete resource:", error);
+      throw error;
+    }
+  };
+
+  return {
+    deleteResource,
+    loading,
+    error,
   };
 };

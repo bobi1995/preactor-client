@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_SCHEDULES, GET_SCHEDULE } from "../query/schedule";
+import {
+  GET_SCHEDULES,
+  GET_SCHEDULE,
+  GET_SCHEDULES_MINIMAL,
+} from "../query/schedule";
 import {
   CREATE_SCHEDULE,
   UPDATE_SCHEDULE,
@@ -9,6 +13,16 @@ import { ApolloError } from "@apollo/client/errors";
 
 export const useSchedules = () => {
   const { data, loading, error, refetch } = useQuery(GET_SCHEDULES);
+  return {
+    schedules: data?.schedules || [],
+    loading,
+    error,
+    reload: () => refetch(),
+  };
+};
+
+export const useSchedulesMinimal = () => {
+  const { data, loading, error, refetch } = useQuery(GET_SCHEDULES_MINIMAL);
   return {
     schedules: data?.schedules || [],
     loading,
