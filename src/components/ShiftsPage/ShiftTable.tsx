@@ -77,25 +77,25 @@ const ShiftTable: React.FC<ShiftTableProps> = ({
       <table className="min-w-full table-fixed">
         <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
           <tr>
-            <th className="w-3/12 px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+            <th className="w-3/12 px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
               {t("common.name")}
             </th>
-            <th className="w-1/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-1/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("shiftTable.startHour")}
             </th>
-            <th className="w-1/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-1/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("shiftTable.endHour")}
             </th>
-            <th className="w-1/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-1/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("nav.break", "Breaks")}
             </th>
-            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-2/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("shiftTable.breakTime", "Break Time")}
             </th>
-            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-2/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("shiftTable.productivityTime", "Productivity Time")}
             </th>
-            <th className="w-2/12 px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="w-2/12 px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("common.actions")}
             </th>
           </tr>
@@ -119,31 +119,26 @@ const ShiftTable: React.FC<ShiftTableProps> = ({
               </td>
             </tr>
           ) : (
-            enrichedData.map((shift: any, index: number) => (
-              <tr
-                key={shift.id}
-                className={`${
-                  index % 2 === 0 ? "bg-white" : "bg-indigo-50/50"
-                } hover:bg-indigo-100/70 transition-colors duration-150 ease-in-out`}
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
+            enrichedData.map((shift: any) => (
+              <tr key={shift.id} className="hover:bg-indigo-50/50">
+                <td className="px-6 py-3 whitespace-nowrap">
                   <span className="text-base font-medium text-indigo-700">
                     {shift.name}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                <td className="px-6 py-3 whitespace-nowrap text-gray-700">
                   <div className="flex items-center justify-center text-sm">
                     <Clock className="w-4 h-4 mr-2 text-indigo-400" />
                     {shift.startHour.slice(0, 5)}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                <td className="px-6 py-3 whitespace-nowrap text-gray-700">
                   <div className="flex items-center justify-center text-sm">
                     <Clock className="w-4 h-4 mr-2 text-purple-400" />
                     {shift.endHour.slice(0, 5)}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-center">
+                <td className="px-6 py-3 whitespace-nowrap text-center">
                   {shift.breaks.length > 0 ? (
                     <button
                       onClick={() => handleViewBreaks(shift)}
@@ -166,21 +161,21 @@ const ShiftTable: React.FC<ShiftTableProps> = ({
                   )}
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                <td className="px-6 py-3 whitespace-nowrap text-gray-700">
                   <div className="flex items-center justify-center text-sm">
                     <Timer className="w-4 h-4 mr-2 text-red-400" />
                     {shift.displayBreakTime}
                   </div>
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                <td className="px-6 py-3 whitespace-nowrap text-gray-700">
                   <div className="flex items-center justify-center text-sm">
                     <Hourglass className="w-4 h-4 mr-2 text-green-500" />
                     {shift.displayProductivityTime}
                   </div>
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                   <div className="flex items-center justify-center space-x-3">
                     <button
                       onClick={() => navigate(`/shift/${shift.id}`)}

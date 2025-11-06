@@ -39,7 +39,7 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({
       <table className="min-w-full">
         <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
           <tr>
-            <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
               {t("common.name")}
             </th>
             {[
@@ -53,12 +53,12 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({
             ].map((day) => (
               <th
                 key={day}
-                className="px-4 py-4 text-left text-sm font-semibold uppercase tracking-wider"
+                className="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider"
               >
                 {t(`common.days.${day}`)}
               </th>
             ))}
-            <th className="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">
+            <th className="px-6 py-3 text-center text-sm font-semibold uppercase tracking-wider">
               {t("common.actions")}
             </th>
           </tr>
@@ -82,31 +82,31 @@ const SchedulesTable: React.FC<SchedulesTableProps> = ({
           ) : (
             schedules.map((schedule: ISchedule) => (
               <tr key={schedule.id} className="hover:bg-indigo-50/50">
-                <td className="px-6 py-4 whitespace-nowrap text-base font-medium text-indigo-700">
+                <td className="px-6 py-3 whitespace-nowrap text-base font-medium text-indigo-700">
                   {schedule.name}
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.monday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.tuesday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.wednesday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.thursday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.friday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.saturday} />
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-3">
                   <ShiftChip shift={schedule.sunday} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-3">
                   <div className="flex items-center justify-center space-x-3">
                     <Link
                       to={`/schedule/${schedule.id}`}

@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import NavBar from "../components/general/NavBar";
 import Home from "../page/Home";
-import Resource from "../page/Resource";
+import Resource from "../page/ResourcesPage";
 import Shift from "../page/ShiftsPage";
 import ResourcePage from "../page/ResourcePage";
 import ShiftPage from "../page/ShiftPage";

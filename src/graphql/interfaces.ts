@@ -7,6 +7,7 @@ export interface IResource {
   orders: IOrder[];
   restrictions: IRestriction[];
   alternateShifts: IAlternativeShift[];
+  externalCode?: string;
   schedule: ISchedule;
 }
 export interface IGroup {

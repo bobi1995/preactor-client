@@ -20,42 +20,14 @@ export const getResourcesQuery = gql`
     resource: getResources {
       id
       name
-      regularShift {
+      color
+      description
+      externalCode
+      schedule {
         id
         name
       }
-      color
-      description
-      external_code
-      alternativeShifts {
-        id
-      }
       picture
-      # weekSchedule {
-      #   id
-      #   name
-      #   monday {
-      #     ...Day
-      #   }
-      #   tuesday {
-      #     ...Day
-      #   }
-      #   wednesday {
-      #     ...Day
-      #   }
-      #   thursday {
-      #     ...Day
-      #   }
-      #   friday {
-      #     ...Day
-      #   }
-      #   saturday {
-      #     ...Day
-      #   }
-      #   sunday {
-      #     ...Day
-      #   }
-      # }
     }
   }
 `;
@@ -91,17 +63,6 @@ export const getResourceByIdQuery = gql`
       restrictions {
         id
       }
-    }
-  }
-`;
-
-export const createResourceMutation = gql`
-  mutation Mutation($input: ResourceInput!) {
-    resource: createResource(input: $input) {
-      id
-      name
-      description
-      color
     }
   }
 `;

@@ -54,16 +54,54 @@
     "openMenu": "Отвори главното меню"
   },
 
+  "resourcePage": {
+    "title": "Управление на ресурси",
+    "searchPlaceholder": "Търсене по име на ресурс...",
+    "noResourcesAvailable": "Все още няма налични ресурси.",
+    "createNewPrompt": "Създайте нов ресурс, за да започнете!",
+    "noResourcesMatchSearch": "Няма ресурси, отговарящи на вашето търсене.",
+    "tryDifferentKeywords": "Опитайте да промените търсенето.",
+    "createResourceDialog": {
+      "title": "Създай нов ресурс",
+      "description": "Попълнете детайлите по-долу, за да добавите нов ресурс.",
+      "namePlaceholder": "напр. Машина 1",
+      "descriptionLabel": "Описание на ресурса",
+      "descriptionPlaceholder": "напр. CNC машина за обработка на метал",
+      "scheduleLabel": "Назначи график",
+      "schedulePlaceholder": "-- Избери график --",
+      "nameExistsError": "Вече съществува ресурс с това име. Моля, изберете уникално име.",
+      "createSuccess": "Ресурс '{{resourceName}}' беше създаден успешно."
+    },
+    "editDialog": {
+      "title": "Редактиране на ресурс",
+      "description": "Попълнете детайлите по-долу, за да редактирате ресурса.",
+      "externalCodeLabel": "Външен код",
+      "externalCodePlaceholder": "напр. EXT-12345",
+      "colorLabel": "Цвят",
+      "noSchedule": "-- Без график --",
+      "nameExistsError": "Вече съществува ресурс с това име. Моля, изберете уникално име.",
+      "updateSuccess": "Ресурсът '{{resourceName}}' беше актуализиран успешно."
+    }
+  },
   "resourceTable": {
     "searchByName": "Търсене по име...",
     "noResultsFound": "Няма намерени ресурси, отговарящи на търсенето.",
     "noResourcesAvailable": "Все още няма налични ресурси.",
     "noDescriptionProvided": "Няма предоставено описание",
     "noScheduleAssigned": "Няма назначен график",
+    "noColorAssigned": "Няма назначен цвят",
+    "externalCode": "Код",
+    "noExternalCode": "N/A",
     "createNewResourcePromptTable": "Започнете, като създадете нов ресурс!",
     "editResource": "Редактиране на ресурс",
     "deleteResource": "Изтриване на ресурс",
-    "viewDetails": "Преглед на детайли"
+    "viewDetails": "Преглед на детайли",
+    "viewScheduleTooltip": "Виж назначен график",
+    "deleteDialog": {
+      "title": "Изтриване на ресурс",
+      "description": "Сигурни ли сте, че искате да изтриете за постоянно ресурса \"{{resourceName}}\"? Това действие не може да бъде отменено.",
+      "successToast": "Ресурсът беше изтрит успешно."
+    }
   },
   "shiftTable": {
     "searchShiftByName": "Търсене по име на смяна...",
