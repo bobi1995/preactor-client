@@ -154,13 +154,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
   const getColumnWidth = () => {
     if (viewMode === "multiWeek") return "120px"; // 28 days * 120px = 3360px
     if (viewMode === "day") return "80px"; // 24 hours * 80px = 1920px
-    return "100px"; // 12 hours * 100px = 1200px for halfDay
+    return ""; // halfDay uses flex-1 to fill space
   };
 
   const getTotalTimelineWidth = () => {
     if (viewMode === "multiWeek") return "3360px"; // 28 * 120px
     if (viewMode === "day") return "1920px"; // 24 * 80px
-    return "1200px"; // 12 * 100px for halfDay
+    return "100%"; // halfDay fills available width
   };
 
   return (
@@ -235,8 +235,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
               {timeSlots.map((slot, idx) => (
                 <div
                   key={idx}
-                  className="flex-shrink-0 flex items-center justify-center border-r border-indigo-700/30 last:border-r-0"
-                  style={{ width: getColumnWidth() }}
+                  className={`flex items-center justify-center border-r border-indigo-700/30 last:border-r-0 ${
+                    viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
+                  }`}
+                  style={{
+                    width:
+                      viewMode === "halfDay" ? undefined : getColumnWidth(),
+                  }}
                 >
                   <span className="text-sm font-medium">{slot.label}</span>
                 </div>
@@ -272,9 +277,14 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       {timeSlots.map((_, idx) => (
                         <div
                           key={idx}
-                          className="flex-shrink-0 border-r border-gray-200 last:border-r-0 h-full"
+                          className={`border-r border-gray-200 last:border-r-0 h-full ${
+                            viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
+                          }`}
                           style={{
-                            width: getColumnWidth(),
+                            width:
+                              viewMode === "halfDay"
+                                ? undefined
+                                : getColumnWidth(),
                             backgroundColor:
                               idx % 2 === 0 ? "#f9fafb" : "#ffffff",
                           }}
