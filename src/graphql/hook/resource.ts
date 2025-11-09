@@ -7,7 +7,7 @@ import {
   assignMassiveAlternativeShiftMutation,
   deleteAlternativeShiftMutation,
 } from "../query/resource";
-import { useQuery, useMutation, gql } from "@apollo/client";
+import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client";
 import {
   CREATE_RESOURCE_MUTATION,
   UPDATE_RESOURCE_MUTATION,
@@ -47,6 +47,17 @@ export const useResource = (id: string) => {
     loading,
     error,
     reload: () => refetch(),
+  };
+};
+
+export const useAllResourcesForGroup = () => {
+  const [loadResources, { data, loading, error }] =
+    useLazyQuery(getResourcesQuery);
+  return {
+    loadResources,
+    resources: data?.resource || [],
+    loading,
+    error,
   };
 };
 

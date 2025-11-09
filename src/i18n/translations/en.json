@@ -299,5 +299,63 @@
   "confirmationDialog": {
     "areYouSure": "Are you sure?",
     "actionCannotBeUndone": "This action cannot be undone."
+  },
+  "groupsPage": {
+    "title": "Resource Groups Management",
+    "searchByName": "Search by group name...",
+    "noGroupsAvailable": "No resource groups available yet.",
+    "createNewPrompt": "Create a new group to get started!",
+    "noResultsFound": "No groups match your search.",
+    "resourceCount": "Resources",
+    "viewDetails": "View Details",
+    "noDescriptionProvided": "No description provided",
+    "createDialog": {
+      "title": "Create New Resource Group",
+      "description": "Fill in the details below to add a new resource group.",
+      "namePlaceholder": "e.g., Production Line A",
+      "descriptionPlaceholder": "e.g., Main production resources",
+      "nameExistsError": "A group with this name already exists. Please choose a unique name.",
+      "createSuccess": "Resource group '{{groupName}}' was created successfully."
+    },
+    "editDialog": {
+      "title": "Edit Resource Group",
+      "description": "Update the details of the resource group below.",
+      "namePlaceholder": "e.g., Production Line A",
+      "descriptionPlaceholder": "e.g., Main production resources",
+      "nameExistsError": "A group with this name already exists. Please choose a unique name.",
+      "updateSuccess": "Resource group '{{groupName}}' was updated successfully."
+    },
+    "deleteDialog": {
+      "title": "Delete Resource Group",
+      "description": "Are you sure you want to permanently delete the resource group \"{{groupName}}\"? This action cannot be undone.",
+      "successToast": "The resource group was deleted successfully."
+    },
+    "deleteSuccess": "Resource group '{{groupName}}' was deleted successfully.",
+    "assignedResourcesDialog": {
+      "title": "Assigned Resources",
+      "triggerTitle": "View assigned resources",
+      "description": "The group \"{{groupName}}\" contains the following resources:",
+      "noResources": "This group currently has no resources assigned.",
+      "addResourcesHint": "Click the button below to add resources to this group.",
+      "resourceSingular": "resource",
+      "resourcePlural": "resources",
+      "removeResource": "Remove resource from group",
+      "removeSuccess": "Resource \"{{resourceName}}\" was successfully removed from {{groupName}}.",
+      "removeAll": "Remove All",
+      "removeAllConfirmTitle": "Remove All Resources",
+      "removeAllConfirmDescription": "Are you sure you want to remove all {{count}} resources from the group \"{{groupName}}\"? This action cannot be undone.",
+      "removeAllSuccess": "All resources were successfully removed from {{groupName}}."
+    },
+    "addResourcesDialog": {
+      "title": "Add Resources to Group",
+      "triggerTitle": "Add resources",
+      "description": "Select resources to add to the group \"{{groupName}}\".",
+      "noAvailableResources": "No resources available to add.",
+      "selectAll": "Select All",
+      "selectedCount": "{{count}} selected",
+      "addButton": "Add Resources",
+      "noResourcesSelected": "Please select at least one resource to add.",
+      "successMessage": "Successfully added {{count}} resource(s) to {{groupName}}."
+    }
   }
 }

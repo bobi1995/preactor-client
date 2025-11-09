@@ -296,5 +296,63 @@
   "confirmationDialog": {
     "areYouSure": "Сигурни ли сте?",
     "actionCannotBeUndone": "Това действие не може да бъде отменено."
+  },
+  "groupsPage": {
+    "title": "Управление на групи ресурси",
+    "searchByName": "Търсене по име на група...",
+    "noGroupsAvailable": "Все още няма налични групи ресурси.",
+    "createNewPrompt": "Създайте нова група, за да започнете!",
+    "noResultsFound": "Няма групи, отговарящи на търсенето.",
+    "resourceCount": "Ресурси",
+    "viewDetails": "Преглед на детайли",
+    "noDescriptionProvided": "Няма предоставено описание",
+    "createDialog": {
+      "title": "Създай нова група ресурси",
+      "description": "Попълнете детайлите по-долу, за да добавите нова група ресурси.",
+      "namePlaceholder": "напр. Производствена линия А",
+      "descriptionPlaceholder": "напр. Основни производствени ресурси",
+      "nameExistsError": "Вече съществува група с това име. Моля, изберете уникално име.",
+      "createSuccess": "Групата ресурси '{{groupName}}' беше създадена успешно."
+    },
+    "editDialog": {
+      "title": "Редактиране на група ресурси",
+      "description": "Актуализирайте детайлите на групата ресурси по-долу.",
+      "namePlaceholder": "напр. Производствена линия А",
+      "descriptionPlaceholder": "напр. Основни производствени ресурси",
+      "nameExistsError": "Вече съществува група с това име. Моля, изберете уникално име.",
+      "updateSuccess": "Групата ресурси '{{groupName}}' беше актуализирана успешно."
+    },
+    "deleteDialog": {
+      "title": "Изтриване на група ресурси",
+      "description": "Сигурни ли сте, че искате да изтриете за постоянно групата ресурси \"{{groupName}}\"? Това действие не може да бъде отменено.",
+      "successToast": "Групата ресурси беше изтрита успешно."
+    },
+    "deleteSuccess": "Групата ресурси '{{groupName}}' беше изтрита успешно.",
+    "assignedResourcesDialog": {
+      "title": "Назначени ресурси",
+      "triggerTitle": "Виж назначените ресурси",
+      "description": "Групата \"{{groupName}}\" съдържа следните ресурси:",
+      "noResources": "Тази група в момента няма назначени ресурси.",
+      "addResourcesHint": "Натиснете бутона по-долу, за да добавите ресурси към тази група.",
+      "resourceSingular": "ресурс",
+      "resourcePlural": "ресурса",
+      "removeResource": "Премахни ресурс от групата",
+      "removeSuccess": "Ресурсът \"{{resourceName}}\" беше успешно премахнат от {{groupName}}.",
+      "removeAll": "Премахни всички",
+      "removeAllConfirmTitle": "Премахване на всички ресурси",
+      "removeAllConfirmDescription": "Сигурни ли сте, че искате да премахнете всички {{count}} ресурса от групата \"{{groupName}}\"? Това действие не може да бъде отменено.",
+      "removeAllSuccess": "Всички ресурси бяха успешно премахнати от {{groupName}}."
+    },
+    "addResourcesDialog": {
+      "title": "Добави ресурси към група",
+      "triggerTitle": "Добави ресурси",
+      "description": "Изберете ресурси за добавяне към групата \"{{groupName}}\".",
+      "noAvailableResources": "Няма налични ресурси за добавяне.",
+      "selectAll": "Избери всички",
+      "selectedCount": "{{count}} избрани",
+      "addButton": "Добави ресурси",
+      "noResourcesSelected": "Моля, изберете поне един ресурс за добавяне.",
+      "successMessage": "Успешно добавени {{count}} ресурс(а) към {{groupName}}."
+    }
   }
 }
