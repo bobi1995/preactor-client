@@ -7,7 +7,7 @@ import ResourcePage from "../page/ResourcePage";
 import ShiftPage from "../page/ShiftPage";
 import SchedulePage from "../page/SchedulePage";
 import SchedulesPage from "../page/SchedulesPage";
-import Group from "../page/Group";
+import GroupsPage from "../page/GroupsPage";
 import LNOrders from "../page/LNOrders";
 import BreaksPage from "../page/BreaksPage";
 
@@ -62,7 +62,7 @@ const mainRouter = createBrowserRouter([
       },
       {
         path: "/group",
-        element: <Group />,
+        element: <GroupsPage />,
       },
       {
         path: "/breaks",

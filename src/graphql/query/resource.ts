@@ -32,6 +32,16 @@ export const getResourcesQuery = gql`
   }
 `;
 
+export const getResourcesWithoutGroupQuery = gql`
+  query GetResourcesWithoutGroup {
+    resources: getResourcesWithoutGroup {
+      id
+      name
+      description
+    }
+  }
+`;
+
 export const getResourceByIdQuery = gql`
   query GetResourceById($id: ID!) {
     resource: getResource(id: $id) {

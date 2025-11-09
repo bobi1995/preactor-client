@@ -10,11 +10,15 @@ export interface IResource {
   externalCode?: string;
   schedule: ISchedule;
 }
+export interface IResourceLink {
+  resource: IResource;
+}
+
 export interface IGroup {
   id: string;
   name: string;
   description?: string;
-  resources: IResource[];
+  resourceLinks: IResourceLink[];
 }
 
 export interface IOrder {

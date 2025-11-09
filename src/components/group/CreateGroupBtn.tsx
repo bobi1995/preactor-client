@@ -3,18 +3,24 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useNavigate } from "react-router";
 import { useCreateGroup } from "../../graphql/hook/group";
 import { XIcon, PlusCircle } from "lucide-react";
+import { IGroup } from "../../graphql/interfaces";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 interface CreateGroupBtnProps {
-  t: (key: string, options?: any) => string;
+  allGroups: IGroup[];
 }
 
-const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
+const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ allGroups }) => {
+  const { t } = useTranslation();
   const { createGroup, loading } = useCreateGroup();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -23,26 +29,44 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
   };
 
   const handleSubmit = async () => {
-    const group = await createGroup(formData.name, formData.description);
-    navigate(`/group/${group.id}`);
+    // Check for duplicate names
+    const isDuplicate = allGroups.some(
+      (g) => g.name.toLowerCase() === formData.name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      toast.error(t("groupsPage.createDialog.nameExistsError"));
+      return;
+    }
+
+    try {
+      const group = await createGroup(formData.name, formData.description);
+      toast.success(
+        t("groupsPage.createDialog.createSuccess", { groupName: formData.name })
+      );
+      setIsOpen(false);
+      navigate(`/group/${group.id}`);
+    } catch (error) {
+      toast.error(t("errors.errorGeneral"));
+    }
   };
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <button className="bg-green-600 text-white rounded-md px-5 w-36 flex justify-center items-center gap-2 uppercase">
           <PlusCircle className="h-6 w-6" />
-          {t("create")}
+          {t("common.create")}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" />
         <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-lg max-w-lg w-full p-6">
           <Dialog.Title className="text-lg font-semibold mb-4">
-            {t("create_group")}
+            {t("groupsPage.createDialog.title")}
           </Dialog.Title>
           <Dialog.Description className="mb-4 text-gray-600">
-            {t("create_group_info")}
+            {t("groupsPage.createDialog.description")}
           </Dialog.Description>
           <div
             style={{
@@ -54,13 +78,13 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
             {/* Name Input */}
             <div className="flex items-center gap-3">
               <label className="w-20" htmlFor="name">
-                {t("name")}
+                {t("common.name")}
               </label>
               <input
                 className="border rounded-md p-2 flex-1"
                 type="text"
                 id="name"
-                placeholder={t("enter_name")}
+                placeholder={t("groupsPage.createDialog.namePlaceholder")}
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -69,13 +93,15 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
             {/* Description Input */}
             <div className="flex items-center gap-3">
               <label className="w-20" htmlFor="description">
-                {t("description")}
+                {t("common.description")}
               </label>
               <input
                 className="border rounded-md p-2 flex-1"
                 type="text"
                 id="description"
-                placeholder={t("enter_desc")}
+                placeholder={t(
+                  "groupsPage.createDialog.descriptionPlaceholder"
+                )}
                 value={formData.description}
                 onChange={handleChange}
               />
@@ -88,14 +114,14 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ t }) => {
               onClick={handleSubmit}
               disabled={loading}
             >
-              {t("save")}
+              {t("common.save")}
             </button>
             <Dialog.Close asChild>
               <button
                 disabled={loading}
                 className="bg-gray-200 text-gray-600 rounded-md px-4 py-2 hover:bg-gray-300"
               >
-                {t("cancel")}
+                {t("common.cancel")}
               </button>
             </Dialog.Close>
           </div>
