@@ -54,6 +54,149 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     setSelectedOrder(null);
   };
 
+  // Check if a time slot is within working hours for a resource
+  const isWorkingTime = (
+    resource: IResource,
+    slotStart: Date,
+    slotEnd: Date
+  ): boolean => {
+    if (!resource.schedule) return true; // No schedule = assume working
+
+    const dayOfWeek = format(slotStart, "EEEE").toLowerCase();
+    const daySchedule =
+      resource.schedule[dayOfWeek as keyof typeof resource.schedule];
+
+    // No shift for this day = not working
+    if (!daySchedule || typeof daySchedule === "string") return false;
+
+    // Convert times to minutes for proper comparison
+    const slotStartMinutes = slotStart.getHours() * 60 + slotStart.getMinutes();
+    const slotEndMinutes = slotEnd.getHours() * 60 + slotEnd.getMinutes();
+
+    const [startHour, startMin] = daySchedule.startHour.split(":").map(Number);
+    const [endHour, endMin] = daySchedule.endHour.split(":").map(Number);
+    const workStartMinutes = startHour * 60 + startMin;
+    const workEndMinutes = endHour * 60 + endMin;
+
+    // Check if slot overlaps with working hours
+    return (
+      slotStartMinutes < workEndMinutes && slotEndMinutes > workStartMinutes
+    );
+  };
+
+  // Get break overlays for a time slot
+  const getBreakOverlays = (
+    resource: IResource,
+    slotStart: Date,
+    slotEnd: Date
+  ) => {
+    if (!resource.schedule) return [];
+
+    const dayOfWeek = format(slotStart, "EEEE").toLowerCase();
+    const daySchedule =
+      resource.schedule[dayOfWeek as keyof typeof resource.schedule];
+
+    if (!daySchedule || typeof daySchedule === "string" || !daySchedule.breaks)
+      return [];
+
+    const overlays: Array<{
+      left: string;
+      width: string;
+      type: "break" | "nonworking";
+    }> = [];
+    const slotStartMinutes = slotStart.getHours() * 60 + slotStart.getMinutes();
+    const slotEndMinutes = slotEnd.getHours() * 60 + slotEnd.getMinutes();
+    const slotDuration = slotEndMinutes - slotStartMinutes;
+
+    daySchedule.breaks.forEach((breakItem) => {
+      const [breakStartHour, breakStartMin] = breakItem.startTime
+        .split(":")
+        .map(Number);
+      const [breakEndHour, breakEndMin] = breakItem.endTime
+        .split(":")
+        .map(Number);
+      const breakStartMinutes = breakStartHour * 60 + breakStartMin;
+      const breakEndMinutes = breakEndHour * 60 + breakEndMin;
+
+      // Check if break overlaps with this slot
+      if (
+        breakStartMinutes < slotEndMinutes &&
+        breakEndMinutes > slotStartMinutes
+      ) {
+        const overlapStart = Math.max(breakStartMinutes, slotStartMinutes);
+        const overlapEnd = Math.min(breakEndMinutes, slotEndMinutes);
+
+        const leftPercent =
+          ((overlapStart - slotStartMinutes) / slotDuration) * 100;
+        const widthPercent = ((overlapEnd - overlapStart) / slotDuration) * 100;
+
+        overlays.push({
+          left: `${leftPercent}%`,
+          width: `${widthPercent}%`,
+          type: "break",
+        });
+      }
+    });
+
+    return overlays;
+  };
+
+  // Get non-working time overlay for partially working slots
+  const getNonWorkingOverlay = (
+    resource: IResource,
+    slotStart: Date,
+    slotEnd: Date
+  ) => {
+    if (!resource.schedule) return null;
+
+    const dayOfWeek = format(slotStart, "EEEE").toLowerCase();
+    const daySchedule =
+      resource.schedule[dayOfWeek as keyof typeof resource.schedule];
+
+    if (!daySchedule || typeof daySchedule === "string") return null;
+
+    const slotStartMinutes = slotStart.getHours() * 60 + slotStart.getMinutes();
+    const slotEndMinutes = slotEnd.getHours() * 60 + slotEnd.getMinutes();
+    const slotDuration = slotEndMinutes - slotStartMinutes;
+
+    const [startHour, startMin] = daySchedule.startHour.split(":").map(Number);
+    const [endHour, endMin] = daySchedule.endHour.split(":").map(Number);
+    const workStartMinutes = startHour * 60 + startMin;
+    const workEndMinutes = endHour * 60 + endMin;
+
+    // Check if slot ends after work end time (partial overlap at end)
+    if (slotStartMinutes < workEndMinutes && slotEndMinutes > workEndMinutes) {
+      const nonWorkingStart = workEndMinutes;
+      const leftPercent =
+        ((nonWorkingStart - slotStartMinutes) / slotDuration) * 100;
+      const widthPercent =
+        ((slotEndMinutes - nonWorkingStart) / slotDuration) * 100;
+
+      return {
+        left: `${leftPercent}%`,
+        width: `${widthPercent}%`,
+      };
+    }
+
+    // Check if slot starts before work start time (partial overlap at start)
+    if (
+      slotStartMinutes < workStartMinutes &&
+      slotEndMinutes > workStartMinutes
+    ) {
+      const nonWorkingEnd = workStartMinutes;
+      const leftPercent = 0;
+      const widthPercent =
+        ((nonWorkingEnd - slotStartMinutes) / slotDuration) * 100;
+
+      return {
+        left: `${leftPercent}%`,
+        width: `${widthPercent}%`,
+      };
+    }
+
+    return null;
+  };
+
   // Synchronized scrolling - only right panel scrolls, left follows
   const handleRightScroll = () => {
     if (leftPanelRef.current && rightPanelRef.current) {
@@ -307,36 +450,86 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       className="absolute top-0 left-0 h-full flex z-0"
                       style={{ width: getTotalTimelineWidth() }}
                     >
-                      {timeSlots.map((slot, idx) => (
-                        <div
-                          key={idx}
-                          className={`border-r border-gray-200 last:border-r-0 h-full ${
-                            viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
-                          } ${
-                            viewMode === "multiWeek"
-                              ? "cursor-pointer hover:bg-indigo-50 transition-colors"
-                              : ""
-                          }`}
-                          style={{
-                            width:
+                      {timeSlots.map((slot, idx) => {
+                        const isWorking = isWorkingTime(
+                          resource,
+                          slot.start,
+                          slot.end
+                        );
+                        const breakOverlays = getBreakOverlays(
+                          resource,
+                          slot.start,
+                          slot.end
+                        );
+                        const nonWorkingOverlay = getNonWorkingOverlay(
+                          resource,
+                          slot.start,
+                          slot.end
+                        );
+
+                        let bgColor = idx % 2 === 0 ? "#f9fafb" : "#ffffff";
+
+                        // Non-working hours (dark gray) - only if completely non-working
+                        if (!isWorking) {
+                          bgColor = "#e5e7eb";
+                        }
+
+                        return (
+                          <div
+                            key={idx}
+                            className={`border-r border-gray-200 last:border-r-0 h-full relative ${
                               viewMode === "halfDay"
-                                ? undefined
-                                : getColumnWidth(),
-                            backgroundColor:
-                              idx % 2 === 0 ? "#f9fafb" : "#ffffff",
-                          }}
-                          onClick={() => {
-                            if (
-                              viewMode === "multiWeek" &&
-                              onDateClick &&
-                              onViewModeChange
-                            ) {
-                              onDateClick(slot.start);
-                              onViewModeChange("day");
-                            }
-                          }}
-                        />
-                      ))}
+                                ? "flex-1"
+                                : "flex-shrink-0"
+                            } ${
+                              viewMode === "multiWeek"
+                                ? "cursor-pointer hover:bg-indigo-50 transition-colors"
+                                : ""
+                            }`}
+                            style={{
+                              width:
+                                viewMode === "halfDay"
+                                  ? undefined
+                                  : getColumnWidth(),
+                              backgroundColor: bgColor,
+                            }}
+                            onClick={() => {
+                              if (
+                                viewMode === "multiWeek" &&
+                                onDateClick &&
+                                onViewModeChange
+                              ) {
+                                onDateClick(slot.start);
+                                onViewModeChange("day");
+                              }
+                            }}
+                          >
+                            {/* Non-working time overlay (for partially working slots) */}
+                            {nonWorkingOverlay && (
+                              <div
+                                className="absolute top-0 h-full"
+                                style={{
+                                  left: nonWorkingOverlay.left,
+                                  width: nonWorkingOverlay.width,
+                                  backgroundColor: "#e5e7eb",
+                                }}
+                              />
+                            )}
+
+                            {/* Break overlays */}
+                            {breakOverlays.map((overlay, overlayIdx) => (
+                              <div
+                                key={overlayIdx}
+                                className="absolute top-0 h-full bg-orange-200 opacity-60"
+                                style={{
+                                  left: overlay.left,
+                                  width: overlay.width,
+                                }}
+                              />
+                            ))}
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {/* Order bars */}

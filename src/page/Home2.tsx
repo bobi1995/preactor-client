@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useScheduleources } from "../graphql/hook/resource";
+import { useScheduleResources } from "../graphql/hook/resource";
 import { useOrders } from "../graphql/hook/order";
 import { IOrder, IResource } from "../graphql/interfaces";
 import OrderGanttChart from "../components/home2/OrderGanttChart";
@@ -24,7 +24,9 @@ const Home2 = () => {
     loading: resourcesLoading,
     error: resourcesError,
     reload: reloadResources,
-  } = useScheduleources();
+  } = useScheduleResources();
+
+  console.log("Resources loaded:", resources);
 
   // Fetch ALL orders once
   const {

@@ -24,7 +24,7 @@ export const useResources = () => {
   };
 };
 
-export const useScheduleources = () => {
+export const useScheduleResources = () => {
   const { data, loading, error, refetch } = useQuery(getResourcesQuery, {
     fetchPolicy: "cache-first",
   });
