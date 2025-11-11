@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useScheduleources } from "../graphql/hook/resource";
 import { useOrders } from "../graphql/hook/order";
+import { IOrder, IResource } from "../graphql/interfaces";
 import OrderGanttChart from "../components/home2/OrderGanttChart";
 import ViewPicker, { ViewMode } from "../components/home2/ViewPicker";
 import TimelineNavigation from "../components/home2/TimelineNavigation";
@@ -9,11 +10,13 @@ import GanttSkeleton from "../components/home2/GanttSkeleton";
 import ErrorComponent from "../components/general/Error";
 
 const Home2 = () => {
-  const { t } = useTranslation("home");
+  const { t } = useTranslation();
 
   // State management
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>("day");
+  const [hideUnusedResources, setHideUnusedResources] =
+    useState<boolean>(false);
 
   // Fetch resources
   const {
@@ -48,7 +51,28 @@ const Home2 = () => {
   // Handle date navigation
   const handleDateChange = (newDate: Date) => {
     setCurrentDate(newDate);
+    // Reset hide unused resources when date changes
+    setHideUnusedResources(false);
   };
+
+  // Filter resources based on hideUnusedResources flag
+  const filteredResources = useMemo(() => {
+    if (!hideUnusedResources || !resources || !visibleOrders) {
+      return resources || [];
+    }
+
+    // Get resource IDs that have orders
+    const resourceIdsWithOrders = new Set(
+      visibleOrders
+        .filter((order: IOrder) => order.resource?.id)
+        .map((order: IOrder) => order.resource!.id)
+    );
+
+    // Return only resources that have orders
+    return resources.filter((resource: IResource) =>
+      resourceIdsWithOrders.has(resource.id)
+    );
+  }, [hideUnusedResources, resources, visibleOrders]);
 
   // Handle retry on error
   const handleRetry = () => {
@@ -88,6 +112,46 @@ const Home2 = () => {
           <h1 className="text-2xl font-bold text-gray-900">
             {t("home2.title", "Production Schedule")}
           </h1>
+
+          {/* Hide Unused Resources Toggle */}
+          <button
+            onClick={() => setHideUnusedResources(!hideUnusedResources)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              hideUnusedResources
+                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+            title={t(
+              "home2.hideUnused.tooltip",
+              "Hide resources without orders in current period"
+            )}
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {hideUnusedResources ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              ) : (
+                <rect
+                  x="4"
+                  y="4"
+                  width="16"
+                  height="16"
+                  strokeWidth={2}
+                  rx="2"
+                />
+              )}
+            </svg>
+            <span>{t("home2.hideUnused.label", "Hide unused")}</span>
+          </button>
         </div>
 
         <div className="flex items-center gap-4">
@@ -114,10 +178,12 @@ const Home2 = () => {
         ) : null}
 
         <OrderGanttChart
-          resources={resources || []}
+          resources={filteredResources}
           orders={visibleOrders}
           viewMode={viewMode}
           currentDate={currentDate}
+          onDateClick={(date) => setCurrentDate(date)}
+          onViewModeChange={(newViewMode) => setViewMode(newViewMode)}
         />
       </div>
 
@@ -126,7 +192,14 @@ const Home2 = () => {
         <div className="mt-4 flex items-center justify-between text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm">
           <div className="flex items-center gap-6">
             <span>
-              {t("home2.stats.resources", "Resources")}: {resources.length}
+              {t("home2.stats.resources", "Resources")}:{" "}
+              {filteredResources.length}
+              {hideUnusedResources &&
+                resources.length !== filteredResources.length && (
+                  <span className="text-gray-400 ml-1">
+                    / {resources.length}
+                  </span>
+                )}
             </span>
             <span>
               {t("home2.stats.orders", "Orders")}: {visibleOrders.length}

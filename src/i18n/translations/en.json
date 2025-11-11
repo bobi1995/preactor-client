@@ -325,6 +325,22 @@
       "resources": "Resources",
       "orders": "Orders",
       "lastUpdate": "Last updated: {{time}}"
+    },
+    "hideUnused": {
+      "label": "Hide unused",
+      "tooltip": "Hide resources without orders in current period"
+    },
+    "orderDetails": {
+      "title": "Order Details",
+      "orderInfo": "Order Information",
+      "orderNumber": "Order Number",
+      "operationNumber": "Operation Number",
+      "operationName": "Operation Name",
+      "resource": "Resource",
+      "timing": "Timing",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "notAvailable": "N/A"
     }
   },
   "groupsPage": {

@@ -322,6 +322,22 @@
       "resources": "Ресурси",
       "orders": "Поръчки",
       "lastUpdate": "Последна актуализация: {{time}}"
+    },
+    "hideUnused": {
+      "label": "Скрий неизползвани",
+      "tooltip": "Скрий ресурси без поръчки в текущия период"
+    },
+    "orderDetails": {
+      "title": "Детайли за поръчка",
+      "orderInfo": "Информация за поръчката",
+      "orderNumber": "Номер на поръчка",
+      "operationNumber": "Номер на операция",
+      "operationName": "Име на операция",
+      "resource": "Ресурс",
+      "timing": "Време",
+      "startTime": "Начало",
+      "endTime": "Край",
+      "notAvailable": "Н/П"
     }
   },
   "groupsPage": {

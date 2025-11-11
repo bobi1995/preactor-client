@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IResource, IOrder } from "../../graphql/interfaces";
 import { ViewMode } from "./ViewPicker";
+import OrderDetailsDialog from "./OrderDetailsDialog";
 import {
   startOfDay,
   endOfDay,
@@ -17,6 +18,8 @@ interface OrderGanttChartProps {
   orders: IOrder[];
   viewMode: ViewMode;
   currentDate: Date;
+  onDateClick?: (date: Date) => void;
+  onViewModeChange?: (viewMode: ViewMode) => void;
 }
 
 interface TimeSlot {
@@ -30,10 +33,26 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
   orders,
   viewMode,
   currentDate,
+  onDateClick,
+  onViewModeChange,
 }) => {
   const { t } = useTranslation();
   const leftPanelRef = React.useRef<HTMLDivElement>(null);
   const rightPanelRef = React.useRef<HTMLDivElement>(null);
+
+  // Order details dialog state
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState<boolean>(false);
+
+  const handleOrderClick = (order: IOrder) => {
+    setSelectedOrder(order);
+    setIsOrderDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsOrderDialogOpen(false);
+    setSelectedOrder(null);
+  };
 
   // Synchronized scrolling - only right panel scrolls, left follows
   const handleRightScroll = () => {
@@ -237,10 +256,24 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                   key={idx}
                   className={`flex items-center justify-center border-r border-indigo-700/30 last:border-r-0 ${
                     viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
+                  } ${
+                    viewMode === "multiWeek"
+                      ? "cursor-pointer hover:bg-purple-700 transition-colors"
+                      : ""
                   }`}
                   style={{
                     width:
                       viewMode === "halfDay" ? undefined : getColumnWidth(),
+                  }}
+                  onClick={() => {
+                    if (
+                      viewMode === "multiWeek" &&
+                      onDateClick &&
+                      onViewModeChange
+                    ) {
+                      onDateClick(slot.start);
+                      onViewModeChange("day");
+                    }
                   }}
                 >
                   <span className="text-sm font-medium">{slot.label}</span>
@@ -274,11 +307,15 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       className="absolute top-0 left-0 h-full flex z-0"
                       style={{ width: getTotalTimelineWidth() }}
                     >
-                      {timeSlots.map((_, idx) => (
+                      {timeSlots.map((slot, idx) => (
                         <div
                           key={idx}
                           className={`border-r border-gray-200 last:border-r-0 h-full ${
                             viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
+                          } ${
+                            viewMode === "multiWeek"
+                              ? "cursor-pointer hover:bg-indigo-50 transition-colors"
+                              : ""
                           }`}
                           style={{
                             width:
@@ -287,6 +324,16 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                                 : getColumnWidth(),
                             backgroundColor:
                               idx % 2 === 0 ? "#f9fafb" : "#ffffff",
+                          }}
+                          onClick={() => {
+                            if (
+                              viewMode === "multiWeek" &&
+                              onDateClick &&
+                              onViewModeChange
+                            ) {
+                              onDateClick(slot.start);
+                              onViewModeChange("day");
+                            }
                           }}
                         />
                       ))}
@@ -310,6 +357,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                               backgroundColor: resource.color || "#6366f1",
                               border: "2px solid rgba(255,255,255,0.3)",
                             }}
+                            onClick={() => handleOrderClick(order)}
                             title={`${order.orderNumber || "Order"} - ${
                               order.opName || ""
                             }${
@@ -359,6 +407,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Order Details Dialog */}
+      <OrderDetailsDialog
+        order={selectedOrder}
+        isOpen={isOrderDialogOpen}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 };
