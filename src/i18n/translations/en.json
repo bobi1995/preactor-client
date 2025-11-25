@@ -300,6 +300,49 @@
     "areYouSure": "Are you sure?",
     "actionCannotBeUndone": "This action cannot be undone."
   },
+  "home2": {
+    "title": "Production Schedule",
+    "loading": "Loading orders...",
+    "error": {
+      "fetchFailed": "Unable to fetch schedule data. Please check your connection."
+    },
+    "viewPicker": {
+      "halfDay": "12 Hours",
+      "day": "24 Hours",
+      "multiWeek": "4 Weeks"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "today": "Today"
+    },
+    "gantt": {
+      "resources": "Resources",
+      "noResources": "No resources available.",
+      "noData": "No data to display."
+    },
+    "stats": {
+      "resources": "Resources",
+      "orders": "Orders",
+      "lastUpdate": "Last updated: {{time}}"
+    },
+    "hideUnused": {
+      "label": "Hide unused",
+      "tooltip": "Hide resources without orders in current period"
+    },
+    "orderDetails": {
+      "title": "Order Details",
+      "orderInfo": "Order Information",
+      "orderNumber": "Order Number",
+      "operationNumber": "Operation Number",
+      "operationName": "Operation Name",
+      "resource": "Resource",
+      "timing": "Timing",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "notAvailable": "N/A"
+    }
+  },
   "groupsPage": {
     "title": "Resource Groups Management",
     "searchByName": "Search by group name...",

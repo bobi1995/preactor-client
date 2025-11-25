@@ -2,15 +2,11 @@ import { gql } from "@apollo/client";
 
 const DayFragment = gql`
   fragment Day on Shift {
-    id
-    name
     startHour
     endHour
     breaks {
-      id
-      startHour
-      endHour
-      name
+      startTime
+      endTime
     }
   }
 `;
@@ -26,10 +22,32 @@ export const getResourcesQuery = gql`
       schedule {
         id
         name
+        monday {
+          ...Day
+        }
+        tuesday {
+          ...Day
+        }
+        wednesday {
+          ...Day
+        }
+        thursday {
+          ...Day
+        }
+        friday {
+          ...Day
+        }
+        saturday {
+          ...Day
+        }
+        sunday {
+          ...Day
+        }
       }
       picture
     }
   }
+  ${DayFragment}
 `;
 
 export const getResourcesWithoutGroupQuery = gql`

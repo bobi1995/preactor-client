@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import NavBar from "../components/general/NavBar";
-import Home from "../page/Home";
+import Home2 from "../page/Home2";
 import Resource from "../page/ResourcesPage";
 import Shift from "../page/ShiftsPage";
 import ResourcePage from "../page/ResourcePage";
@@ -30,7 +30,7 @@ const mainRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Home2 />,
       },
       {
         path: "/resource",

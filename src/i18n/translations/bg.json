@@ -297,6 +297,49 @@
     "areYouSure": "Сигурни ли сте?",
     "actionCannotBeUndone": "Това действие не може да бъде отменено."
   },
+  "home2": {
+    "title": "Производствен график",
+    "loading": "Зареждане на поръчки...",
+    "error": {
+      "fetchFailed": "Неуспешно зареждане на данни за графика. Моля, проверете връзката си."
+    },
+    "viewPicker": {
+      "halfDay": "12 часа",
+      "day": "24 часа",
+      "multiWeek": "4 седмици"
+    },
+    "navigation": {
+      "previous": "Назад",
+      "next": "Напред",
+      "today": "Днес"
+    },
+    "gantt": {
+      "resources": "Ресурси",
+      "noResources": "Няма налични ресурси.",
+      "noData": "Няма данни за показване."
+    },
+    "stats": {
+      "resources": "Ресурси",
+      "orders": "Поръчки",
+      "lastUpdate": "Последна актуализация: {{time}}"
+    },
+    "hideUnused": {
+      "label": "Скрий неизползвани",
+      "tooltip": "Скрий ресурси без поръчки в текущия период"
+    },
+    "orderDetails": {
+      "title": "Детайли за поръчка",
+      "orderInfo": "Информация за поръчката",
+      "orderNumber": "Номер на поръчка",
+      "operationNumber": "Номер на операция",
+      "operationName": "Име на операция",
+      "resource": "Ресурс",
+      "timing": "Време",
+      "startTime": "Начало",
+      "endTime": "Край",
+      "notAvailable": "Н/П"
+    }
+  },
   "groupsPage": {
     "title": "Управление на групи ресурси",
     "searchByName": "Търсене по име на група...",

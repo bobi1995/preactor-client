@@ -23,12 +23,12 @@ export interface IGroup {
 
 export interface IOrder {
   id: number;
-  OrderNo?: string;
-  OpNo?: number;
+  orderNumber?: string;
+  operationNumber?: string;
   resource?: IResource;
-  StartTime: string;
-  EndTime: string;
-  OperationName?: string;
+  startTime?: string;
+  endTime?: string;
+  opName?: string;
 }
 
 export interface IShift {
