@@ -12,6 +12,7 @@ import {
   parseISO,
   addHours,
 } from "date-fns";
+import { getOrderColor } from "../../utils/color-generator";
 
 interface OrderGanttChartProps {
   resources: IResource[];
@@ -437,6 +438,11 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
             ) : (
               resources.map((resource) => {
                 const resourceOrders = ordersByResource.get(resource.id) || [];
+                console.log(
+                  "Rendering resource:",
+                  resource.name,
+                  resourceOrders
+                );
                 return (
                   <div
                     key={resource.id}
@@ -540,14 +546,16 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       {resourceOrders.map((order) => {
                         const style = getOrderBarStyle(order);
                         if (style.display === "none") return null;
-
+                        const barColor = getOrderColor(
+                          order.orderNumber || String(order.id)
+                        );
                         return (
                           <div
                             key={order.id}
                             className="absolute h-12 rounded-md shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden group"
                             style={{
                               ...style,
-                              backgroundColor: resource.color || "#6366f1",
+                              backgroundColor: barColor,
                               border: "2px solid rgba(255,255,255,0.3)",
                             }}
                             onClick={() => handleOrderClick(order)}
