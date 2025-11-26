@@ -32,6 +32,7 @@
     "close": "Затвори",
     "nameRequired": "Името е задължително.",
     "switchTo": "Превключи на {{language}}",
+    "parameters": "Параметри",
     "days": {
       "monday": "Понеделник",
       "tuesday": "Вторник",
@@ -51,7 +52,11 @@
     "shift": "Смени",
     "break": "Почивки",
     "schedule": "Графици",
-    "openMenu": "Отвори главното меню"
+    "openMenu": "Отвори главното меню",
+    "attributes": "Атрибути",
+    "changeoverGroups": "Групи",
+    "changeoverMatrix": "Матрица",
+    "changeovers": "Пренастройки"
   },
 
   "resourcePage": {
@@ -396,6 +401,36 @@
       "addButton": "Добави ресурси",
       "noResourcesSelected": "Моля, изберете поне един ресурс за добавяне.",
       "successMessage": "Успешно добавени {{count}} ресурс(а) към {{groupName}}."
+    }
+  },
+  "attributesPage": {
+    "title": "Атрибути",
+    "searchPlaceholder": "Търсене на атрибути...",
+    "nameExistsError": "Вече съществува атрибут с това име.",
+    "createToast": "Атрибутът е създаден успешно",
+    "editToast": "Атрибутът е обновен успешно",
+    "deleteToast": "Атрибутът е изтрит успешно",
+    "table": {
+      "name": "Име",
+      "parameters": "Параметри",
+      "noMatch": "Няма намерени атрибути.",
+      "noData": "Няма въведени атрибути. Създайте нов, за да започнете."
+    },
+    "createDialog": {
+      "title": "Създаване на атрибут",
+      "description": "Добавете нов тип атрибут (напр. Цвят, Дебелина).",
+      "nameLabel": "Име"
+    },
+    "editDialog": {
+      "title": "Редактиране на атрибут",
+      "description": "Обновете името на атрибута."
+    },
+    "deleteDialog": {
+      "title": "Изтриване на атрибут",
+      "description": "Сигурни ли сте, че искате да изтриете \"{{name}}\"? Това действие е необратимо."
+    },
+    "paramsDialog": {
+      "title": "Управление на параметри"
     }
   }
 }

@@ -32,6 +32,7 @@
     "close": "Close",
     "nameRequired": "Name is required.",
     "switchTo": "Switch to {{language}}",
+    "parameters": "Parameters",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -51,7 +52,11 @@
     "shift": "Shifts",
     "break": "Breaks",
     "schedule": "Schedules",
-    "openMenu": "Open main menu"
+    "openMenu": "Open main menu",
+    "attributes": "Attributes",
+    "changeoverGroups": "Groups",
+    "changeoverMatrix": "Matrix",
+    "changeovers": "Changeovers"
   },
 
   "resourcePage": {
@@ -399,6 +404,36 @@
       "addButton": "Add Resources",
       "noResourcesSelected": "Please select at least one resource to add.",
       "successMessage": "Successfully added {{count}} resource(s) to {{groupName}}."
+    }
+  },
+  "attributesPage": {
+    "title": "Attributes",
+    "searchPlaceholder": "Search attributes...",
+    "nameExistsError": "An attribute with this name already exists.",
+    "createToast": "Attribute created successfully",
+    "editToast": "Attribute updated successfully",
+    "deleteToast": "Attribute deleted successfully",
+    "table": {
+      "name": "Name",
+      "parameters": "Parameters",
+      "noMatch": "No attributes match your search.",
+      "noData": "No attributes found. Create one to get started."
+    },
+    "createDialog": {
+      "title": "Create Attribute",
+      "description": "Add a new attribute type (e.g. Color, Thickness).",
+      "nameLabel": "Name"
+    },
+    "editDialog": {
+      "title": "Edit Attribute",
+      "description": "Update the attribute name."
+    },
+    "deleteDialog": {
+      "title": "Delete Attribute",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    },
+    "paramsDialog": {
+      "title": "Manage Parameters"
     }
   }
 }

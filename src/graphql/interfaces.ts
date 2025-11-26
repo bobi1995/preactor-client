@@ -76,3 +76,15 @@ export interface IAlternativeShift {
   endDate: string;
   breaks: IBreaks[];
 }
+
+// Add these to your  interfaces
+export interface IAttributeParameter {
+  id: string;
+  value: string; // e.g., "Red", "Green", "Thick", "Thin"
+}
+
+export interface IAttribute {
+  id: string;
+  name: string;
+  parameters?: IAttributeParameter[];
+}
