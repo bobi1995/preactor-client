@@ -11,6 +11,8 @@ import GroupsPage from "../page/GroupsPage";
 import LNOrders from "../page/LNOrders";
 import BreaksPage from "../page/BreaksPage";
 import AttributesPage from "../page/AttributesPage";
+import ChangeoverGroupsPage from "../page/ChangeoverGroupsPage";
+import ChangeoverMatrixPage from "../page/ChangeoverMatrixPage";
 
 const AppLayout = () => {
   return (
@@ -72,6 +74,14 @@ const mainRouter = createBrowserRouter([
       {
         path: "/attributes",
         element: <AttributesPage />,
+      },
+      {
+        path: "/changeover-groups",
+        element: <ChangeoverGroupsPage />,
+      },
+      {
+        path: "/changeover-matrix",
+        element: <ChangeoverMatrixPage />,
       },
     ],
   },

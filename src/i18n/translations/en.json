@@ -9,6 +9,8 @@
     "createSuccess": "Schedule '{{scheduleName}}' was created successfully."
   },
   "common": {
+    "add": "Add",
+    "select": "Select",
     "loading": "Loading...",
     "appName": "MyApp",
     "save": "Save",
@@ -433,7 +435,50 @@
       "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
     },
     "paramsDialog": {
-      "title": "Manage Parameters"
+      "title": "Manage Parameters",
+      "valueLabel": "Value",
+      "noteLabel": "Note (Optional)",
+      "noParams": "No parameters defined yet.",
+      "addSuccess": "Parameter added",
+      "deleteSuccess": "Parameter deleted",
+      "notePlaceholder": "e.g. Color Code, Description",
+      "valuePlaceholder": "e.g. Red, 10mm, S235"
+    }
+  },
+  "changeoverGroupsPage": {
+    "title": "Групи за пренастройка",
+    "searchPlaceholder": "Търсене на групи...",
+    "nameExistsError": "Група с това име вече съществува.",
+    "createToast": "Групата е създадена успешно",
+    "editToast": "Групата е обновена успешно",
+    "deleteToast": "Групата е изтрита успешно",
+    "details": "Детайли",
+    "table": {
+      "name": "Име",
+      "times": "Конфигурация",
+      "noMatch": "Няма намерени групи.",
+      "noData": "Няма въведени групи. Създайте нова, за да започнете."
+    },
+    "createDialog": {
+      "title": "Създаване на група",
+      "description": "Добавете нова група за пренастройка.",
+      "nameLabel": "Име"
+    },
+    "editDialog": {
+      "title": "Редактиране на група",
+      "description": "Обновете името на групата."
+    },
+    "deleteDialog": {
+      "title": "Изтриване на група",
+      "description": "Сигурни ли сте, че искате да изтриете \"{{name}}\"? Това действие е необратимо."
+    },
+    "timesDialog": {
+      "subtitle": "Base changeover times per attribute",
+      "noData": "No times configured for this group yet.",
+      "attributeLabel": "Attribute",
+      "timeLabel": "Time (min)",
+      "addSuccess": "Configuration saved successfully",
+      "deleteSuccess": "Attribute removed from group."
     }
   }
 }

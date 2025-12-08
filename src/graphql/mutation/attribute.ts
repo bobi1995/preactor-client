@@ -26,3 +26,22 @@ export const DELETE_ATTRIBUTE = gql`
     }
   }
 `;
+
+export const CREATE_ATTR_PARAM = gql`
+  mutation CreateAttrParam($input: CreateAttrParamInput!) {
+    createAttrParam(input: $input) {
+      id
+      attributeValue
+      attributeNote
+    }
+  }
+`;
+
+export const DELETE_ATTR_PARAM = gql`
+  mutation DeleteAttrParam($id: Int!) {
+    deleteAttrParam(id: $id) {
+      success
+      message
+    }
+  }
+`;

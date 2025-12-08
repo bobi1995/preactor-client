@@ -2,7 +2,9 @@ import { useQuery, useMutation } from "@apollo/client";
 import { IAttribute } from "../interfaces";
 import { GET_ATTRIBUTES } from "../query/attribute";
 import {
+  CREATE_ATTR_PARAM,
   CREATE_ATTRIBUTE,
+  DELETE_ATTR_PARAM,
   DELETE_ATTRIBUTE,
   UPDATE_ATTRIBUTE,
 } from "../mutation/attribute";
@@ -80,4 +82,44 @@ export const useDeleteAttribute = () => {
   };
 
   return { deleteAttribute, loading, error };
+};
+
+export const useCreateAttrParam = () => {
+  const [createParam, { loading, error }] = useMutation(CREATE_ATTR_PARAM, {
+    // Refetching GET_ATTRIBUTES updates the parent list,
+    // causing the Attribute object passed to the dialog to update automatically.
+    refetchQueries: [{ query: GET_ATTRIBUTES }],
+  });
+
+  const createAttrParam = async (
+    attributeId: number,
+    value: string,
+    note?: string
+  ) => {
+    return await createParam({
+      variables: {
+        input: {
+          attributeId: Number(attributeId),
+          attributeValue: value,
+          attributeNote: note,
+        },
+      },
+    });
+  };
+
+  return { createAttrParam, loading, error };
+};
+
+export const useDeleteAttrParam = () => {
+  const [deleteParam, { loading, error }] = useMutation(DELETE_ATTR_PARAM, {
+    refetchQueries: [{ query: GET_ATTRIBUTES }],
+  });
+
+  const deleteAttrParam = async (id: number) => {
+    return await deleteParam({
+      variables: { id: Number(id) },
+    });
+  };
+
+  return { deleteAttrParam, loading, error };
 };

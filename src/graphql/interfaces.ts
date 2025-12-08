@@ -80,11 +80,36 @@ export interface IAlternativeShift {
 // Add these to your  interfaces
 export interface IAttributeParameter {
   id: string;
-  value: string; // e.g., "Red", "Green", "Thick", "Thin"
+  attributeValue: string;
+  attributeNote?: string | null;
+  attributeId: number;
 }
 
 export interface IAttribute {
   id: string;
   name: string;
-  parameters?: IAttributeParameter[];
+  attributeParameters?: IAttributeParameter[];
+}
+
+export interface IChangeoverGroup {
+  id: string;
+  name: string;
+  changeoverTimes?: IChangeoverTime[];
+}
+
+export interface IChangeoverTime {
+  id: string;
+  changeoverTime: number;
+  attribute: {
+    name: string;
+  };
+}
+
+export interface IChangeoverData {
+  id: number;
+  setupTime: number;
+  changeoverGroupId: number;
+  attributeId: number;
+  fromAttrParamId: number;
+  toAttrParamId: number;
 }
