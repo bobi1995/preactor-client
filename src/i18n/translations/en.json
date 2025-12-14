@@ -9,6 +9,8 @@
     "createSuccess": "Schedule '{{scheduleName}}' was created successfully."
   },
   "common": {
+    "add": "Add",
+    "select": "Select",
     "loading": "Loading...",
     "appName": "MyApp",
     "save": "Save",
@@ -32,6 +34,12 @@
     "close": "Close",
     "nameRequired": "Name is required.",
     "switchTo": "Switch to {{language}}",
+    "parameters": "Parameters",
+    "matrixConfig": "Matrix",
+    "from": "From",
+    "to": "To",
+    "timeMin": "Time (minutes)",
+    "saved": "Saved",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -51,7 +59,11 @@
     "shift": "Shifts",
     "break": "Breaks",
     "schedule": "Schedules",
-    "openMenu": "Open main menu"
+    "openMenu": "Open main menu",
+    "attributes": "Attributes",
+    "changeoverGroups": "Groups",
+    "changeoverMatrix": "Matrix",
+    "changeovers": "Changeovers"
   },
 
   "resourcePage": {
@@ -399,6 +411,89 @@
       "addButton": "Add Resources",
       "noResourcesSelected": "Please select at least one resource to add.",
       "successMessage": "Successfully added {{count}} resource(s) to {{groupName}}."
+    }
+  },
+  "attributesPage": {
+    "title": "Attributes",
+    "searchPlaceholder": "Search attributes...",
+    "nameExistsError": "An attribute with this name already exists.",
+    "createToast": "Attribute created successfully",
+    "editToast": "Attribute updated successfully",
+    "deleteToast": "Attribute deleted successfully",
+    "table": {
+      "name": "Name",
+      "parameters": "Parameters",
+      "noMatch": "No attributes match your search.",
+      "noData": "No attributes found. Create one to get started."
+    },
+    "createDialog": {
+      "title": "Create Attribute",
+      "description": "Add a new attribute type (e.g. Color, Thickness).",
+      "nameLabel": "Name"
+    },
+    "editDialog": {
+      "title": "Edit Attribute",
+      "description": "Update the attribute name."
+    },
+    "deleteDialog": {
+      "title": "Delete Attribute",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    },
+    "paramsDialog": {
+      "title": "Manage Parameters",
+      "valueLabel": "Value",
+      "noteLabel": "Note (Optional)",
+      "noParams": "No parameters defined yet.",
+      "addSuccess": "Parameter added",
+      "deleteSuccess": "Parameter deleted",
+      "notePlaceholder": "e.g. Color Code, Description",
+      "valuePlaceholder": "e.g. Red, 10mm, S235"
+    }
+  },
+  "changeoverGroupsPage": {
+    "title": "Changeover Groups",
+    "searchPlaceholder": "Search groups...",
+    "details": "Details",
+    "nameExistsError": "A group with this name already exists.",
+    "createToast": "Group created successfully",
+    "editToast": "Group updated successfully",
+    "deleteToast": "Group deleted successfully",
+    "table": {
+      "name": "Name",
+      "times": "Configuration",
+      "noMatch": "No matching groups found",
+      "noData": "No changeover groups created yet"
+    },
+    "createDialog": {
+      "title": "Create Group",
+      "description": "Add a new changeover group.",
+      "nameLabel": "Name"
+    },
+    "editDialog": {
+      "title": "Edit Group",
+      "description": "Update the group name."
+    },
+    "deleteDialog": {
+      "title": "Delete Group",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    },
+    "timesDialog": {
+      "subtitle": "Manage changeover times and attributes",
+      "attributeLabel": "Attribute",
+      "timeLabel": "Time (min)",
+      "useMatrix": "Use matrix instead of fixed time",
+      "addSuccess": "Configuration added successfully",
+      "deleteSuccess": "Configuration removed successfully",
+      "noData": "No attributes configured for this group yet.",
+      "deleteDesc": "Are you sure you want to delete this configuration? This action cannot be undone.",
+      "deleteTitle": "Delete Configuration"
+    },
+    "matrixDialog": {
+      "title": "Matrix Configuration",
+      "noData": "No matrix rules defined yet.",
+      "successDeleted": "Rule deleted successfully",
+      "deleteTitle": "Delete Rule",
+      "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone."
     }
   }
 }

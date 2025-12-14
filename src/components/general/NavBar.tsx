@@ -16,6 +16,10 @@ import {
   CalendarDays,
   Menu,
   X,
+  ArrowLeftRight,
+  Tag,
+  Layers,
+  Grid3X3,
 } from "lucide-react";
 
 const AppLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -113,6 +117,15 @@ const NavBar: React.FC = () => {
     { path: "/schedule", labelKey: "nav.schedule", icon: CalendarDays },
   ];
 
+  const changeoverItems = [
+    { path: "/attributes", labelKey: "nav.attributes", icon: Tag },
+    {
+      path: "/changeover-groups",
+      labelKey: "nav.changeoverGroups",
+      icon: Layers,
+    },
+  ];
+
   const languageOptions = [
     { code: "en", label: "EN" },
     { code: "bg", label: "BG" },
@@ -141,6 +154,11 @@ const NavBar: React.FC = () => {
             triggerLabel={t("nav.planning")}
             triggerIcon={CalendarClock}
             items={planningItems}
+          />
+          <NavDropdown
+            triggerLabel={t("nav.changeovers")}
+            triggerIcon={ArrowLeftRight}
+            items={changeoverItems}
           />
         </nav>
 
@@ -208,6 +226,20 @@ const NavBar: React.FC = () => {
                 <CalendarClock size={14} /> {t("nav.planning")}
               </h3>
               {planningItems.map((item) => (
+                <NavItem
+                  key={item.path}
+                  to={item.path}
+                  icon={item.icon}
+                  label={t(item.labelKey)}
+                  onClick={closeMobileMenu}
+                />
+              ))}
+            </div>
+            <div className="pl-3">
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider my-2 flex items-center gap-2">
+                <ArrowLeftRight size={14} /> {t("nav.changeovers")}
+              </h3>
+              {changeoverItems.map((item) => (
                 <NavItem
                   key={item.path}
                   to={item.path}

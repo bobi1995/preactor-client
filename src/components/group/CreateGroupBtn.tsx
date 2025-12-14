@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useNavigate } from "react-router";
 import { useCreateGroup } from "../../graphql/hook/group";
 import { XIcon, PlusCircle } from "lucide-react";
 import { IGroup } from "../../graphql/interfaces";
@@ -14,7 +13,6 @@ interface CreateGroupBtnProps {
 const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ allGroups }) => {
   const { t } = useTranslation();
   const { createGroup, loading } = useCreateGroup();
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -40,12 +38,11 @@ const CreateGroupBtn: React.FC<CreateGroupBtnProps> = ({ allGroups }) => {
     }
 
     try {
-      const group = await createGroup(formData.name, formData.description);
+      await createGroup(formData.name, formData.description);
       toast.success(
         t("groupsPage.createDialog.createSuccess", { groupName: formData.name })
       );
       setIsOpen(false);
-      navigate(`/group/${group.id}`);
     } catch (error) {
       toast.error(t("errors.errorGeneral"));
     }

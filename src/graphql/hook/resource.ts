@@ -69,6 +69,8 @@ export const useCreateResource = () => {
       data: { resource },
     } = await mutate({
       variables: { input: { name, description } },
+      refetchQueries: [{ query: getResourcesQuery }],
+      awaitRefetchQueries: true,
       update: (cache, { data }) => {
         cache.modify({
           fields: {

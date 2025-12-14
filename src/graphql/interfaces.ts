@@ -76,3 +76,48 @@ export interface IAlternativeShift {
   endDate: string;
   breaks: IBreaks[];
 }
+
+// Add these to your  interfaces
+export interface IAttributeParameter {
+  id: string;
+  attributeValue: string;
+  attributeNote?: string | null;
+  attributeId: number;
+}
+
+export interface IAttribute {
+  id: string;
+  name: string;
+  attributeParameters?: IAttributeParameter[];
+}
+
+export interface IChangeoverGroup {
+  id: string;
+  name: string;
+  changeoverTimes?: IChangeoverTime[];
+}
+
+export interface IChangeoverTime {
+  id: string;
+  changeoverTime: number | null;
+  attributeId: number;
+  attribute: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface IChangeoverData {
+  id: number;
+  setupTime: number;
+  changeoverGroupId: number;
+  attributeId: number;
+  fromAttrParamId: number;
+  toAttrParamId: number;
+  fromAttributeParameter?: {
+    attributeValue: string;
+  };
+  toAttributeParameter?: {
+    attributeValue: string;
+  };
+}

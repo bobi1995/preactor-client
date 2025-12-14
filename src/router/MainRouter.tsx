@@ -10,6 +10,8 @@ import SchedulesPage from "../page/SchedulesPage";
 import GroupsPage from "../page/GroupsPage";
 import LNOrders from "../page/LNOrders";
 import BreaksPage from "../page/BreaksPage";
+import AttributesPage from "../page/AttributesPage";
+import ChangeoverGroupsPage from "../page/ChangeoverGroupsPage";
 
 const AppLayout = () => {
   return (
@@ -67,6 +69,14 @@ const mainRouter = createBrowserRouter([
       {
         path: "/breaks",
         element: <BreaksPage />,
+      },
+      {
+        path: "/attributes",
+        element: <AttributesPage />,
+      },
+      {
+        path: "/changeover-groups",
+        element: <ChangeoverGroupsPage />,
       },
     ],
   },
