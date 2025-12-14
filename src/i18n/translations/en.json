@@ -35,6 +35,11 @@
     "nameRequired": "Name is required.",
     "switchTo": "Switch to {{language}}",
     "parameters": "Parameters",
+    "matrixConfig": "Matrix",
+    "from": "From",
+    "to": "To",
+    "timeMin": "Time (minutes)",
+    "saved": "Saved",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -446,39 +451,49 @@
     }
   },
   "changeoverGroupsPage": {
-    "title": "Групи за пренастройка",
-    "searchPlaceholder": "Търсене на групи...",
-    "nameExistsError": "Група с това име вече съществува.",
-    "createToast": "Групата е създадена успешно",
-    "editToast": "Групата е обновена успешно",
-    "deleteToast": "Групата е изтрита успешно",
-    "details": "Детайли",
+    "title": "Changeover Groups",
+    "searchPlaceholder": "Search groups...",
+    "details": "Details",
+    "nameExistsError": "A group with this name already exists.",
+    "createToast": "Group created successfully",
+    "editToast": "Group updated successfully",
+    "deleteToast": "Group deleted successfully",
     "table": {
-      "name": "Име",
-      "times": "Конфигурация",
-      "noMatch": "Няма намерени групи.",
-      "noData": "Няма въведени групи. Създайте нова, за да започнете."
+      "name": "Name",
+      "times": "Configuration",
+      "noMatch": "No matching groups found",
+      "noData": "No changeover groups created yet"
     },
     "createDialog": {
-      "title": "Създаване на група",
-      "description": "Добавете нова група за пренастройка.",
-      "nameLabel": "Име"
+      "title": "Create Group",
+      "description": "Add a new changeover group.",
+      "nameLabel": "Name"
     },
     "editDialog": {
-      "title": "Редактиране на група",
-      "description": "Обновете името на групата."
+      "title": "Edit Group",
+      "description": "Update the group name."
     },
     "deleteDialog": {
-      "title": "Изтриване на група",
-      "description": "Сигурни ли сте, че искате да изтриете \"{{name}}\"? Това действие е необратимо."
+      "title": "Delete Group",
+      "description": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
     },
     "timesDialog": {
-      "subtitle": "Base changeover times per attribute",
-      "noData": "No times configured for this group yet.",
+      "subtitle": "Manage changeover times and attributes",
       "attributeLabel": "Attribute",
       "timeLabel": "Time (min)",
-      "addSuccess": "Configuration saved successfully",
-      "deleteSuccess": "Attribute removed from group."
+      "useMatrix": "Use matrix instead of fixed time",
+      "addSuccess": "Configuration added successfully",
+      "deleteSuccess": "Configuration removed successfully",
+      "noData": "No attributes configured for this group yet.",
+      "deleteDesc": "Are you sure you want to delete this configuration? This action cannot be undone.",
+      "deleteTitle": "Delete Configuration"
+    },
+    "matrixDialog": {
+      "title": "Matrix Configuration",
+      "noData": "No matrix rules defined yet.",
+      "successDeleted": "Rule deleted successfully",
+      "deleteTitle": "Delete Rule",
+      "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone."
     }
   }
 }

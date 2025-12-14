@@ -81,7 +81,7 @@ const CreateDialogBtn: React.FC<CreateDialogBtnProps> = ({ allResources }) => {
           }) || `Resource '${trimmedName}' created successfully.`
         );
         // Navigate to the new resource
-        navigate(`/resource/${newResource.id}`);
+        // navigate(`/resource/${newResource.id}`);
         setIsOpen(false); // Close dialog on success
       }
     } catch (e: any) {

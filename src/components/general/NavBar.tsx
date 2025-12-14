@@ -124,11 +124,6 @@ const NavBar: React.FC = () => {
       labelKey: "nav.changeoverGroups",
       icon: Layers,
     },
-    {
-      path: "/changeover-matrix",
-      labelKey: "nav.changeoverMatrix",
-      icon: Grid3X3,
-    },
   ];
 
   const languageOptions = [

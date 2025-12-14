@@ -1,12 +1,17 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { IChangeoverGroup } from "../interfaces";
-import { GET_CHANGEOVER_GROUPS } from "../query/changeover";
+import {
+  GET_CHANGEOVER_GROUPS,
+  GET_MATRIX_CONFIGURATION,
+} from "../query/changeover";
 import {
   DELETE_CHANGEOVER_GROUP,
   CREATE_CHANGEOVER_GROUP,
   UPDATE_CHANGEOVER_GROUP,
   SET_CHANGEOVER_TIME,
   DELETE_CHANGEOVER_TIME,
+  SET_CHANGEOVER_DATA,
+  DELETE_CHANGEOVER_DATA,
 } from "../mutation/changeover";
 
 export const useChangeoverGroups = () => {
@@ -84,7 +89,7 @@ export const useSetChangeoverTime = () => {
   const setChangeoverTime = async (
     groupId: number,
     attrId: number,
-    time: number
+    time: number | null
   ) => {
     return await setTime({
       variables: {
@@ -113,4 +118,71 @@ export const useDeleteChangeoverTime = () => {
   };
 
   return { deleteChangeoverTime, loading, error };
+};
+
+export const useSetChangeoverData = () => {
+  const [setData, { loading, error }] = useMutation(SET_CHANGEOVER_DATA);
+
+  const setChangeoverData = async (
+    groupId: number,
+    attrId: number,
+    fromId: number,
+    toId: number,
+    time: number
+  ) => {
+    // We also refetch the Matrix Query to update the table immediately
+    return await setData({
+      variables: {
+        input: {
+          changeoverGroupId: groupId,
+          attributeId: attrId,
+          fromAttrParamId: fromId,
+          toAttrParamId: toId,
+          setupTime: time,
+        },
+      },
+      refetchQueries: [
+        {
+          query: GET_MATRIX_CONFIGURATION,
+          variables: { groupId, attrId },
+        },
+      ],
+    });
+  };
+
+  return { setChangeoverData, loading, error };
+};
+
+export const useChangeoverMatrix = (groupId: number, attributeId: number) => {
+  console.log("useChangeoverMatrix called with:", groupId, attributeId);
+  const { data, loading, error, refetch } = useQuery(GET_MATRIX_CONFIGURATION, {
+    variables: { groupId: Number(groupId), attrId: Number(attributeId) },
+    skip: !groupId || !attributeId,
+    fetchPolicy: "network-only",
+  });
+  return {
+    matrixData: data,
+    loading,
+    error,
+    refetch,
+  };
+};
+
+export const useDeleteChangeoverData = (
+  groupId?: number,
+  attributeId?: number
+) => {
+  const [deleteData, { loading, error }] = useMutation(DELETE_CHANGEOVER_DATA);
+  const deleteChangeoverData = async (id: number) => {
+    return await deleteData({
+      variables: { deleteChangeoverDataId: id },
+      refetchQueries: [
+        {
+          query: GET_MATRIX_CONFIGURATION,
+          variables: { groupId, attrId: attributeId },
+        },
+      ],
+    });
+  };
+  return { deleteChangeoverData, loading, error };
 };

@@ -41,8 +41,8 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>{triggerButton}</Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="bg-black/40 data-[state=open]:animate-overlayShow fixed inset-0 z-40" />
-        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 max-w-md w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg z-50">
+        <Dialog.Overlay className="bg-black/40 data-[state=open]:animate-overlayShow fixed inset-0 z-[100]" />
+        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-1/2 left-1/2 max-w-md w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg z-[101]">
           <div className="flex items-start space-x-4">
             <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
               <AlertTriangleIcon
@@ -59,13 +59,11 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
               </div>
             </div>
           </div>
-
           {errorMessage && (
             <p className="mt-4 text-center text-sm text-red-700 bg-red-50 p-3 rounded-md">
               {errorMessage}
             </p>
           )}
-
           <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3">
             <Dialog.Close asChild>
               <button

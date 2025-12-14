@@ -44,3 +44,21 @@ export const DELETE_CHANGEOVER_TIME = gql`
     }
   }
 `;
+
+export const SET_CHANGEOVER_DATA = gql`
+  mutation SetChangeoverData($input: SetChangeoverDataInput!) {
+    setChangeoverData(input: $input) {
+      id
+      setupTime
+    }
+  }
+`;
+
+export const DELETE_CHANGEOVER_DATA = gql`
+  mutation Mutation($deleteChangeoverDataId: Int!) {
+    deleteChangeoverData(id: $deleteChangeoverDataId) {
+      message
+      success
+    }
+  }
+`;

@@ -99,8 +99,10 @@ export interface IChangeoverGroup {
 
 export interface IChangeoverTime {
   id: string;
-  changeoverTime: number;
+  changeoverTime: number | null;
+  attributeId: number;
   attribute: {
+    id: string;
     name: string;
   };
 }
@@ -112,4 +114,10 @@ export interface IChangeoverData {
   attributeId: number;
   fromAttrParamId: number;
   toAttrParamId: number;
+  fromAttributeParameter?: {
+    attributeValue: string;
+  };
+  toAttributeParameter?: {
+    attributeValue: string;
+  };
 }
