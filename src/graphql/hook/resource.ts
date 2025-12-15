@@ -182,6 +182,7 @@ export const useUpdateResource = () => {
     color,
     externalCode,
     scheduleId,
+    changeover_group_id,
   }: {
     id: number;
     name: string;
@@ -189,11 +190,20 @@ export const useUpdateResource = () => {
     color: string;
     externalCode?: string;
     scheduleId?: number;
+    changeover_group_id?: number | null;
   }) => {
     try {
       const response = await mutate({
         variables: {
-          input: { id, name, description, color, externalCode, scheduleId },
+          input: {
+            id,
+            name,
+            description,
+            color,
+            externalCode,
+            scheduleId,
+            changeover_group_id,
+          },
         },
         refetchQueries: [{ query: getResourcesQuery }],
         awaitRefetchQueries: true,

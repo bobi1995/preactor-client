@@ -18,6 +18,10 @@ export const UPDATE_RESOURCE_MUTATION = gql`
       name
       description
       color
+      changeoverGroup {
+        id
+        name
+      }
     }
   }
 `;
