@@ -19,6 +19,10 @@ export const getResourcesQuery = gql`
       color
       description
       externalCode
+      changeoverGroup {
+        id
+        name
+      }
       schedule {
         id
         name

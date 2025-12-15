@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "react-i18next";
-import { IResource, ISchedule } from "../../graphql/interfaces";
 import {
-  GET_SCHEDULES,
-  GET_SCHEDULES_MINIMAL,
-} from "../../graphql/query/schedule";
-import { useUpdateResource } from "../../graphql/hook/resource"; // Assuming hooks are in this file
-import { useLazyQuery } from "@apollo/client"; // Import for lazy loading
+  IResource,
+  ISchedule,
+  IChangeoverGroup,
+} from "../../graphql/interfaces";
+import { GET_SCHEDULES_MINIMAL } from "../../graphql/query/schedule";
+import { useUpdateResource } from "../../graphql/hook/resource";
+import { useChangeoverGroups } from "../../graphql/hook/changeover"; // Import this hook
+import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { X, LoaderCircle } from "lucide-react";
 import UnsavedChangesDialog from "../general/UnsavedChangesDialog";
@@ -16,18 +18,22 @@ import { ERROR_CODE_TO_TRANSLATION_KEY } from "../../utils/error-mapping";
 
 interface EditResourceDialogProps {
   resource: IResource;
-  allResources: IResource[]; // For client-side unique name check
+  allResources: IResource[];
   onSuccess?: () => void;
-  children: React.ReactNode; // Use children for the trigger
+  children: React.ReactNode;
 }
 
 // Helper: Define initial state from the resource prop
 const getInitialState = (resource: IResource) => ({
   name: resource.name || "",
   description: resource.description || "",
-  color: resource.color || "#ffffff", // Default to white if null
+  color: resource.color || "#ffffff",
   externalCode: resource.externalCode || "",
   scheduleId: resource.schedule?.id ? String(resource.schedule.id) : "null",
+  // Map existing group ID if available (Assuming IResource is updated to include changeoverGroup)
+  changeoverGroupId: (resource as any).changeoverGroup?.id
+    ? String((resource as any).changeoverGroup.id)
+    : "null",
 });
 
 const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
@@ -40,6 +46,10 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(getInitialState(resource));
   const { updateResource, loading: updateLoading } = useUpdateResource();
+
+  // Fetch Changeover Groups
+  const { changeoverGroups, loading: groupsLoading } = useChangeoverGroups();
+
   const [isDirty, setIsDirty] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [validationError, setValidationError] = useState<{
@@ -64,10 +74,7 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
       setFormData(getInitialState(resource));
       setIsDirty(false);
       setValidationError(null);
-      // This is the trigger you requested:
-      // Load schedules when dialog opens
       loadSchedules();
-      console.log("EditResourceDialog opened for resource:", resource.id);
     }
   }, [isOpen, resource, loadSchedules]);
 
@@ -80,10 +87,11 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
         formData.description.trim() !== initialState.description ||
         formData.color.trim() !== initialState.color ||
         formData.externalCode.trim() !== initialState.externalCode ||
-        formData.scheduleId !== initialState.scheduleId;
+        formData.scheduleId !== initialState.scheduleId ||
+        formData.changeoverGroupId !== initialState.changeoverGroupId; // Check group change
       setIsDirty(dirty);
       if (dirty) {
-        setValidationError(null); // Clear errors when user starts typing
+        setValidationError(null);
       }
     }
   }, [formData, resource, isOpen]);
@@ -106,7 +114,7 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
           r.name.toLowerCase() === trimmedName.toLowerCase()
       )
     ) {
-      triggerError("resourcePage.editDialog.nameExistsError"); // Add this key
+      triggerError("resourcePage.editDialog.nameExistsError");
       return;
     }
     // ---
@@ -120,19 +128,23 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
           description: formData.description.trim(),
           color: formData.color.trim(),
           externalCode: formData.externalCode.trim(),
-          // The server resolver (mapInputToData) handles string->int conversion
           scheduleId:
             formData.scheduleId === "null"
-              ? undefined
+              ? undefined // Backend handles undefined as "remove assignment" usually, or send null explicitly if needed
               : parseInt(formData.scheduleId),
+          // New Field: Changeover Group
+          changeover_group_id:
+            formData.changeoverGroupId === "null"
+              ? undefined // Or null, depending on your resolver logic (mapInputToData handles undefined check)
+              : parseInt(formData.changeoverGroupId),
         };
 
-        await updateResource(input); // Assumes hook takes one 'input' object
+        await updateResource(input);
         toast.success(
           t("resourcePage.editDialog.updateSuccess", {
             resourceName: trimmedName,
           })
-        ); // Add this key
+        );
         onSuccess?.();
         setIsOpen(false);
       } catch (e: any) {
@@ -141,7 +153,7 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
         setValidationError({ message: t(translationKey), key: Date.now() });
       }
     } else {
-      setIsOpen(false); // No changes, just close
+      setIsOpen(false);
     }
   };
 
@@ -163,8 +175,6 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
       [e.target.id]: e.target.value,
     }));
   };
-
-  console.log(schedules);
 
   return (
     <>
@@ -302,6 +312,38 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
                       {schedules.map((s) => (
                         <option key={s.id} value={s.id}>
                           {s.name}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+              </div>
+
+              {/* NEW: Changeover Group Select */}
+              <div>
+                <label
+                  htmlFor="changeoverGroupId"
+                  className="block text-sm font-medium text-slate-700 mb-1"
+                >
+                  {t("changeoverGroupsPage.title", "Changeover Group")}
+                </label>
+                <select
+                  id="changeoverGroupId"
+                  value={formData.changeoverGroupId}
+                  onChange={handleChange}
+                  disabled={groupsLoading}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm"
+                >
+                  {groupsLoading ? (
+                    <option>{t("common.loading", "Loading...")}</option>
+                  ) : (
+                    <>
+                      <option value="null">
+                        -- {t("common.not_chosen", "None")} --
+                      </option>
+                      {changeoverGroups?.map((g: IChangeoverGroup) => (
+                        <option key={g.id} value={g.id}>
+                          {g.name}
                         </option>
                       ))}
                     </>
