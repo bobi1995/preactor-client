@@ -19,10 +19,10 @@ export const UPDATE_ATTRIBUTE = gql`
 `;
 
 export const DELETE_ATTRIBUTE = gql`
-  mutation DeleteAttribute($id: ID!) {
-    deleteAttribute(id: $id) {
-      success
+  mutation DeleteAttribute($deleteAttributeId: ID!) {
+    deleteAttribute(id: $deleteAttributeId) {
       message
+      success
     }
   }
 `;

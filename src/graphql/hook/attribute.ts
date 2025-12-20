@@ -76,7 +76,7 @@ export const useDeleteAttribute = () => {
 
   const deleteAttribute = async (id: string) => {
     const { data } = await deleteAttributeMutation({
-      variables: { id },
+      variables: { deleteAttributeId: id },
     });
     return data?.deleteAttribute;
   };
