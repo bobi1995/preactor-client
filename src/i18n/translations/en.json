@@ -68,7 +68,8 @@
     "attributes": "Attributes",
     "changeoverGroups": "Groups",
     "changeoverMatrix": "Matrix",
-    "changeovers": "Changeovers"
+    "changeovers": "Changeovers",
+    "rawOrders": "Raw Orders"
   },
 
   "resourcePage": {

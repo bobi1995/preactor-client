@@ -19,7 +19,7 @@ import {
   ArrowLeftRight,
   Tag,
   Layers,
-  Grid3X3,
+  ListChevronsDownUpIcon,
 } from "lucide-react";
 
 const AppLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -123,6 +123,11 @@ const NavBar: React.FC = () => {
       path: "/changeover-groups",
       labelKey: "nav.changeoverGroups",
       icon: Layers,
+    },
+    {
+      path: "/raw-orders",
+      labelKey: "nav.rawOrders",
+      icon: ListChevronsDownUpIcon,
     },
   ];
 

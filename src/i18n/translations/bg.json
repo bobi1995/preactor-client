@@ -68,7 +68,8 @@
     "attributes": "Атрибути",
     "changeoverGroups": "Групи",
     "changeoverMatrix": "Матрица",
-    "changeovers": "Пренастройки"
+    "changeovers": "Пренастройки",
+    "rawOrders": "Сурови Поръчки"
   },
 
   "resourcePage": {
