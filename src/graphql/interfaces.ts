@@ -88,6 +88,7 @@ export interface IAttributeParameter {
 export interface IAttribute {
   id: string;
   name: string;
+  isParam: boolean;
   attributeParameters?: IAttributeParameter[];
 }
 
@@ -118,6 +119,33 @@ export interface IChangeoverData {
     attributeValue: string;
   };
   toAttributeParameter?: {
+    attributeValue: string;
+  };
+}
+
+export interface IOrderRaw {
+  id: number;
+  orderNo: string;
+  partNo: string;
+  product: string;
+  quantity: number;
+  dueDate: string | null;
+  opNo: string;
+  operationName?: string | null;
+  attributes: IOrderAttribute[];
+}
+
+export interface IOrderAttribute {
+  id: number;
+  orderId: number;
+  value: string | null;
+  attribute: {
+    id: string;
+    name: string;
+    isParam: boolean;
+  };
+  attributeParam?: {
+    id: string;
     attributeValue: string;
   };
 }

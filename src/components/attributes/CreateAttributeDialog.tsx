@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { PlusCircle, X, LoaderCircle } from "lucide-react";
+import { PlusCircle, X, LoaderCircle, CheckSquare, Square } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useCreateAttribute } from "../../graphql/hook/attribute"; // Hook to be created
+import { useCreateAttribute } from "../../graphql/hook/attribute";
 import { IAttribute } from "../../graphql/interfaces";
 import { toast } from "react-toastify";
 import ValidationError from "../general/ValidationError";
@@ -14,6 +14,8 @@ interface Props {
 const CreateAttributeDialog: React.FC<Props> = ({ allAttributes }) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
+  // Default to true (Checked) as per requirement
+  const [isParam, setIsParam] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { createAttribute, loading } = useCreateAttribute();
   const [validationError, setValidationError] = useState<{
@@ -27,6 +29,7 @@ const CreateAttributeDialog: React.FC<Props> = ({ allAttributes }) => {
 
   const resetForm = () => {
     setName("");
+    setIsParam(true);
     setValidationError(null);
   };
 
@@ -49,7 +52,8 @@ const CreateAttributeDialog: React.FC<Props> = ({ allAttributes }) => {
     }
 
     try {
-      await createAttribute(name);
+      // Pass isParam to the hook
+      await createAttribute(name, isParam);
       setIsDialogOpen(false);
       toast.success(t("attributesPage.createToast"));
     } catch (err) {
@@ -102,6 +106,37 @@ const CreateAttributeDialog: React.FC<Props> = ({ allAttributes }) => {
                   placeholder="e.g. Color"
                   required
                 />
+              </div>
+
+              {/* Is Parameter Toggle */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                <div
+                  className="flex items-center gap-2 cursor-pointer select-none mb-1"
+                  onClick={() => setIsParam(!isParam)}
+                >
+                  {isParam ? (
+                    <CheckSquare className="w-5 h-5 text-indigo-600" />
+                  ) : (
+                    <Square className="w-5 h-5 text-gray-400" />
+                  )}
+                  <span className="text-sm font-medium text-slate-700">
+                    {t(
+                      "attributesPage.createDialog.isParamLabel",
+                      "Is Parameter Based?"
+                    )}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 ml-7">
+                  {isParam
+                    ? t(
+                        "attributesPage.createDialog.isParamDescTrue",
+                        "Values are selected from a predefined list (e.g. Red, Blue)."
+                      )
+                    : t(
+                        "attributesPage.createDialog.isParamDescFalse",
+                        "Values are entered as free text (e.g. Serial Numbers)."
+                      )}
+                </p>
               </div>
             </div>
 

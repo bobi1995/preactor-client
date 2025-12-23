@@ -11,6 +11,7 @@ export const GET_ATTRIBUTES = gql`
         attributeNote
       }
       id
+      isParam
     }
   }
 `;

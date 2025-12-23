@@ -1,19 +1,21 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_ATTRIBUTE = gql`
-  mutation CreateAttribute($name: String!) {
-    createAttribute(name: $name) {
+  mutation CreateAttribute($input: CreateAttributeInput!) {
+    createAttribute(input: $input) {
       id
       name
+      isParam
     }
   }
 `;
 
 export const UPDATE_ATTRIBUTE = gql`
-  mutation UpdateAttribute($id: ID!, $name: String!) {
-    updateAttribute(id: $id, name: $name) {
+  mutation UpdateAttribute($id: Int!, $input: UpdateAttributeInput!) {
+    updateAttribute(id: $id, input: $input) {
       id
       name
+      isParam
     }
   }
 `;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "react-i18next";
 import { IAttribute } from "../../graphql/interfaces";
-import { Pencil, X, LoaderCircle } from "lucide-react";
+import { Pencil, X, LoaderCircle, CheckSquare, Square } from "lucide-react";
 import { useUpdateAttribute } from "../../graphql/hook/attribute";
 import { toast } from "react-toastify";
 import ValidationError from "../general/ValidationError";
@@ -17,7 +17,11 @@ const EditAttributeDialog: React.FC<Props> = ({ attribute, allAttributes }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // State
   const [name, setName] = useState("");
+  const [isParam, setIsParam] = useState(attribute.isParam); // Initialize with existing value
+
   const [validationError, setValidationError] = useState<{
     message: string;
     key: number;
@@ -26,17 +30,22 @@ const EditAttributeDialog: React.FC<Props> = ({ attribute, allAttributes }) => {
 
   const { updateAttribute, loading, error: serverError } = useUpdateAttribute();
 
+  // Reset state when dialog opens
   useEffect(() => {
     if (isOpen) {
       setName(attribute.name);
+      setIsParam(attribute.isParam);
       setIsDirty(false);
       setValidationError(null);
     }
   }, [isOpen, attribute]);
 
+  // Track dirty state (check both name and isParam)
   useEffect(() => {
-    setIsDirty(name.trim() !== attribute.name);
-  }, [name, attribute]);
+    const isNameChanged = name.trim() !== attribute.name;
+    const isParamChanged = isParam !== attribute.isParam;
+    setIsDirty(isNameChanged || isParamChanged);
+  }, [name, isParam, attribute]);
 
   const handleAttemptClose = () => {
     if (isDirty) {
@@ -66,7 +75,8 @@ const EditAttributeDialog: React.FC<Props> = ({ attribute, allAttributes }) => {
     }
 
     try {
-      await updateAttribute(attribute.id, trimmedName);
+      // Pass isParam to the update hook
+      await updateAttribute(attribute.id, trimmedName, isParam);
       toast.success(t("attributesPage.editToast"));
       setIsDirty(false);
       setIsOpen(false);
@@ -111,26 +121,59 @@ const EditAttributeDialog: React.FC<Props> = ({ attribute, allAttributes }) => {
             <Dialog.Description className="mb-5 text-sm text-slate-500">
               {t(
                 "attributesPage.editDialog.description",
-                "Update the attribute name."
+                "Update the attribute details."
               )}
             </Dialog.Description>
 
             <form id="edit-attr-form" onSubmit={handleUpdate}>
-              <div>
-                <label
-                  htmlFor="attr-name-edit"
-                  className="block text-sm font-medium text-slate-700 mb-1"
-                >
-                  {t("attributesPage.createDialog.nameLabel", "Name")}
-                </label>
-                <input
-                  id="attr-name-edit"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="attr-name-edit"
+                    className="block text-sm font-medium text-slate-700 mb-1"
+                  >
+                    {t("attributesPage.createDialog.nameLabel", "Name")}
+                  </label>
+                  <input
+                    id="attr-name-edit"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Is Parameter Toggle */}
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                  <div
+                    className="flex items-center gap-2 cursor-pointer select-none mb-1"
+                    onClick={() => setIsParam(!isParam)}
+                  >
+                    {isParam ? (
+                      <CheckSquare className="w-5 h-5 text-indigo-600" />
+                    ) : (
+                      <Square className="w-5 h-5 text-gray-400" />
+                    )}
+                    <span className="text-sm font-medium text-slate-700">
+                      {t(
+                        "attributesPage.createDialog.isParamLabel",
+                        "Is Parameter Based?"
+                      )}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 ml-7">
+                    {isParam
+                      ? t(
+                          "attributesPage.createDialog.isParamDescTrue",
+                          "Values are selected from a predefined list."
+                        )
+                      : t(
+                          "attributesPage.createDialog.isParamDescFalse",
+                          "Values are entered as free text."
+                        )}
+                  </p>
+                </div>
               </div>
 
               <div className="mt-4 min-h-[20px]">

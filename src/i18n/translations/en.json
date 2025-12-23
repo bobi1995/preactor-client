@@ -3,7 +3,8 @@
     "errorGeneral": "An unexpected error occurred. Please try again.",
     "errorNotFound": "The requested item could not be found.",
     "createErrorDuplicate": "A schedule with this name already exists.",
-    "createErrorGeneral": "Failed to create the schedule. Please try again."
+    "createErrorGeneral": "Failed to create the schedule. Please try again.",
+    "attributeAlreadyAssigned": "Attribute already assigned."
   },
   "success": {
     "createSuccess": "Schedule '{{scheduleName}}' was created successfully."
@@ -41,6 +42,9 @@
     "timeMin": "Time (minutes)",
     "saved": "Saved",
     "not_chosen": "-- Not chosen --",
+    "refresh": "Refresh",
+    "required": "Required",
+    "parameter": "Параметър",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -430,7 +434,10 @@
     "createDialog": {
       "title": "Create Attribute",
       "description": "Add a new attribute type (e.g. Color, Thickness).",
-      "nameLabel": "Name"
+      "nameLabel": "Name",
+      "isParamLabel": "Allow Parameters",
+      "isParamDescTrue": "Allows this attribute to have multiple parameters (e.g. Red, Blue for the Color attribute).",
+      "isParamDescFalse": "This attribute will not have parameters and will be used only for categorization (e.g. the 'Type' attribute with values like 'Machine', 'Operator')."
     },
     "editDialog": {
       "title": "Edit Attribute",
@@ -495,6 +502,28 @@
       "successDeleted": "Rule deleted successfully",
       "deleteTitle": "Delete Rule",
       "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone."
+    }
+  },
+  "rawOrdersPage": {
+    "title": "Raw Orders",
+    "subtitle": "Manage incoming orders waiting for sequencing.",
+    "table": {
+      "orderOp": "Order / Op",
+      "opName": "Operation",
+      "partNo": "Part No",
+      "product": "Product",
+      "quantity": "Qty",
+      "dueDate": "Due",
+      "noData": "No orders found."
+    },
+    "attributes": {
+      "manage": "Manage Attributes",
+      "title": "Order Attributes",
+      "none": "No attributes assigned yet.",
+      "assigned_attributes": "Assigned Attributes",
+      "allAssigned ": "All attributes assigned",
+      "successAssign": "Attribute assigned successfully",
+      "successUnassign": "Attribute unassigned successfully"
     }
   }
 }
