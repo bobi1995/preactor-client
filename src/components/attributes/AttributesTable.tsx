@@ -4,7 +4,7 @@ import { IAttribute } from "../../graphql/interfaces";
 import { Tag } from "lucide-react";
 import EditAttributeDialog from "./EditAttributeDialog";
 import DeleteAttributeDialog from "./DeleteAttributeDialog";
-import AttributeParametersDialog from "./AttributeParametersDIalog";
+import AttributeParametersDialog from "./AttributeParametersDialog";
 
 interface Props {
   attributes: IAttribute[];
@@ -55,7 +55,9 @@ const AttributesTable: React.FC<Props> = ({ attributes, query }) => {
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-center">
                   {/* This mirrors AssignedShiftsDialog */}
-                  <AttributeParametersDialog attribute={attr} />
+                  {attr.isParam ? (
+                    <AttributeParametersDialog attribute={attr} />
+                  ) : null}
                 </td>
                 <td className="px-6 py-3">
                   <div className="flex items-center justify-center space-x-3">

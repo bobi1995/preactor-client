@@ -32,9 +32,9 @@ export const useCreateAttribute = () => {
     }
   );
 
-  const createAttribute = async (name: string) => {
+  const createAttribute = async (name: string, isParam: boolean) => {
     const { data } = await createAttributeMutation({
-      variables: { name },
+      variables: { input: { name, isParam } },
     });
     return data?.createAttribute;
   };
@@ -53,9 +53,13 @@ export const useUpdateAttribute = () => {
     }
   );
 
-  const updateAttribute = async (id: string, name: string) => {
+  const updateAttribute = async (
+    id: string,
+    name: string,
+    isParam: boolean
+  ) => {
     const { data } = await updateAttributeMutation({
-      variables: { id, name },
+      variables: { id: Number(id), input: { name, isParam } },
     });
     return data?.updateAttribute;
   };
