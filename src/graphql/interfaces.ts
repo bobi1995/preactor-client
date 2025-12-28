@@ -29,6 +29,7 @@ export interface IOrder {
   startTime?: string;
   endTime?: string;
   opName?: string;
+  setupTime?: number;
 }
 
 export interface IShift {
