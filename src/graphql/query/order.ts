@@ -9,6 +9,7 @@ export const GET_ORDERS = gql`
       startTime
       endTime
       opName
+      setupTime
       resource {
         id
         name
@@ -27,6 +28,7 @@ export const GET_ORDERS_BY_RESOURCE = gql`
       startTime
       endTime
       opName
+      setupTime
       resource {
         id
         name
@@ -45,6 +47,7 @@ export const GET_ORDERS_BY_RESOURCE_GROUP = gql`
       startTime
       endTime
       opName
+      setupTime
       resource {
         id
         name
