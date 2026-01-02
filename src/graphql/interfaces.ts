@@ -30,6 +30,10 @@ export interface IOrder {
   endTime?: string;
   opName?: string;
   setupTime?: number;
+  quantity?: number;
+  remainingQuan?: number;
+  product?: string;
+  resourceGroup?: IGroup;
 }
 
 export interface IShift {

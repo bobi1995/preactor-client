@@ -10,6 +10,8 @@ export const GET_ORDERS = gql`
       endTime
       opName
       setupTime
+      product
+      remainingQuan
       resource {
         id
         name
