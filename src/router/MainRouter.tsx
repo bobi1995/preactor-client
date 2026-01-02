@@ -13,6 +13,7 @@ import BreaksPage from "../page/BreaksPage";
 import AttributesPage from "../page/AttributesPage";
 import ChangeoverGroupsPage from "../page/ChangeoverGroupsPage";
 import RawOrdersPage from "../page/RawOrdersPage";
+import ScheduledOrdersPage from "../page/ScheduledOrdersPage";
 
 const AppLayout = () => {
   return (
@@ -82,6 +83,10 @@ const mainRouter = createBrowserRouter([
       {
         path: "/raw-orders",
         element: <RawOrdersPage />,
+      },
+      {
+        path: "/scheduled-orders",
+        element: <ScheduledOrdersPage />,
       },
     ],
   },

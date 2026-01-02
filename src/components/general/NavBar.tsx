@@ -20,6 +20,7 @@ import {
   Tag,
   Layers,
   ListChevronsDownUpIcon,
+  ListOrderedIcon,
 } from "lucide-react";
 
 const AppLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -106,6 +107,19 @@ const NavBar: React.FC = () => {
 
   const switchLanguage = (lang: string) => i18n.changeLanguage(lang);
 
+  const ganttItems = [
+    {
+      path: "/",
+      labelKey: "nav.gantt",
+      icon: CalendarDays,
+    },
+    {
+      path: "/scheduled-orders",
+      labelKey: "nav.scheduledOrders",
+      icon: ListOrderedIcon,
+    },
+  ];
+
   const factoryItems = [
     { path: "/resource", labelKey: "nav.resource", icon: Warehouse },
     { path: "/group", labelKey: "nav.group", icon: Users },
@@ -149,7 +163,11 @@ const NavBar: React.FC = () => {
         </NavLink>
 
         <nav className="hidden md:flex items-center space-x-1">
-          <NavItem to="/" icon={Home} label={t("nav.home")} />
+          <NavDropdown
+            triggerLabel={t("nav.gantt")}
+            triggerIcon={CalendarDays}
+            items={ganttItems}
+          />
           <NavDropdown
             triggerLabel={t("nav.factory")}
             triggerIcon={Factory}

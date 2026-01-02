@@ -44,7 +44,11 @@
     "not_chosen": "-- Not chosen --",
     "refresh": "Refresh",
     "required": "Required",
-    "parameter": "Параметър",
+    "parameter": "Parameter",
+    "showing": "Showing",
+    "of": "of",
+    "to2": "to",
+    "results": "results",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -69,7 +73,9 @@
     "changeoverGroups": "Groups",
     "changeoverMatrix": "Matrix",
     "changeovers": "Changeovers",
-    "rawOrders": "Raw Orders"
+    "rawOrders": "Raw Orders",
+    "gantt": "Gantt",
+    "scheduledOrders": "Orders"
   },
 
   "resourcePage": {
@@ -507,6 +513,40 @@
       "successDeleted": "Rule deleted successfully",
       "deleteTitle": "Delete Rule",
       "deleteDescription": "Are you sure you want to permanently delete the schedule \"{{scheduleName}}\"? This action cannot be undone."
+    }
+  },
+  "ordersPage": {
+    "title": "Scheduled Orders",
+    "subtitle": "Overview and management of all scheduled orders.",
+    "searchPlaceholder": "Search by order number or part number...",
+    "noOrdersAvailable": "No scheduled orders available yet.",
+    "createNewPrompt": "Schedule a new order to get started!",
+    "noOrdersMatchSearch": "No orders match your search.",
+    "tryDifferentKeywords": "Try different keywords.",
+    "table": {
+      "orderOp": "Order / Op",
+      "opName": "Operation",
+      "partNo": "Part No",
+      "product": "Product",
+      "quantity": "Qty",
+      "startDate": "Start",
+      "endDate": "End",
+      "noData": "No orders found.",
+      "resource": "Resource"
+    },
+    "optimizer": {
+      "plan": "Plan Orders",
+      "planning": "Planning...",
+      "success": "Orders were planned successfully.",
+      "error": "Failed to plan orders. Please try again.",
+      "title": "Optimize Scheduling",
+      "description": "Use the optimizer to automatically schedule orders based on available resources and capacity.",
+      "schedulingDescription": "The optimizer analyzes orders and resources. This may take some time.",
+      "pleaseWaitWhileScheduling": "Please wait while orders are being scheduled.",
+      "runOptimizer": "Run Optimizer",
+      "schedulingInProgress": "Scheduling in progress...",
+      "systemOutput": "System Output",
+      "noOutput": "No output logs returned."
     }
   },
   "rawOrdersPage": {
