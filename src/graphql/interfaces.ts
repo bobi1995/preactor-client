@@ -34,6 +34,7 @@ export interface IOrder {
   remainingQuan?: number;
   product?: string;
   resourceGroup?: IGroup;
+  attributes: IOrderAttribute[];
 }
 
 export interface IShift {
@@ -126,18 +127,6 @@ export interface IChangeoverData {
   toAttributeParameter?: {
     attributeValue: string;
   };
-}
-
-export interface IOrderRaw {
-  id: number;
-  orderNo: string;
-  partNo: string;
-  product: string;
-  quantity: number;
-  dueDate: string | null;
-  opNo: string;
-  operationName?: string | null;
-  attributes: IOrderAttribute[];
 }
 
 export interface IOrderAttribute {

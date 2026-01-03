@@ -12,7 +12,6 @@ import LNOrders from "../page/LNOrders";
 import BreaksPage from "../page/BreaksPage";
 import AttributesPage from "../page/AttributesPage";
 import ChangeoverGroupsPage from "../page/ChangeoverGroupsPage";
-import RawOrdersPage from "../page/RawOrdersPage";
 import ScheduledOrdersPage from "../page/ScheduledOrdersPage";
 
 const AppLayout = () => {
@@ -80,10 +79,7 @@ const mainRouter = createBrowserRouter([
         path: "/changeover-groups",
         element: <ChangeoverGroupsPage />,
       },
-      {
-        path: "/raw-orders",
-        element: <RawOrdersPage />,
-      },
+
       {
         path: "/scheduled-orders",
         element: <ScheduledOrdersPage />,
