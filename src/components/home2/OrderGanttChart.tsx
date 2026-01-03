@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { IResource, IOrder } from "../../graphql/interfaces";
 import { ViewMode } from "./ViewPicker";
 import OrderDetailsDialog from "./OrderDetailsDialog";
+import { ZoomLevel } from "./ZoomControls"; // Import Type
 import {
   startOfDay,
   endOfDay,
@@ -12,7 +13,6 @@ import {
   addHours,
 } from "date-fns";
 import { getOrderColor } from "../../utils/color-generator";
-// Import utils
 import {
   getOrderBackgroundStyle,
   formatDuration,
@@ -24,6 +24,7 @@ interface OrderGanttChartProps {
   orders: IOrder[];
   viewMode: ViewMode;
   currentDate: Date;
+  zoomLevel: ZoomLevel; // New Prop
   onDateClick?: (date: Date) => void;
   onViewModeChange?: (viewMode: ViewMode) => void;
 }
@@ -34,19 +35,32 @@ interface TimeSlot {
   label: string;
 }
 
-// --- CONSTANTS ---
 const SETUP_TIME_MULTIPLIER = 24 * 60;
 
-// --- COMPACT SIZING CONFIG ---
-const ROW_HEIGHT_CLASS = "h-10";
-const HEADER_HEIGHT_CLASS = "h-10";
-const ORDER_HEIGHT_CLASS = "h-7";
+// --- DYNAMIC STYLES CONFIG ---
+const ZOOM_STYLES = {
+  compact: {
+    rowHeight: "h-10",
+    headerHeight: "h-10",
+    orderHeight: "h-7",
+    fontSize: "text-xs",
+    iconSize: "w-3 h-3",
+  },
+  normal: {
+    rowHeight: "h-16",
+    headerHeight: "h-16",
+    orderHeight: "h-12",
+    fontSize: "text-sm",
+    iconSize: "w-4 h-4",
+  },
+};
 
 const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
   resources,
   orders,
   viewMode,
   currentDate,
+  zoomLevel,
   onDateClick,
   onViewModeChange,
 }) => {
@@ -54,7 +68,10 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
   const leftPanelRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
 
-  // --- 1. TOOLTIP STATE ---
+  // Get current styles based on zoom level
+  const styles = ZOOM_STYLES[zoomLevel];
+
+  // --- Tooltip & Dialog State (Unchanged) ---
   const [tooltipData, setTooltipData] = useState<{
     order: IOrder;
     setupMinutes: number;
@@ -101,7 +118,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     setTooltipData(null);
   };
 
-  // --- Working Time & Overlay Logic ---
+  // --- Helper Functions (isWorkingTime, etc.) Unchanged ---
   const isWorkingTime = (
     resource: IResource,
     slotStart: Date,
@@ -197,6 +214,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     }
   };
 
+  // --- Time Slot & Order Logic (Unchanged) ---
   const timeSlots = useMemo((): TimeSlot[] => {
     const slots: TimeSlot[] = [];
     if (viewMode === "halfDay") {
@@ -255,18 +273,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     return grouped;
   }, [resources, orders]);
 
-  // --- Order Bar Styles & Setup Time Logic ---
   const getOrderBarStyle = (order: IOrder, setupMinutes: number) => {
     if (!timelineStart || !timelineEnd || !order.startTime || !order.endTime) {
       return { display: "none" };
     }
-
-    // USE UTILS PARSER
     const start = parseAsLocal(order.startTime);
     const end = parseAsLocal(order.endTime);
-
     if (!start || !end) return { display: "none" };
-
     if (end < timelineStart || start > timelineEnd) return { display: "none" };
 
     const visibleStart = start < timelineStart ? timelineStart : start;
@@ -277,8 +290,6 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     const width = (duration / totalMinutes) * 100;
 
     const baseColor = getOrderColor(order.orderNumber || String(order.id));
-
-    // Use the utility function for gradient background
     const { background } = getOrderBackgroundStyle(
       order.startTime,
       order.endTime,
@@ -294,58 +305,80 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     };
   };
 
-  // --- WIDTH LOGIC ---
+  // --- Dynamic Widths based on Zoom ---
+  const getColumnMinWidth = () => {
+    // Zoom Normal allows wider columns for better visibility
+    if (zoomLevel === "normal") {
+      return viewMode === "multiWeek" ? "120px" : "80px";
+    }
+    // Zoom Compact
+    return viewMode === "multiWeek" ? "60px" : "60px";
+  };
 
-  // 1. Column Min-Width (to prevent squishing)
-  const getColumnMinWidth = () =>
-    viewMode === "multiWeek" ? "60px" : viewMode === "day" ? "60px" : "";
+  const getTotalTimelineWidth = () => {
+    // Zoom Normal
+    if (zoomLevel === "normal") {
+      return viewMode === "multiWeek" ? "3360px" : "100%";
+    }
+    // Zoom Compact
+    return viewMode === "multiWeek" ? "1680px" : "100%";
+  };
 
-  // 2. Total Container Width (Stretches to 100% now for Day/24h view)
-  const getTotalTimelineWidth = () =>
-    viewMode === "multiWeek" ? "1680px" : "100%"; // Changed from fixed 1440px to 100% for Day view
-
-  // 3. Min-Width for Container (Enforces scroll if screen is too small)
-  const getMinTimelineWidth = () =>
-    viewMode === "day" ? "1440px" : getTotalTimelineWidth();
+  const getMinTimelineWidth = () => {
+    // Zoom Normal requires more scrolling space
+    if (zoomLevel === "normal") {
+      return viewMode === "day" ? "1920px" : getTotalTimelineWidth();
+    }
+    // Zoom Compact
+    return viewMode === "day" ? "1440px" : getTotalTimelineWidth();
+  };
 
   return (
     <>
-      <div className="flex h-full bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="flex h-full bg-white shadow-lg rounded-lg overflow-hidden transition-all duration-300">
         {/* LEFT PANEL */}
         <div
           ref={leftPanelRef}
-          className="w-56 border-r border-gray-200 flex-shrink-0 overflow-hidden"
+          className="w-56 border-r border-gray-200 flex-shrink-0 overflow-hidden transition-all duration-300"
         >
           <div
-            className={`sticky top-0 z-10 ${HEADER_HEIGHT_CLASS} bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center px-3 border-b border-indigo-700`}
+            className={`sticky top-0 z-10 ${styles.headerHeight} bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center px-3 border-b border-indigo-700`}
           >
-            <h3 className="font-semibold text-sm">
+            <h3 className={`font-semibold ${styles.fontSize}`}>
               {t("home2.gantt.resources")}
             </h3>
           </div>
           <div className="divide-y divide-gray-200">
             {resources.length === 0 ? (
-              <div className="px-4 py-8 text-center text-gray-500 text-xs">
+              <div
+                className={`px-4 py-8 text-center text-gray-500 ${styles.fontSize}`}
+              >
                 {t("home2.gantt.noResources")}
               </div>
             ) : (
               resources.map((r) => (
                 <div
                   key={r.id}
-                  className={`${ROW_HEIGHT_CLASS} px-3 flex items-center gap-2 hover:bg-gray-50 transition-colors`}
+                  className={`${styles.rowHeight} px-3 flex items-center gap-2 hover:bg-gray-50 transition-colors`}
                 >
                   {r.color && (
                     <div
-                      className="w-3 h-3 rounded flex-shrink-0"
+                      className={`${styles.iconSize} rounded flex-shrink-0`}
                       style={{ backgroundColor: r.color }}
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate text-xs">
+                    <p
+                      className={`font-medium text-gray-900 truncate ${styles.fontSize}`}
+                    >
                       {r.name}
                     </p>
                     {r.externalCode && (
-                      <p className="text-[10px] text-gray-500 font-mono leading-none">
+                      <p
+                        className={`text-gray-500 font-mono leading-none ${
+                          zoomLevel === "compact" ? "text-[10px]" : "text-xs"
+                        }`}
+                      >
                         {r.externalCode}
                       </p>
                     )}
@@ -370,14 +403,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
           >
             {/* Header */}
             <div
-              className={`sticky top-0 z-10 ${HEADER_HEIGHT_CLASS} text-white border-b border-indigo-700`}
+              className={`sticky top-0 z-10 ${styles.headerHeight} text-white border-b border-indigo-700 transition-all duration-300`}
               style={{ backgroundColor: "#9333ea" }}
             >
               <div className="flex h-full" style={{ width: "100%" }}>
                 {timeSlots.map((slot, idx) => (
                   <div
                     key={idx}
-                    // For "day" view, we now use flex-1 to stretch, but keep min-width safe
                     className={`flex items-center justify-center border-r border-indigo-700/30 last:border-r-0 ${
                       viewMode === "halfDay" || viewMode === "day"
                         ? "flex-1"
@@ -404,7 +436,9 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       }
                     }}
                   >
-                    <span className="text-xs font-medium">{slot.label}</span>
+                    <span className={`font-medium ${styles.fontSize}`}>
+                      {slot.label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -413,7 +447,9 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
             {/* Grid & Orders */}
             <div className="divide-y divide-gray-200" style={{ width: "100%" }}>
               {resources.length === 0 ? (
-                <div className="px-4 py-8 text-center text-gray-500">
+                <div
+                  className={`px-4 py-8 text-center text-gray-500 ${styles.fontSize}`}
+                >
                   {t("home2.gantt.noData")}
                 </div>
               ) : (
@@ -423,7 +459,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                   return (
                     <div
                       key={resource.id}
-                      className={`${ROW_HEIGHT_CLASS} relative`}
+                      className={`${styles.rowHeight} relative transition-all duration-300`}
                       style={{ width: "100%" }}
                     >
                       {/* Background Grid */}
@@ -502,7 +538,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                           return (
                             <div
                               key={order.id}
-                              className={`absolute ${ORDER_HEIGHT_CLASS} rounded-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden`}
+                              className={`absolute ${styles.orderHeight} rounded-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden`}
                               style={{
                                 ...style,
                                 border: "1px solid rgba(255,255,255,0.4)",
@@ -514,7 +550,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                               onMouseMove={handleMouseMove}
                               onMouseLeave={handleMouseLeave}
                             >
-                              <div className="h-full px-1 flex items-center text-white text-[10px] font-medium relative z-10 leading-none">
+                              <div
+                                className={`h-full px-1 flex items-center text-white font-medium relative z-10 leading-none ${
+                                  zoomLevel === "compact"
+                                    ? "text-[10px]"
+                                    : "text-xs"
+                                }`}
+                              >
                                 <span className="truncate drop-shadow-md">
                                   {order.orderNumber || `Order ${order.id}`}
                                 </span>
@@ -532,7 +574,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
         </div>
       </div>
 
-      {/* FLOATING TOOLTIP PORTAL */}
+      {/* Floating Tooltip (Unchanged) */}
       {tooltipData && (
         <div
           className="fixed z-[9999] pointer-events-none bg-slate-900 text-white text-xs rounded-lg p-3 shadow-2xl border border-slate-700 min-w-[200px]"
@@ -541,10 +583,11 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
             top: tooltipData.y + 15,
           }}
         >
+          {/* ... tooltip content ... */}
           <div className="font-bold text-sm text-indigo-300 mb-1 border-b border-slate-700 pb-1">
             {tooltipData.order.orderNumber || `Order ${tooltipData.order.id}`}
           </div>
-
+          {/* ... rest of tooltip ... */}
           <div className="space-y-1 mt-2">
             {tooltipData.order.opName && (
               <div>
@@ -552,7 +595,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                 {tooltipData.order.opName}
               </div>
             )}
-
+            {/* ... setup, start, end ... */}
             {tooltipData.setupMinutes > 0 && (
               <div className="flex items-center gap-2 text-gray-300 bg-slate-800 p-1 rounded">
                 <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
@@ -562,7 +605,6 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                 </span>
               </div>
             )}
-
             {tooltipData.order.startTime && (
               <div>
                 <span className="text-slate-400">
