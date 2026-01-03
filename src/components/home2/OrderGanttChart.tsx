@@ -9,7 +9,6 @@ import {
   addDays,
   format,
   differenceInMinutes,
-  parseISO,
   addHours,
 } from "date-fns";
 import { getOrderColor } from "../../utils/color-generator";
@@ -37,6 +36,11 @@ interface TimeSlot {
 
 // --- CONSTANTS ---
 const SETUP_TIME_MULTIPLIER = 24 * 60;
+
+// --- COMPACT SIZING CONFIG ---
+const ROW_HEIGHT_CLASS = "h-10";
+const HEADER_HEIGHT_CLASS = "h-10";
+const ORDER_HEIGHT_CLASS = "h-7";
 
 const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
   resources,
@@ -290,14 +294,19 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     };
   };
 
-  const getColumnWidth = () =>
-    viewMode === "multiWeek" ? "120px" : viewMode === "day" ? "80px" : "";
+  // --- WIDTH LOGIC ---
+
+  // 1. Column Min-Width (to prevent squishing)
+  const getColumnMinWidth = () =>
+    viewMode === "multiWeek" ? "60px" : viewMode === "day" ? "60px" : "";
+
+  // 2. Total Container Width (Stretches to 100% now for Day/24h view)
   const getTotalTimelineWidth = () =>
-    viewMode === "multiWeek"
-      ? "3360px"
-      : viewMode === "day"
-      ? "1920px"
-      : "100%";
+    viewMode === "multiWeek" ? "1680px" : "100%"; // Changed from fixed 1440px to 100% for Day view
+
+  // 3. Min-Width for Container (Enforces scroll if screen is too small)
+  const getMinTimelineWidth = () =>
+    viewMode === "day" ? "1440px" : getTotalTimelineWidth();
 
   return (
     <>
@@ -305,36 +314,38 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
         {/* LEFT PANEL */}
         <div
           ref={leftPanelRef}
-          className="w-64 border-r border-gray-200 flex-shrink-0 overflow-hidden"
+          className="w-56 border-r border-gray-200 flex-shrink-0 overflow-hidden"
         >
-          <div className="sticky top-0 z-10 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center px-4 border-b border-indigo-700">
-            <h3 className="font-semibold text-lg">
+          <div
+            className={`sticky top-0 z-10 ${HEADER_HEIGHT_CLASS} bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center px-3 border-b border-indigo-700`}
+          >
+            <h3 className="font-semibold text-sm">
               {t("home2.gantt.resources")}
             </h3>
           </div>
           <div className="divide-y divide-gray-200">
             {resources.length === 0 ? (
-              <div className="px-4 py-8 text-center text-gray-500">
+              <div className="px-4 py-8 text-center text-gray-500 text-xs">
                 {t("home2.gantt.noResources")}
               </div>
             ) : (
               resources.map((r) => (
                 <div
                   key={r.id}
-                  className="h-16 px-4 flex items-center gap-3 hover:bg-gray-50 transition-colors"
+                  className={`${ROW_HEIGHT_CLASS} px-3 flex items-center gap-2 hover:bg-gray-50 transition-colors`}
                 >
                   {r.color && (
                     <div
-                      className="w-8 h-8 rounded flex-shrink-0"
+                      className="w-3 h-3 rounded flex-shrink-0"
                       style={{ backgroundColor: r.color }}
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">
+                    <p className="font-medium text-gray-900 truncate text-xs">
                       {r.name}
                     </p>
                     {r.externalCode && (
-                      <p className="text-xs text-gray-500 font-mono">
+                      <p className="text-[10px] text-gray-500 font-mono leading-none">
                         {r.externalCode}
                       </p>
                     )}
@@ -353,32 +364,34 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
         >
           <div
             style={{
-              minWidth: getTotalTimelineWidth(),
+              minWidth: getMinTimelineWidth(),
               width: getTotalTimelineWidth(),
             }}
           >
             {/* Header */}
             <div
-              className="sticky top-0 z-10 h-16 text-white border-b border-indigo-700"
+              className={`sticky top-0 z-10 ${HEADER_HEIGHT_CLASS} text-white border-b border-indigo-700`}
               style={{ backgroundColor: "#9333ea" }}
             >
-              <div
-                className="flex h-full"
-                style={{ width: getTotalTimelineWidth() }}
-              >
+              <div className="flex h-full" style={{ width: "100%" }}>
                 {timeSlots.map((slot, idx) => (
                   <div
                     key={idx}
+                    // For "day" view, we now use flex-1 to stretch, but keep min-width safe
                     className={`flex items-center justify-center border-r border-indigo-700/30 last:border-r-0 ${
-                      viewMode === "halfDay" ? "flex-1" : "flex-shrink-0"
+                      viewMode === "halfDay" || viewMode === "day"
+                        ? "flex-1"
+                        : "flex-shrink-0"
                     } ${
                       viewMode === "multiWeek"
                         ? "cursor-pointer hover:bg-purple-700 transition-colors"
                         : ""
                     }`}
                     style={{
-                      width:
-                        viewMode === "halfDay" ? undefined : getColumnWidth(),
+                      minWidth:
+                        viewMode === "halfDay"
+                          ? undefined
+                          : getColumnMinWidth(),
                     }}
                     onClick={() => {
                       if (
@@ -391,17 +404,14 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                       }
                     }}
                   >
-                    <span className="text-sm font-medium">{slot.label}</span>
+                    <span className="text-xs font-medium">{slot.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Grid & Orders */}
-            <div
-              className="divide-y divide-gray-200"
-              style={{ width: getTotalTimelineWidth() }}
-            >
+            <div className="divide-y divide-gray-200" style={{ width: "100%" }}>
               {resources.length === 0 ? (
                 <div className="px-4 py-8 text-center text-gray-500">
                   {t("home2.gantt.noData")}
@@ -413,13 +423,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                   return (
                     <div
                       key={resource.id}
-                      className="h-16 relative"
-                      style={{ width: getTotalTimelineWidth() }}
+                      className={`${ROW_HEIGHT_CLASS} relative`}
+                      style={{ width: "100%" }}
                     >
                       {/* Background Grid */}
                       <div
                         className="absolute top-0 left-0 h-full flex z-0"
-                        style={{ width: getTotalTimelineWidth() }}
+                        style={{ width: "100%" }}
                       >
                         {timeSlots.map((slot, idx) => {
                           const isWorking = isWorkingTime(
@@ -444,15 +454,15 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                             <div
                               key={idx}
                               className={`border-r border-gray-200 last:border-r-0 h-full relative ${
-                                viewMode === "halfDay"
+                                viewMode === "halfDay" || viewMode === "day"
                                   ? "flex-1"
                                   : "flex-shrink-0"
                               }`}
                               style={{
-                                width:
+                                minWidth:
                                   viewMode === "halfDay"
                                     ? undefined
-                                    : getColumnWidth(),
+                                    : getColumnMinWidth(),
                                 backgroundColor: bg,
                               }}
                             >
@@ -479,8 +489,8 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
 
                       {/* Orders */}
                       <div
-                        className="absolute top-0 left-0 h-full px-2 py-2"
-                        style={{ width: getTotalTimelineWidth() }}
+                        className="absolute top-0 left-0 h-full px-0 py-0 flex items-center"
+                        style={{ width: "100%" }}
                       >
                         {resourceOrders.map((order) => {
                           const setupMinutes =
@@ -492,7 +502,7 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                           return (
                             <div
                               key={order.id}
-                              className="absolute h-12 rounded-md shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                              className={`absolute ${ORDER_HEIGHT_CLASS} rounded-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden`}
                               style={{
                                 ...style,
                                 border: "1px solid rgba(255,255,255,0.4)",
@@ -504,11 +514,9 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
                               onMouseMove={handleMouseMove}
                               onMouseLeave={handleMouseLeave}
                             >
-                              <div className="h-full px-2 flex items-center text-white text-xs font-medium relative z-10">
+                              <div className="h-full px-1 flex items-center text-white text-[10px] font-medium relative z-10 leading-none">
                                 <span className="truncate drop-shadow-md">
                                   {order.orderNumber || `Order ${order.id}`}
-                                  {order.operationNumber &&
-                                    ` (${order.operationNumber})`}
                                 </span>
                               </div>
                             </div>
