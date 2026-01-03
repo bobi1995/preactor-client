@@ -17,6 +17,19 @@ export const GET_ORDERS = gql`
         name
         color
       }
+      attributes {
+        id
+        value
+        attribute {
+          id
+          name
+          isParam
+        }
+        attributeParam {
+          id
+          attributeValue
+        }
+      }
     }
   }
 `;
@@ -36,6 +49,19 @@ export const GET_ORDERS_BY_RESOURCE = gql`
         name
         color
       }
+      attributes {
+        id
+        value
+        attribute {
+          id
+          name
+          isParam
+        }
+        attributeParam {
+          id
+          attributeValue
+        }
+      }
     }
   }
 `;
@@ -54,6 +80,19 @@ export const GET_ORDERS_BY_RESOURCE_GROUP = gql`
         id
         name
         color
+      }
+      attributes {
+        id
+        value
+        attribute {
+          id
+          name
+          isParam
+        }
+        attributeParam {
+          id
+          attributeValue
+        }
       }
     }
   }

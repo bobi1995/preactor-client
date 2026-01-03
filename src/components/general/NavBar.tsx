@@ -138,11 +138,6 @@ const NavBar: React.FC = () => {
       labelKey: "nav.changeoverGroups",
       icon: Layers,
     },
-    {
-      path: "/raw-orders",
-      labelKey: "nav.rawOrders",
-      icon: ListChevronsDownUpIcon,
-    },
   ];
 
   const languageOptions = [

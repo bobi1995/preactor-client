@@ -10,7 +10,7 @@ import {
   LoaderCircle,
   AlertCircle,
 } from "lucide-react";
-import { IOrderRaw } from "../../graphql/interfaces";
+import { IOrder } from "../../graphql/interfaces";
 import { useAttributes } from "../../graphql/hook/attribute";
 import {
   useAddOrderAttribute,
@@ -19,7 +19,7 @@ import {
 import { toast } from "react-toastify";
 
 interface Props {
-  order: IOrderRaw;
+  order: IOrder;
 }
 
 const OrderAttributesDialog: React.FC<Props> = ({ order }) => {
@@ -103,10 +103,15 @@ const OrderAttributesDialog: React.FC<Props> = ({ order }) => {
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <button
-          className="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded hover:bg-gray-100"
+          className="text-gray-400 hover:text-indigo-600 transition-colors p-1.5 rounded hover:bg-gray-100 flex items-center gap-1"
           title={t("rawOrdersPage.attributes.manage", "Manage Attributes")}
         >
           <Tags className="w-4 h-4" />
+          {order.attributes && order.attributes.length > 0 && (
+            <span className="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 rounded-full font-bold">
+              {order.attributes.length}
+            </span>
+          )}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -120,7 +125,7 @@ const OrderAttributesDialog: React.FC<Props> = ({ order }) => {
                 {t("rawOrdersPage.attributes.title", "Order Attributes")}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-gray-500 mt-1">
-                {order.orderNo} / {order.opNo}
+                {order.orderNumber} / {order.operationNumber}
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>
@@ -154,7 +159,6 @@ const OrderAttributesDialog: React.FC<Props> = ({ order }) => {
                     value={selectedAttrId}
                     onChange={(e) => {
                       setSelectedAttrId(e.target.value);
-                      // Reset dependent fields when type changes
                       setSelectedParamId("");
                       setTextValue("");
                     }}
@@ -176,7 +180,7 @@ const OrderAttributesDialog: React.FC<Props> = ({ order }) => {
                   </select>
                 </div>
 
-                {/* 2. Conditional Input (Value OR Parameter) */}
+                {/* 2. Conditional Input */}
                 {selectedAttrId && (
                   <div className="animate-in fade-in slide-in-from-top-1">
                     {isParamBased ? (

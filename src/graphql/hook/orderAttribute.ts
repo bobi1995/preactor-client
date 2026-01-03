@@ -3,12 +3,12 @@ import {
   ADD_ORDER_ATTRIBUTE,
   DELETE_ORDER_ATTRIBUTE,
 } from "../mutation/orderAttribute";
-import { GET_RAW_ORDERS } from "../query/orderRaw";
+import { GET_ORDERS } from "../query/order"; // Changed import
 
 export const useAddOrderAttribute = () => {
   const [mutate, { loading, error }] = useMutation(ADD_ORDER_ATTRIBUTE, {
-    // Refetch orders to update the list in the table/modal immediately
-    refetchQueries: [{ query: GET_RAW_ORDERS }],
+    // Refetch the main orders list
+    refetchQueries: [{ query: GET_ORDERS }],
   });
 
   const addOrderAttribute = async (
@@ -34,7 +34,7 @@ export const useAddOrderAttribute = () => {
 
 export const useDeleteOrderAttribute = () => {
   const [mutate, { loading, error }] = useMutation(DELETE_ORDER_ATTRIBUTE, {
-    refetchQueries: [{ query: GET_RAW_ORDERS }],
+    refetchQueries: [{ query: GET_ORDERS }],
   });
 
   const deleteOrderAttribute = async (id: number) => {

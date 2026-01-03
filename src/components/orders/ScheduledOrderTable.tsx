@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { IOrder } from "../../graphql/interfaces";
 import { format } from "date-fns";
-import { parseAsLocal } from "../../utils/gantt-utils"; // Reusing your utility
+import { parseAsLocal } from "../../utils/gantt-utils";
+import OrderAttributesDialog from "./OrderAttributesDialog"; // Import the Dialog
 import {
   ChevronDown,
   ChevronUp,
@@ -43,27 +44,23 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "-";
-    const date = parseAsLocal(dateString); // Ensures timezone matches Gantt
+    if (!dateString)
+      return <span className="text-gray-400 italic">Pending</span>;
+    const date = parseAsLocal(dateString);
     return date ? format(date, "dd/MM/yyyy HH:mm") : "-";
   };
 
-  // --- Process Data (Sort & Paginate) ---
+  // --- Process Data ---
   const sortedOrders = useMemo(() => {
     const sorted = [...orders];
     sorted.sort((a, b) => {
       let aValue: any = a[sortConfig.key];
       let bValue: any = b[sortConfig.key];
 
-      // Special handling for nested objects if you add them to sort later
-      // For now, orderNumber, product, startTime are direct properties
-
-      // Handle nulls
       if (!aValue) return 1;
       if (!bValue) return -1;
 
-      // Numeric check for Order Numbers like "100", "101" vs "A100"
-      // If both are numbers, sort numerically
+      // Numeric check for Order Numbers
       const aNum = parseFloat(aValue);
       const bNum = parseFloat(bValue);
 
@@ -72,7 +69,6 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
         if (aNum > bNum) return sortConfig.direction === "asc" ? 1 : -1;
       }
 
-      // String comparison
       if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
       if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
@@ -86,9 +82,8 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
     currentPage * itemsPerPage
   );
 
-  // --- Render Header Helper ---
   const renderSortIcon = (key: SortKey) => {
-    if (sortConfig.key !== key) return <div className="w-4 h-4" />; // Placeholder
+    if (sortConfig.key !== key) return <div className="w-4 h-4" />;
     return sortConfig.direction === "asc" ? (
       <ChevronUp className="w-4 h-4" />
     ) : (
@@ -133,13 +128,17 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
               <th className="w-1/12 px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 {t("ordersPage.table.quantity", "Qty")}
               </th>
+              {/* Added Attributes Action Column */}
+              <th className="w-1/12 px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                {t("nav.attributes", "Attributes")}
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {paginatedOrders.length === 0 ? (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={7}
                   className="px-6 py-12 text-center text-gray-500"
                 >
                   <div className="flex flex-col items-center justify-center">
@@ -174,7 +173,9 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
                     {order.product || "-"}
                   </td>
                   <td className="px-4 py-3 text-sm text-indigo-600 font-medium">
-                    {order.resource?.name || "-"}
+                    {order.resource?.name || (
+                      <span className="text-gray-400 italic">Unassigned</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
                     {formatDate(order.startTime)}
@@ -185,6 +186,9 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
                   <td className="px-4 py-3 text-sm text-gray-800 text-center font-semibold bg-gray-50">
                     {order.remainingQuan ?? order.quantity ?? 0}
                   </td>
+                  <td className="px-4 py-3 text-sm text-center">
+                    <OrderAttributesDialog order={order} />
+                  </td>
                 </tr>
               ))
             )}
@@ -192,9 +196,10 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
         </table>
       </div>
 
-      {/* Pagination Footer */}
+      {/* Pagination Footer (Unchanged logic) */}
       {totalPages > 1 && (
         <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 flex items-center justify-between">
+          {/* ... (Keep existing pagination UI) ... */}
           <div className="text-sm text-gray-500">
             {t("common.showing", "Showing")}{" "}
             <span className="font-medium">
