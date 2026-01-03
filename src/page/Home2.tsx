@@ -6,8 +6,8 @@ import { IOrder, IResource } from "../graphql/interfaces";
 import OrderGanttChart from "../components/home2/OrderGanttChart";
 import ViewPicker, { ViewMode } from "../components/home2/ViewPicker";
 import TimelineNavigation from "../components/home2/TimelineNavigation";
-import GanttSkeleton from "../components/home2/GanttSkeleton";
 import ErrorComponent from "../components/general/Error";
+import LoadingDialog from "../components/general/LoadingDialog";
 
 const Home2 = () => {
   const { t } = useTranslation();
@@ -83,13 +83,8 @@ const Home2 = () => {
   };
 
   // Loading state
-  if (resourcesLoading && !resources) {
-    return (
-      <div className="h-[calc(100vh-80px)] p-4">
-        <GanttSkeleton rowCount={8} />
-      </div>
-    );
-  }
+  if (resourcesLoading || ordersLoading)
+    return <LoadingDialog isLoading={true} />;
 
   // Error state
   if (resourcesError || ordersError) {
