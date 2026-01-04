@@ -189,7 +189,7 @@ export const useUpdateResource = () => {
     description: string;
     color: string;
     externalCode?: string;
-    scheduleId?: number;
+    scheduleId?: number | null;
     changeover_group_id?: number | null;
   }) => {
     try {
