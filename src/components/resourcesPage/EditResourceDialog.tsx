@@ -130,12 +130,11 @@ const EditResourceDialog: React.FC<EditResourceDialogProps> = ({
           externalCode: formData.externalCode.trim(),
           scheduleId:
             formData.scheduleId === "null"
-              ? undefined // Backend handles undefined as "remove assignment" usually, or send null explicitly if needed
+              ? null
               : parseInt(formData.scheduleId),
-          // New Field: Changeover Group
           changeover_group_id:
             formData.changeoverGroupId === "null"
-              ? undefined // Or null, depending on your resolver logic (mapInputToData handles undefined check)
+              ? null
               : parseInt(formData.changeoverGroupId),
         };
 
