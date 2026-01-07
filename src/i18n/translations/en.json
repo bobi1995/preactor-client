@@ -75,7 +75,8 @@
     "changeovers": "Changeovers",
     "rawOrders": "Raw Orders",
     "gantt": "Gantt",
-    "scheduledOrders": "Orders"
+    "scheduledOrders": "Orders",
+    "optimizerSettings": "Optimizer"
   },
 
   "resourcePage": {
@@ -569,6 +570,56 @@
       "allAssigned ": "All attributes assigned",
       "successAssign": "Attribute assigned successfully",
       "successUnassign": "Attribute unassigned successfully"
+    }
+  },
+  "optimizer": {
+    "title": "Optimizer Control Center",
+    "subtitle": "Configure default behaviors for the scheduling engine and audit performance.",
+    "defaults": "Default Configuration",
+    "unsavedChanges": "Unsaved Changes",
+    "run": "Оптимизирай",
+    "running": "Оптимизиране...",
+    "strategy": {
+      "label": "Strategy",
+      "helper": "Determines how the algorithm weights competing goals.",
+      "balanced": "Balanced (Standard)",
+      "minimizeSetup": "Minimize Setup Time",
+      "deadline": "Deadline Priority"
+    },
+    "urgentWindow": {
+      "label": "Urgent Window",
+      "days": "days",
+      "helper": "Orders due within this window are strictly prioritized."
+    },
+    "gravity": {
+      "label": "Gravity",
+      "helper": "Pull tasks to the earliest possible time"
+    },
+    "resourcePriority": {
+      "label": "Resource Priority Sequence",
+      "helper": "Define the order in which the scheduler attempts to assign work. High priority resources are filled first.",
+      "available": "Available Resources",
+      "priorityQueue": "Priority Queue (High to Low)",
+      "items": "items",
+      "allAdded": "All resources added",
+      "empty": "No resources selected. System will use default logic."
+    },
+    "saveDefaults": "Save Defaults",
+    "saving": "Saving...",
+    "logs": "Execution Logs",
+    "settingsSaved": "Default settings saved successfully.",
+    "saveError": "Failed to save settings.",
+    "table": {
+      "status": "Status",
+      "date": "Date",
+      "duration": "Duration",
+      "records": "Records",
+      "strategy": "Strategy",
+      "priority": "Resource Priority",
+      "noHistory": "No execution history found.",
+      "success": "Success",
+      "failed": "Failed",
+      "running": "Running"
     }
   }
 }

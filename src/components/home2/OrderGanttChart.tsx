@@ -289,7 +289,13 @@ const OrderGanttChart: React.FC<OrderGanttChartProps> = ({
     const left = (startOffset / totalMinutes) * 100;
     const width = (duration / totalMinutes) * 100;
 
-    const baseColor = getOrderColor(order.orderNumber || String(order.id));
+    console.log(order);
+
+    const baseColor = getOrderColor(
+      order.orderNumber || String(order.id),
+      order.attributes
+    );
+
     const { background } = getOrderBackgroundStyle(
       order.startTime,
       order.endTime,
