@@ -19,7 +19,7 @@ import {
   ArrowLeftRight,
   Tag,
   Layers,
-  ListChevronsDownUpIcon,
+  Settings,
   ListOrderedIcon,
 } from "lucide-react";
 
@@ -137,6 +137,11 @@ const NavBar: React.FC = () => {
       path: "/changeover-groups",
       labelKey: "nav.changeoverGroups",
       icon: Layers,
+    },
+    {
+      path: "/optimizer-settings",
+      labelKey: "nav.optimizerSettings",
+      icon: Settings,
     },
   ];
 

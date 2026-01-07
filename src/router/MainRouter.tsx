@@ -13,6 +13,7 @@ import BreaksPage from "../page/BreaksPage";
 import AttributesPage from "../page/AttributesPage";
 import ChangeoverGroupsPage from "../page/ChangeoverGroupsPage";
 import ScheduledOrdersPage from "../page/ScheduledOrdersPage";
+import OptimizerSettingsPage from "../page/OptimizerSettingsPage";
 
 const AppLayout = () => {
   return (
@@ -79,10 +80,13 @@ const mainRouter = createBrowserRouter([
         path: "/changeover-groups",
         element: <ChangeoverGroupsPage />,
       },
-
       {
         path: "/scheduled-orders",
         element: <ScheduledOrdersPage />,
+      },
+      {
+        path: "/optimizer-settings",
+        element: <OptimizerSettingsPage />,
       },
     ],
   },

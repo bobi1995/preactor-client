@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useOrders } from "../graphql/hook/order";
-import { useRunScheduler } from "../graphql/hook/python-scheduler"; // Import the hook
+// 1. Change import to the new hook
+import { useRunOptimizer } from "../graphql/hook/optimizer";
 import ScheduledOrderTable from "../components/orders/ScheduledOrderTable";
 import OrderFilter, { PeriodFilter } from "../components/orders/OrderFilter";
-import SchedulerBlocker from "../components/orders/SchedulerBlocker"; // Import Blocker
-import SchedulerResultModal from "../components/orders/SchedulerResultModal"; // Import Result Modal
+import SchedulerBlocker from "../components/orders/SchedulerBlocker";
+import SchedulerResultModal from "../components/orders/SchedulerResultModal";
 import LoadingDialog from "../components/general/LoadingDialog";
 import ErrorComponent from "../components/general/Error";
-import { RefreshCw, CalendarCheck, PlayCircle } from "lucide-react"; // Import Play icon
+import { RefreshCw, CalendarCheck, PlayCircle } from "lucide-react";
 import {
   startOfDay,
   endOfDay,
@@ -23,7 +24,8 @@ const ScheduledOrdersPage: React.FC = () => {
 
   // 1. Data Hooks
   const { orders, loading, error, reload } = useOrders();
-  const { runScheduler, loading: schedulerLoading } = useRunScheduler();
+  // 2. Use new hook
+  const { runOptimizer, loading: schedulerLoading } = useRunOptimizer();
 
   // 2. Local State for Results Modal
   const [resultModal, setResultModal] = useState<{
@@ -42,24 +44,26 @@ const ScheduledOrdersPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [period, setPeriod] = useState<PeriodFilter>("all");
 
-  // 3. Handler for Running Scheduler
+  // 3. Handler for Running Scheduler (UPDATED)
   const handleRunScheduler = async () => {
     try {
-      // The mutation hook handles the loading state (schedulerLoading) automatically
-      const response = await runScheduler();
-
-      const result = response.data?.runScheduler;
+      // Call with no arguments to use DB defaults
+      const result = await runOptimizer();
 
       if (result) {
-        // Show result modal
         setResultModal({
           isOpen: true,
           success: result.success,
           message: result.message || "Process finished",
-          output: result.output || "",
+          // The new mutation doesn't return raw 'output', so we use message or a generic string
+          output: result.success
+            ? t(
+                "optimizer.runSuccess",
+                "Optimizer finished successfully. Check logs in settings for details."
+              )
+            : result.message,
         });
 
-        // If successful, reload the table to show new dates
         if (result.success) {
           reload();
         }
@@ -70,12 +74,12 @@ const ScheduledOrdersPage: React.FC = () => {
         isOpen: true,
         success: false,
         message: err.message || "Unknown error occurred",
-        output: "Check console for details.",
+        output: "Check console or Optimizer Settings for details.",
       });
     }
   };
 
-  // --- Filter Logic ---
+  // --- Filter Logic (Unchanged) ---
   const filteredOrders = useMemo(() => {
     if (!orders) return [];
     const now = new Date();
