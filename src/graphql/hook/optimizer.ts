@@ -59,8 +59,8 @@ export const useUpdateOptimizerSettings = () => {
 export const useRunOptimizer = () => {
   const [mutate, { loading, error, data }] = useMutation(RUN_OPTIMIZER);
 
-  const runOptimizer = async (input?: {
-    strategy?: string;
+  const runOptimizer = async (input: {
+    scenarioId: number; // Added this
     campaignWindowDays?: number;
     gravity?: boolean;
     resourcePriority?: number[];

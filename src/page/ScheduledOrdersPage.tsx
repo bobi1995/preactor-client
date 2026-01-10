@@ -18,6 +18,7 @@ import {
 } from "date-fns";
 import { parseAsLocal } from "../utils/gantt-utils";
 import { IOrder } from "../graphql/interfaces";
+import RunOptimizerDialog from "../components/optimizer/RunOptimizerDialog";
 
 const ScheduledOrdersPage: React.FC = () => {
   const { t } = useTranslation();
@@ -43,41 +44,6 @@ const ScheduledOrdersPage: React.FC = () => {
   // --- Filter State ---
   const [searchTerm, setSearchTerm] = useState("");
   const [period, setPeriod] = useState<PeriodFilter>("all");
-
-  // 3. Handler for Running Scheduler (UPDATED)
-  const handleRunScheduler = async () => {
-    try {
-      // Call with no arguments to use DB defaults
-      const result = await runOptimizer();
-
-      if (result) {
-        setResultModal({
-          isOpen: true,
-          success: result.success,
-          message: result.message || "Process finished",
-          // The new mutation doesn't return raw 'output', so we use message or a generic string
-          output: result.success
-            ? t(
-                "optimizer.runSuccess",
-                "Optimizer finished successfully. Check logs in settings for details."
-              )
-            : result.message,
-        });
-
-        if (result.success) {
-          reload();
-        }
-      }
-    } catch (err: any) {
-      console.error("Scheduler Error:", err);
-      setResultModal({
-        isOpen: true,
-        success: false,
-        message: err.message || "Unknown error occurred",
-        output: "Check console or Optimizer Settings for details.",
-      });
-    }
-  };
 
   // --- Filter Logic (Unchanged) ---
   const filteredOrders = useMemo(() => {
@@ -168,18 +134,11 @@ const ScheduledOrdersPage: React.FC = () => {
 
           <div className="flex gap-3">
             {/* 6. RUN SCHEDULER BUTTON */}
-            <button
-              onClick={handleRunScheduler}
-              disabled={schedulerLoading || loading}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              <PlayCircle className="w-5 h-5" />
-              {t("ordersPage.optimizer.runOptimizer", "Run Optimizer")}
-            </button>
+            <RunOptimizerDialog onSuccess={reload} />
 
             <button
               onClick={() => reload()}
-              className="p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-all shadow-sm"
+              className="cursor-pointer p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-all shadow-sm"
               title={t("common.refresh", "Refresh")}
             >
               <RefreshCw className="w-5 h-5" />

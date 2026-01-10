@@ -143,3 +143,17 @@ export interface IOrderAttribute {
     attributeValue: string;
   };
 }
+
+export interface IOptimizationScenario {
+  id: number;
+  name: string;
+  description?: string;
+  latenessWeight: number;
+  changeoverWeight: number;
+  makespanWeight: number;
+  loadRangeWeight: number;
+  maxLoadWeight: number;
+  gravityWeight: number;
+  updatedAt: string;
+  isDefault: boolean;
+}

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import { Save, RefreshCw, Cpu, History, PlayCircle } from "lucide-react";
+import { Save, RefreshCw, Cpu, History } from "lucide-react";
 
 // Custom Hooks
 import {
   useOptimizerData,
   useUpdateOptimizerSettings,
-  useRunOptimizer,
 } from "../graphql/hook/optimizer";
 
 // Components
@@ -15,6 +14,8 @@ import LoadingDialog from "../components/general/LoadingDialog";
 import ErrorComponent from "../components/general/Error";
 import ResourcePrioritySelector from "../components/optimizer/ResourcePrioritySelector";
 import OptimizerHistoryTable from "../components/optimizer/OptimizerHistoryTable";
+import ScenarioManager from "../components/optimizer/ScenarioManager";
+import RunOptimizerDialog from "../components/optimizer/RunOptimizerDialog";
 
 const OptimizerSettingsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -24,44 +25,35 @@ const OptimizerSettingsPage: React.FC = () => {
     useOptimizerData();
 
   const { updateSettings, loading: saving } = useUpdateOptimizerSettings();
-  const { runOptimizer, loading: running } = useRunOptimizer();
 
-  // --- LOCAL FORM STATE ---
-  const [strategy, setStrategy] = useState("balanced");
-
-  // New state for the checkbox logic
-  const [isWindowEnabled, setIsWindowEnabled] = useState(false);
+  // --- LOCAL STATE ---
   const [windowDays, setWindowDays] = useState(0);
-
+  const [isWindowEnabled, setIsWindowEnabled] = useState(false);
   const [gravity, setGravity] = useState(true);
   const [resourcePriority, setResourcePriority] = useState<number[]>([]);
   const [isDirty, setIsDirty] = useState(false);
 
-  // Initialize form when settings data loads
   useEffect(() => {
     if (settings) {
-      setStrategy(settings.strategy);
       setGravity(settings.gravity);
       setResourcePriority(settings.resourcePriority || []);
 
-      // Logic: If 0, it is disabled. If > 0, enabled.
       if (settings.campaignWindowDays > 0) {
         setIsWindowEnabled(true);
         setWindowDays(settings.campaignWindowDays);
       } else {
         setIsWindowEnabled(false);
-        setWindowDays(7); // Default to 7 for UI if they enable it later
+        setWindowDays(7);
       }
-
       setIsDirty(false);
     }
   }, [settings]);
 
-  const handleSave = async () => {
+  const handleSaveDefaults = async () => {
     try {
       await updateSettings({
-        strategy,
-        campaignWindowDays: isWindowEnabled ? windowDays : 0, // Send 0 if unchecked
+        strategy: "balanced",
+        campaignWindowDays: isWindowEnabled ? windowDays : 0,
         gravity,
         resourcePriority,
       });
@@ -72,31 +64,6 @@ const OptimizerSettingsPage: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       toast.error(t("optimizer.saveError", "Failed to save settings."));
-    }
-  };
-
-  const handleRun = async () => {
-    try {
-      const result = await runOptimizer({
-        strategy,
-        campaignWindowDays: isWindowEnabled ? windowDays : 0, // Send 0 if unchecked
-        gravity,
-        resourcePriority,
-      });
-
-      if (result?.success) {
-        toast.success(
-          t("optimizer.runSuccess", "Optimizer started successfully.")
-        );
-      } else {
-        toast.error(
-          result?.message ||
-            t("optimizer.runError", "Failed to start optimizer.")
-        );
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || t("optimizer.runError"));
     }
   };
 
@@ -116,39 +83,29 @@ const OptimizerSettingsPage: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">
             {t(
               "optimizer.subtitle",
-              "Configure default behaviors for the scheduling engine and audit performance."
+              "Configure global defaults, manage scenarios, and review optimization history."
             )}
           </p>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={handleRun}
-            disabled={running || loading}
-            className="w-42 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            <PlayCircle
-              className={`w-5 h-5 ${running ? "animate-spin" : ""}`}
-            />
-            {running
-              ? t("optimizer.running", "Running...")
-              : t("optimizer.run", "Run Optimizer")}
-          </button>
+          {/* RUN DIALOG */}
+          <RunOptimizerDialog onSuccess={refetch} />
 
           <button
             onClick={() => refetch()}
             className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
-            title={t("common.refresh", "Refresh Data")}
+            title="Refresh Data"
           >
             <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
       </div>
 
-      {/* SECTION A: CONFIGURATION */}
+      {/* SECTION 1: GLOBAL DEFAULTS */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
           <h2 className="font-semibold text-gray-800">
-            {t("optimizer.defaults", "Default Configuration")}
+            {t("optimizer.defaults", "Global Configuration")}
           </h2>
           {isDirty && (
             <span className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded">
@@ -160,37 +117,7 @@ const OptimizerSettingsPage: React.FC = () => {
         <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column: Basic Settings */}
           <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t("optimizer.strategy.label", "Strategy")}
-              </label>
-              <select
-                value={strategy}
-                onChange={(e) => {
-                  setStrategy(e.target.value);
-                  setIsDirty(true);
-                }}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"
-              >
-                <option value="balanced">
-                  {t("optimizer.strategy.balanced", "Balanced (Standard)")}
-                </option>
-                <option value="minimize_setup">
-                  {t("optimizer.strategy.minimizeSetup", "Minimize Setup Time")}
-                </option>
-                <option value="deadline">
-                  {t("optimizer.strategy.deadline", "Deadline Priority")}
-                </option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">
-                {t(
-                  "optimizer.strategy.helper",
-                  "Determines how the algorithm weights competing goals."
-                )}
-              </p>
-            </div>
-
-            {/* UPDATED URGENT WINDOW SECTION */}
+            {/* Urgent Window */}
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2 cursor-pointer">
                 <input
@@ -236,6 +163,7 @@ const OptimizerSettingsPage: React.FC = () => {
               </p>
             </div>
 
+            {/* Gravity */}
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
               <div>
                 <span className="block text-sm font-medium text-gray-700">
@@ -266,7 +194,7 @@ const OptimizerSettingsPage: React.FC = () => {
 
             <div className="pt-4 border-t">
               <button
-                onClick={handleSave}
+                onClick={handleSaveDefaults}
                 disabled={saving || !isDirty}
                 className="w-full flex justify-center items-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
@@ -304,17 +232,32 @@ const OptimizerSettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* SECTION B: HISTORY */}
-      <div className="space-y-4">
+      {/* SECTION 2: SCENARIOS */}
+      <section>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            {t("optimizer.scenario.title", "Optimization Scenarios")}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {t(
+              "optimizer.scenario.description",
+              "Define different optimization strategies. You can select one of these scenarios when running the optimizer."
+            )}
+          </p>
+        </div>
+        <ScenarioManager />
+      </section>
+
+      {/* SECTION 3: HISTORY */}
+      <section className="space-y-4 pt-6 border-t">
         <div className="flex items-center gap-2">
           <History className="w-5 h-5 text-gray-500" />
           <h2 className="text-lg font-bold text-gray-800">
             {t("optimizer.logs", "Execution Logs")}
           </h2>
         </div>
-
         <OptimizerHistoryTable executions={executions} resources={resources} />
-      </div>
+      </section>
     </div>
   );
 };
