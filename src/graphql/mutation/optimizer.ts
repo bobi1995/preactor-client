@@ -6,7 +6,6 @@ export const UPDATE_OPTIMIZER_SETTINGS = gql`
       id
       strategy
       campaignWindowDays
-      gravity
       resourcePriority
     }
   }

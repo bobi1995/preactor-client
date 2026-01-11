@@ -91,7 +91,7 @@ const RunOptimizerDialog: React.FC<Props> = ({
       const result = await runOptimizer({
         scenarioId: selectedScenarioId,
         campaignWindowDays: useCustomWindow ? windowDays : 0,
-        gravity: true,
+        // gravity: true, // REMOVED
         resourcePriority: [],
       });
 
@@ -158,10 +158,6 @@ const RunOptimizerDialog: React.FC<Props> = ({
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     {t("optimizer.optimizing", "Optimizing Schedule...")}
                   </h2>
-                  {/* 
-
-[Image of data processing pipeline]
- - Keeping user focused on process */}
                   <p className="text-gray-500">
                     {t(
                       "optimizer.optimizing_banter",

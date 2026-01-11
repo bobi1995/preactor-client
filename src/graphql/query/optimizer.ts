@@ -6,7 +6,6 @@ export const GET_OPTIMIZER_DATA = gql`
       id
       strategy
       campaignWindowDays
-      gravity
       resourcePriority
       updatedAt
     }
@@ -18,7 +17,6 @@ export const GET_OPTIMIZER_DATA = gql`
       status
       strategy
       campaignWindowDays
-      gravity
       resourcePriority
       recordCount
       errorMessage
