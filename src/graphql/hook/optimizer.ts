@@ -11,14 +11,13 @@ export interface OptimizerSettingsData {
   id: number;
   strategy: string;
   campaignWindowDays: number;
-  gravity: boolean;
   resourcePriority: number[];
   updatedAt: string;
 }
 
 export const useOptimizerData = () => {
   const { data, loading, error, refetch } = useQuery(GET_OPTIMIZER_DATA, {
-    pollInterval: 3000, // Poll faster (3s) to catch running status changes
+    pollInterval: 3000,
     fetchPolicy: "network-only",
   });
 
@@ -39,7 +38,6 @@ export const useUpdateOptimizerSettings = () => {
   const updateSettings = async (input: {
     strategy: string;
     campaignWindowDays: number;
-    gravity: boolean;
     resourcePriority: number[];
   }) => {
     const response = await mutate({
@@ -60,14 +58,12 @@ export const useRunOptimizer = () => {
   const [mutate, { loading, error, data }] = useMutation(RUN_OPTIMIZER);
 
   const runOptimizer = async (input: {
-    scenarioId: number; // Added this
+    scenarioId: number;
     campaignWindowDays?: number;
-    gravity?: boolean;
     resourcePriority?: number[];
   }) => {
     const response = await mutate({
       variables: { input },
-      // We refetch data immediately to see the "RUNNING" status in the history table
       refetchQueries: [{ query: GET_OPTIMIZER_DATA }],
     });
     return response.data?.runOptimizer;

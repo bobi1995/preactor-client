@@ -584,6 +584,8 @@
     "optimization_complete": "Optimization Complete!",
     "optimization_failed": "Optimization failed. Please try again.",
     "backToSettings": "Back to Settings",
+    "defaultsDesc": "Default parameters used when no scenario is selected.",
+    "globalInfo": "These settings define the baseline behavior. Specific Optimization Scenarios can override weights, but these rules always apply as a foundation.",
     "strategy": {
       "label": "Strategy",
       "helper": "Determines how the algorithm weights competing goals.",
@@ -592,9 +594,11 @@
       "deadline": "Deadline Priority"
     },
     "urgentWindow": {
-      "label": "Urgent Window",
+      "title": "Urgent Window",
+      "subtitle": "Prioritize imminent deadlines",
+      "daysLabel": "Lookahead Duration",
       "days": "days",
-      "helper": "Orders due within this window are strictly prioritized."
+      "helper2": "Orders in this range are locked to earliest slots."
     },
     "gravity": {
       "label": "Gravity",
@@ -607,13 +611,15 @@
       "priorityQueue": "Priority Queue (High to Low)",
       "items": "items",
       "allAdded": "All resources added",
-      "empty": "No resources selected. System will use default logic."
+      "empty": "No resources selected. System will use default logic.",
+      "helperDrag": "High priority resources are filled first."
     },
     "saveDefaults": "Save Defaults",
     "saving": "Saving...",
     "logs": "Execution Logs",
     "settingsSaved": "Default settings saved successfully.",
     "saveError": "Failed to save settings.",
+
     "table": {
       "status": "Status",
       "date": "Date",

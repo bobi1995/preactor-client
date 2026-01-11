@@ -142,103 +142,116 @@ const ScenarioManager: React.FC = () => {
   if (loading) return <div className="p-4">Loading Scenarios...</div>;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    // items-stretch ensures both columns have the same height
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
       <LoadingDialog isLoading={isActionLoading} />
 
-      {/* LEFT: List */}
-      <div className="lg:col-span-1 bg-white border rounded-xl overflow-hidden shadow-sm flex flex-col h-[600px]">
-        <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
-          <h3 className="font-semibold text-gray-700">
-            {t("optimizer.scenario.listTitle", "Scenarios")}
-          </h3>
-          <button
-            onClick={resetForm}
-            className="p-1 text-indigo-600 hover:bg-indigo-50 rounded"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="overflow-y-auto flex-1 p-2 space-y-2">
-          {sortedScenarios.map((s) => (
-            <div
-              key={s.id}
-              className={`p-3 rounded-lg border transition-all hover:shadow-md cursor-pointer relative group ${
-                formData.id === s.id
-                  ? "border-indigo-500 bg-indigo-50"
-                  : "border-gray-200 bg-white"
-              }`}
-              onClick={() => handleEdit(s)}
+      {/* LEFT: List 
+          - relative: establishes a coordinate system for the absolute child
+          - h-[500px]: Fixed height on mobile so it doesn't collapse
+          - lg:h-auto: On desktop, match the height of the right column
+      */}
+      <div className="lg:col-span-1 bg-white border rounded-xl shadow-sm relative h-[500px] lg:h-auto flex flex-col">
+        {/* - absolute inset-0: Forces this container to fill the parent's height exactly
+            - overflow-hidden: Contains the scrollbar inside nicely
+        */}
+        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-xl">
+          <div className="p-4 bg-gray-50 border-b flex justify-between items-center shrink-0">
+            <h3 className="font-semibold text-gray-700">
+              {t("optimizer.scenario.listTitle", "Scenarios")}
+            </h3>
+            <button
+              onClick={resetForm}
+              className="p-1 text-indigo-600 hover:bg-indigo-50 rounded"
             >
-              <div className="flex justify-between items-start">
-                <div className="flex-1 pr-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-bold text-gray-800 text-sm">
-                      {s.name}
-                    </h4>
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* overflow-y-auto: This enables the scrollbar ONLY for the list if it gets too long */}
+          <div className="overflow-y-auto flex-1 p-2 space-y-2">
+            {sortedScenarios.map((s) => (
+              <div
+                key={s.id}
+                className={`p-3 rounded-lg border transition-all hover:shadow-md cursor-pointer relative group ${
+                  formData.id === s.id
+                    ? "border-indigo-500 bg-indigo-50"
+                    : "border-gray-200 bg-white"
+                }`}
+                onClick={() => handleEdit(s)}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 pr-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-bold text-gray-800 text-sm">
+                        {s.name}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                      {s.description ||
+                        t("optimizer.scenario.noDesc", "No description")}
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-2 mt-1">
-                    {s.description ||
-                      t("optimizer.scenario.noDesc", "No description")}
-                  </p>
-                </div>
 
-                <div className="flex flex-col gap-1 items-end">
-                  {/* Default Button - ALWAYS VISIBLE */}
-                  <button
-                    onClick={(e) => handleSetDefault(s.id, e)}
-                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
-                      s.isDefault
-                        ? "bg-yellow-50 border-yellow-200 text-yellow-600"
-                        : "bg-white border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500"
-                    }`}
-                    title={t(
-                      "optimizer.scenario.default",
-                      "Set as default scenario"
-                    )}
-                  >
-                    <Star
-                      className={`w-3 h-3 ${
-                        s.isDefault ? "fill-yellow-500" : ""
+                  <div className="flex flex-col gap-1 items-end">
+                    {/* Default Button */}
+                    <button
+                      onClick={(e) => handleSetDefault(s.id, e)}
+                      className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
+                        s.isDefault
+                          ? "bg-yellow-50 border-yellow-200 text-yellow-600"
+                          : "bg-white border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500"
                       }`}
-                    />
-                    {s.isDefault
-                      ? t("optimizer.scenario.default", "Default")
-                      : t("optimizer.scenario.setAsDefault", "Set Default")}
-                  </button>
+                      title={t(
+                        "optimizer.scenario.default",
+                        "Set as default scenario"
+                      )}
+                    >
+                      <Star
+                        className={`w-3 h-3 ${
+                          s.isDefault ? "fill-yellow-500" : ""
+                        }`}
+                      />
+                      {s.isDefault
+                        ? t("optimizer.scenario.default", "Default")
+                        : t("optimizer.scenario.setAsDefault", "Set Default")}
+                    </button>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(s.id);
-                    }}
-                    className="text-gray-300 hover:text-red-500 p-1"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(s.id);
+                      }}
+                      className="text-gray-300 hover:text-red-500 p-1"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-2 flex gap-1 h-1">
+                  <div
+                    className="bg-red-400"
+                    style={{ flex: s.latenessWeight || 1 }}
+                  />
+                  <div
+                    className="bg-blue-400"
+                    style={{ flex: s.changeoverWeight || 1 }}
+                  />
+                  <div
+                    className="bg-green-400"
+                    style={{ flex: s.makespanWeight || 1 }}
+                  />
                 </div>
               </div>
-
-              <div className="mt-2 flex gap-1 h-1">
-                <div
-                  className="bg-red-400"
-                  style={{ flex: s.latenessWeight || 1 }}
-                />
-                <div
-                  className="bg-blue-400"
-                  style={{ flex: s.changeoverWeight || 1 }}
-                />
-                <div
-                  className="bg-green-400"
-                  style={{ flex: s.makespanWeight || 1 }}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
       {/* RIGHT: Form */}
-      <div className="lg:col-span-2 bg-white border rounded-xl shadow-sm p-6">
+      {/* min-h-[600px] ensures the form is always tall enough to show a decent amount of the list on the left */}
+      <div className="lg:col-span-2 bg-white border rounded-xl shadow-sm p-6 h-full min-h-[600px]">
         <div className="flex justify-between items-center mb-6 border-b pb-2">
           <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             {formData.id ? (
