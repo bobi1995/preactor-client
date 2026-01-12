@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Save, AlertCircle, CalendarClock, Info } from "lucide-react";
+import { Save, AlertCircle, CalendarClock, Info, Timer } from "lucide-react"; // Added Timer icon
 import { toast } from "react-toastify";
 import { IResource } from "../../graphql/interfaces";
 import { OptimizerSettingsData } from "../../graphql/hook/optimizer";
@@ -24,6 +24,7 @@ const GlobalOptimizerSettings: React.FC<Props> = ({
   // --- LOCAL STATE ---
   const [windowDays, setWindowDays] = useState(7);
   const [isWindowEnabled, setIsWindowEnabled] = useState(false);
+  const [maxTime, setMaxTime] = useState(60); // <--- New State
   const [resourcePriority, setResourcePriority] = useState<number[]>([]);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -31,12 +32,15 @@ const GlobalOptimizerSettings: React.FC<Props> = ({
   useEffect(() => {
     if (settings) {
       setResourcePriority(settings.resourcePriority || []);
+      // Sync Max Time
+      setMaxTime(settings.maxTime || 60);
+
       if (settings.campaignWindowDays > 0) {
         setIsWindowEnabled(true);
         setWindowDays(settings.campaignWindowDays);
       } else {
         setIsWindowEnabled(false);
-        setWindowDays(7); // Default UI value
+        setWindowDays(7);
       }
       setIsDirty(false);
     }
@@ -45,8 +49,8 @@ const GlobalOptimizerSettings: React.FC<Props> = ({
   const handleSave = async () => {
     try {
       await updateSettings({
-        strategy: "balanced",
         campaignWindowDays: isWindowEnabled ? windowDays : 0,
+        maxTime: maxTime, // <--- Send to API
         resourcePriority,
       });
       toast.success(t("optimizer.settingsSaved", "Global settings saved."));
@@ -95,7 +99,7 @@ const GlobalOptimizerSettings: React.FC<Props> = ({
 
       {/* --- BODY --- */}
       <div className="p-6 grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* LEFT COLUMN: Controls (Urgent Window) - Spans 4/12 */}
+        {/* LEFT COLUMN: Controls (Urgent Window & Max Time) - Spans 4/12 */}
         <div className="xl:col-span-4 flex flex-col gap-6">
           {/* Info Card */}
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-blue-800 text-sm flex gap-3">
@@ -182,17 +186,59 @@ const GlobalOptimizerSettings: React.FC<Props> = ({
                   {t("optimizer.urgentWindow.days", "days")}
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mt-2 italic">
+            </div>
+          </div>
+
+          {/* Max Time Control Card (NEW) */}
+          <div className="border rounded-xl p-5 border-gray-200 bg-gray-50/50">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-600">
+                <Timer className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-gray-800">
+                  {t("ordersPage.optimizer.maxTime.title", "Execution Limit")}
+                </h3>
+                <p className="text-xs text-gray-500">
+                  {t(
+                    "ordersPage.optimizer.maxTime.subtitle",
+                    "Maximum runtime for solver"
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                 {t(
-                  "optimizer.urgentWindow.helper2",
-                  "Orders in this range are locked to earliest slots."
+                  "ordersPage.optimizer.maxTime.secondsLabel",
+                  "Max Duration (Seconds)"
                 )}
-              </p>
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min="10"
+                  max="3600"
+                  value={maxTime}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (!isNaN(val) && val >= 0) {
+                      setMaxTime(val);
+                      setIsDirty(true);
+                    }
+                  }}
+                  className="block w-24 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 text-lg font-mono p-2 border"
+                />
+                <span className="text-sm font-medium text-gray-600">
+                  {t("common.seconds", "seconds")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Resource Priority - Spans 8/12 */}
+        {/* RIGHT COLUMN: Resource Priority */}
         <div className="xl:col-span-8 flex flex-col h-full">
           <div className="mb-3 flex justify-between items-end">
             <div>

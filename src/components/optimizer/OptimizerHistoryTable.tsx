@@ -22,6 +22,7 @@ interface Props {
 
 const OptimizerHistoryTable: React.FC<Props> = ({ executions, resources }) => {
   const { t } = useTranslation(); // 2. Initialize hook
+  console.log("Rendering OptimizerHistoryTable with executions:", executions);
 
   const resourceMap = new Map(resources.map((r) => [Number(r.id), r.name]));
 

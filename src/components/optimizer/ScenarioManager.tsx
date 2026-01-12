@@ -66,7 +66,9 @@ const ScenarioManager: React.FC = () => {
     if (window.confirm(t("optimizer.scenario.deleteConfirm", "Delete?"))) {
       if (formData.id === id) resetForm();
       await deleteScenario({ variables: { id } });
-      toast.success(t("common.deleted", "Deleted successfully"));
+      toast.success(
+        t("optimizer.scenario.deletedSuccess", "Deleted successfully")
+      );
     }
   };
 
@@ -89,7 +91,9 @@ const ScenarioManager: React.FC = () => {
             },
           },
         });
-        toast.success(t("common.saved", "Saved successfully"));
+        toast.success(
+          t("optimizer.scenario.updatedSuccess", "Saved successfully")
+        );
       } else {
         const response = await createScenario({
           variables: {
@@ -102,6 +106,7 @@ const ScenarioManager: React.FC = () => {
               loadRangeWeight: Number(formData.loadRangeWeight),
               maxLoadWeight: Number(formData.maxLoadWeight),
               gravityWeight: Number(formData.gravityWeight),
+              isDefault: false,
             },
           },
         });
@@ -110,7 +115,9 @@ const ScenarioManager: React.FC = () => {
           setFormData((prev) => ({ ...prev, id: newId }));
           setIsEditing(true);
         }
-        toast.success(t("common.created", "Created successfully"));
+        toast.success(
+          t("optimizer.scenario.createdSuccess", "Created successfully")
+        );
       }
     } catch (err: any) {
       toast.error(err.message);

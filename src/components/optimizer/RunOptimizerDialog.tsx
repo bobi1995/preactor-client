@@ -9,12 +9,14 @@ interface Props {
   onSuccess?: () => void;
   triggerButtonClass?: string;
   showIconOnly?: boolean;
+  defaultMaxTime?: number; // <--- ADDED PROP
 }
 
 const RunOptimizerDialog: React.FC<Props> = ({
   onSuccess,
   triggerButtonClass,
   showIconOnly,
+  defaultMaxTime = 60, // Default fallback
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +27,7 @@ const RunOptimizerDialog: React.FC<Props> = ({
   );
   const [useCustomWindow, setUseCustomWindow] = useState(false);
   const [windowDays, setWindowDays] = useState(7);
+  const [maxTime, setMaxTime] = useState(defaultMaxTime); // <--- State
 
   // Loading State
   const [isProcessing, setIsProcessing] = useState(false);
@@ -32,6 +35,13 @@ const RunOptimizerDialog: React.FC<Props> = ({
 
   const { scenarios, loading: loadingScenarios } = useOptimizationScenarios();
   const { runOptimizer } = useRunOptimizer();
+
+  // Reset max time when dialog opens or defaults change
+  useEffect(() => {
+    if (isOpen) {
+      setMaxTime(defaultMaxTime);
+    }
+  }, [isOpen, defaultMaxTime]);
 
   useEffect(() => {
     if (scenarios && scenarios.length > 0) {
@@ -42,27 +52,26 @@ const RunOptimizerDialog: React.FC<Props> = ({
     }
   }, [scenarios]);
 
-  // TIMER LOGIC: Pure visual simulation
+  // TIMER LOGIC: Pure visual simulation (matches maxTime roughly for visuals)
   useEffect(() => {
     let interval: any;
     if (isProcessing) {
-      // If complete, stop logic
       if (progress >= 100) return;
 
-      const totalTimeMs = 180 * 1000; // Assume 3 minutes avg
+      // Use the actual maxTime for the progress bar duration (clamped minimum 10s for UX)
+      const totalTimeMs = Math.max(maxTime, 10) * 1000;
       const updateInterval = 500;
       const increment = 100 / (totalTimeMs / updateInterval);
 
       interval = setInterval(() => {
         setProgress((prev) => {
-          // CAP at 99% - Wait for Server response to hit 100%
           if (prev >= 99) return 99;
           return prev + increment;
         });
       }, updateInterval);
     }
     return () => clearInterval(interval);
-  }, [isProcessing, progress]);
+  }, [isProcessing, progress, maxTime]);
 
   const handleFinish = () => {
     setTimeout(() => {
@@ -76,7 +85,7 @@ const RunOptimizerDialog: React.FC<Props> = ({
           "Optimization completed successfully."
         )
       );
-    }, 1500); // Show "Done" for 1.5s
+    }, 1500);
   };
 
   const handleRun = async () => {
@@ -87,16 +96,15 @@ const RunOptimizerDialog: React.FC<Props> = ({
     setIsProcessing(true);
 
     try {
-      // 2. AWAIT SERVER (This will hang until Python finishes)
+      // 2. AWAIT SERVER
       const result = await runOptimizer({
         scenarioId: selectedScenarioId,
         campaignWindowDays: useCustomWindow ? windowDays : 0,
-        // gravity: true, // REMOVED
+        maxTime: maxTime, // <--- Passed to Mutation
         resourcePriority: [],
       });
 
       if (result?.success) {
-        // 3. Server finished -> Fill bar -> Close
         setProgress(100);
         handleFinish();
       } else {
@@ -201,6 +209,7 @@ const RunOptimizerDialog: React.FC<Props> = ({
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Scenario Selector */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t(
@@ -227,6 +236,25 @@ const RunOptimizerDialog: React.FC<Props> = ({
                 )}
               </div>
 
+              {/* Max Time Override */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t(
+                    "optimizer.maxTime.secondsLabel",
+                    "Max Duration (Seconds)"
+                  )}
+                </label>
+                <input
+                  type="number"
+                  min="10"
+                  max="3600"
+                  value={maxTime}
+                  onChange={(e) => setMaxTime(parseInt(e.target.value) || 60)}
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2.5 border"
+                />
+              </div>
+
+              {/* Window Override */}
               <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
                 <label className="flex items-center gap-2 text-sm font-medium text-indigo-900 cursor-pointer">
                   <input

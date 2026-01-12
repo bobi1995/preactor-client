@@ -4,9 +4,9 @@ export const GET_OPTIMIZER_DATA = gql`
   query GetOptimizerData {
     getOptimizerSettings {
       id
-      strategy
       campaignWindowDays
       resourcePriority
+      maxTime
       updatedAt
     }
     getOptimizerExecutions {
@@ -15,13 +15,13 @@ export const GET_OPTIMIZER_DATA = gql`
       endTime
       durationSeconds
       status
-      strategy
       campaignWindowDays
+      maxTime
       resourcePriority
       recordCount
       errorMessage
+      strategy
     }
-    # We fetch resources to map IDs to Names in the UI
     getResources {
       id
       name

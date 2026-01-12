@@ -46,7 +46,10 @@ const OptimizerSettingsPage: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <RunOptimizerDialog onSuccess={refetch} />
+          <RunOptimizerDialog
+            onSuccess={refetch}
+            defaultMaxTime={settings?.maxTime || 60}
+          />
 
           <button
             onClick={() => refetch()}
