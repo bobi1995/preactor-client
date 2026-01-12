@@ -49,6 +49,7 @@
     "of": "of",
     "to2": "to",
     "results": "results",
+    "seconds": "seconds",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -547,7 +548,12 @@
       "runOptimizer": "Run Optimizer",
       "schedulingInProgress": "Scheduling in progress...",
       "systemOutput": "System Output",
-      "noOutput": "No output logs returned."
+      "noOutput": "No output logs returned.",
+      "maxTime": {
+        "title": "Execution Limit",
+        "subtitle": "Maximum runtime for solver",
+        "secondsLabel": "Max Duration (Seconds)"
+      }
     }
   },
   "rawOrdersPage": {
@@ -648,7 +654,10 @@
       "deleteConfirm": "Are you sure you want to delete this scenario?",
       "descriptionScenario": "Description",
       "default": "Default",
-      "setAsDefault": "Set as Default"
+      "setAsDefault": "Set as Default",
+      "createdSuccess": "Scenario created successfully.",
+      "updatedSuccess": "Scenario updated successfully.",
+      "deletedSuccess": "Scenario deleted successfully."
     },
     "weights": {
       "latenessLabel": "Lateness Weight",

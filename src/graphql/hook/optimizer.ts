@@ -9,9 +9,9 @@ import { IOptimizerExecution } from "../../components/optimizer/OptimizerHistory
 
 export interface OptimizerSettingsData {
   id: number;
-  strategy: string;
   campaignWindowDays: number;
   resourcePriority: number[];
+  maxTime: number;
   updatedAt: string;
 }
 
@@ -36,8 +36,8 @@ export const useUpdateOptimizerSettings = () => {
   const [mutate, { loading, error }] = useMutation(UPDATE_OPTIMIZER_SETTINGS);
 
   const updateSettings = async (input: {
-    strategy: string;
     campaignWindowDays: number;
+    maxTime: number;
     resourcePriority: number[];
   }) => {
     const response = await mutate({
@@ -61,6 +61,7 @@ export const useRunOptimizer = () => {
     scenarioId: number;
     campaignWindowDays?: number;
     resourcePriority?: number[];
+    maxTime?: number;
   }) => {
     const response = await mutate({
       variables: { input },

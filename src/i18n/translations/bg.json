@@ -49,6 +49,7 @@
     "of": "от",
     "to2": "до",
     "results": "резултата",
+    "seconds": "секунди",
     "days": {
       "monday": "Понеделник",
       "tuesday": "Вторник",
@@ -552,7 +553,12 @@
       "runOptimizer": "Стартирай оптимизатора",
       "schedulingInProgress": "Планиране в процес...",
       "systemOutput": "Системна информация",
-      "noOutput": "Няма изходни данни от системата."
+      "noOutput": "Няма изходни данни от системата.",
+      "maxTime": {
+        "title": "Времеви Лимит",
+        "subtitle": "Максимално време за изчисление",
+        "secondsLabel": "Макс. Продължителност (Сек)"
+      }
     }
   },
   "rawOrdersPage": {
@@ -652,7 +658,10 @@
       "deleteConfirm": "Сигурни ли сте, че искате да изтриете този сценарий?",
       "descriptionScenario": "Описание",
       "default": "Подразбиране",
-      "setAsDefault": "Задай"
+      "setAsDefault": "Задай",
+      "createdSuccess": "Сценарият е създаден успешно.",
+      "updatedSuccess": "Сценарият е обновен успешно.",
+      "deletedSuccess": "Сценарият е изтрит успешно."
     },
     "weights": {
       "latenessLabel": "Тежест на закъсненията",

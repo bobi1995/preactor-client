@@ -4,8 +4,8 @@ export const UPDATE_OPTIMIZER_SETTINGS = gql`
   mutation UpdateOptimizerSettings($input: UpdateOptimizerSettingInput!) {
     updateOptimizerSettings(input: $input) {
       id
-      strategy
       campaignWindowDays
+      maxTime
       resourcePriority
     }
   }
