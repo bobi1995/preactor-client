@@ -50,6 +50,7 @@
     "to2": "to",
     "results": "results",
     "seconds": "seconds",
+    "confirmUpdate": "Confirm & Update",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -525,6 +526,18 @@
     "createNewPrompt": "Schedule a new order to get started!",
     "noOrdersMatchSearch": "No orders match your search.",
     "tryDifferentKeywords": "Try different keywords.",
+    "editTitle": "Edit Order",
+    "priority": "Priority (1-100)",
+    "priorityDesc": "Higher number = lower priority (typically)",
+    "quantity": "Remaining Quantity",
+    "dueDate": "Due Date & Time",
+    "priorityWarningTitle": "Cascade Priority Update",
+    "priorityWarningDesc": "You have modified the priority for this operation.",
+    "priorityWarningCascade": "CAUTION: Saving this will automatically update all operations in Order {{orderNum}} to Priority {{newPriority}}.",
+    "dirtyWarning": {
+      "title": "Schedule Out of Sync",
+      "message": "Changes have been made to orders. The current schedule may be invalid. Please run the Optimizer."
+    },
     "table": {
       "orderOp": "Order / Op",
       "opName": "Operation",

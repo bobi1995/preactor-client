@@ -9,7 +9,7 @@ import SchedulerBlocker from "../components/orders/SchedulerBlocker";
 import SchedulerResultModal from "../components/orders/SchedulerResultModal";
 import LoadingDialog from "../components/general/LoadingDialog";
 import ErrorComponent from "../components/general/Error";
-import { RefreshCw, CalendarCheck, PlayCircle } from "lucide-react";
+import { RefreshCw, CalendarCheck } from "lucide-react";
 import {
   startOfDay,
   endOfDay,
@@ -19,6 +19,7 @@ import {
 import { parseAsLocal } from "../utils/gantt-utils";
 import { IOrder } from "../graphql/interfaces";
 import RunOptimizerDialog from "../components/optimizer/RunOptimizerDialog";
+import DirtyWarning from "../components/orders/DirtyWarning";
 
 const ScheduledOrdersPage: React.FC = () => {
   const { t } = useTranslation();
@@ -26,8 +27,10 @@ const ScheduledOrdersPage: React.FC = () => {
   // 1. Data Hooks
   const { orders, loading, error, reload } = useOrders();
   // 2. Use new hook
-  const { runOptimizer, loading: schedulerLoading } = useRunOptimizer();
-
+  const { loading: schedulerLoading } = useRunOptimizer();
+  const isAnyOrderDirty = useMemo(() => {
+    return orders?.some((o: IOrder) => o.isDirty) || false;
+  }, [orders]);
   // 2. Local State for Results Modal
   const [resultModal, setResultModal] = useState<{
     isOpen: boolean;
@@ -119,6 +122,7 @@ const ScheduledOrdersPage: React.FC = () => {
 
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <DirtyWarning isVisible={isAnyOrderDirty} />
           <div>
             <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
               <CalendarCheck className="w-8 h-8 text-indigo-600" />

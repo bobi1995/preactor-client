@@ -12,6 +12,9 @@ export const GET_ORDERS = gql`
       setupTime
       product
       remainingQuan
+      priority
+      isDirty
+      dueDate
       resource {
         id
         name

@@ -35,6 +35,9 @@ export interface IOrder {
   product?: string;
   resourceGroup?: IGroup;
   attributes: IOrderAttribute[];
+  priority?: number;
+  dueDate?: string;
+  isDirty?: boolean;
 }
 
 export interface IShift {
