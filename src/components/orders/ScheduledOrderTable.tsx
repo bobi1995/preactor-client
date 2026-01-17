@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Package,
 } from "lucide-react";
+import EditOrderDialog from "./EditOrderDialog";
 
 interface Props {
   orders: IOrder[];
@@ -186,7 +187,8 @@ const ScheduledOrderTable: React.FC<Props> = ({ orders }) => {
                   <td className="px-4 py-3 text-sm text-gray-800 text-center font-semibold bg-gray-50">
                     {order.remainingQuan ?? order.quantity ?? 0}
                   </td>
-                  <td className="px-4 py-3 text-sm text-center">
+                  <td className="px-4 py-3 text-center flex items-center justify-center gap-2">
+                    <EditOrderDialog order={order} />
                     <OrderAttributesDialog order={order} />
                   </td>
                 </tr>
